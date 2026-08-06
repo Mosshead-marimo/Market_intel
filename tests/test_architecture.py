@@ -1,0 +1,13 @@
+from pathlib import Path
+
+
+def test_platform_never_imports_feature_modules() -> None:
+    platform_root = Path("apps/api/src/tradesentinel/platform")
+    for path in platform_root.rglob("*.py"):
+        assert "tradesentinel.modules" not in path.read_text(encoding="utf-8"), path
+
+
+def test_api_routes_do_not_import_database_models() -> None:
+    routes = Path("apps/api/src/tradesentinel/api/routes.py").read_text(encoding="utf-8")
+    assert "WorkflowRunRecord" not in routes
+    assert "CapabilityRunRecord" not in routes

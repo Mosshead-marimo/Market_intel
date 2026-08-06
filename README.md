@@ -1,0 +1,148 @@
+# TradeSentinel
+
+TradeSentinel is a modular, capability-driven market-intelligence platform. This repository currently contains the domain-neutral platform foundation only: it deliberately ships no market, instrument, provider, or prediction implementation.
+
+## Foundation
+
+The workspace contains:
+
+- `apps/api`: FastAPI API, Redis Streams worker, shared platform runtime, and the `platform.system` reference module.
+- `apps/web`: Next.js platform console.
+- `packages/contracts`: generated OpenAPI declarations and runtime Zod validators.
+- `apps/api/migrations`: central Alembic runner and platform-owned migrations.
+- `tests`: architecture-boundary tests.
+
+Capabilities are loaded from validated manifests. Commands and declarative workflows resolve through registries, capability execution remains framework-independent, and feature modules cannot be imported by the shared platform layer.
+
+## Local development
+
+Prerequisites are Python 3.13, [uv](https://docs.astral.sh/uv/), Node.js 22, pnpm 10, and optionally Docker Desktop.
+
+```text
+uv sync
+corepack enable
+pnpm install
+uv run uvicorn tradesentinel.api.app:app --reload
+pnpm dev
+```
+
+The API is available at `http://localhost:8000`, its OpenAPI UI at `/docs`, and the console at `http://localhost:3000`. The default local configuration uses in-memory events and run persistence; copy `.env.example` to `.env` to use PostgreSQL and Redis.
+
+Run the complete container stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start.
+
+## Quality checks
+
+```text
+uv run ruff format --check .
+uv run ruff check .
+uv run mypy apps/api/src
+uv run pytest
+uv run lint-imports
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm contracts:check
+docker compose config --quiet
+```
+
+Use `pnpm contracts:generate` after changing a Pydantic API contract. CI fails if committed OpenAPI output differs from the FastAPI schema.
+
+## Product Goal
+
+A user should be able to ask a question such as "How is TCS doing?" and receive a sourced report containing:
+
+- Current market status
+- Five-year performance
+- Benchmark comparison
+- Recent news and company events
+- Public sentiment and narrative shifts
+- Technical and fundamental analysis
+- Market-shift score
+- Probabilistic rise, sideways, and decline scenarios
+- Key risks and supporting sources
+
+## Architecture
+
+TradeSentinel uses a modular, plugin-based architecture. New features are implemented as registered capabilities rather than hardcoded into the core application.
+
+The platform core understands only:
+
+- Commands
+- Intents
+- Capabilities
+- Workflows
+- Events
+- Execution context
+- Evidence
+- Response components
+
+Domain concepts such as RSI, sentiment, valuation, and prediction belong inside feature modules.
+
+## Technology Stack
+
+### Frontend
+
+- Next.js
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- TradingView Lightweight Charts or Apache ECharts
+
+### Backend
+
+- Python
+- FastAPI
+- Pydantic
+- LangGraph
+- PostgreSQL
+- TimescaleDB
+- pgvector
+- Redis
+
+### Machine Learning
+
+- pandas or Polars
+- scikit-learn
+- LightGBM or XGBoost
+- MLflow
+
+### Infrastructure
+
+- Docker
+- AWS EC2 or ECS
+- S3-compatible object storage
+- OpenTelemetry
+- Prometheus
+- Grafana
+- Sentry
+
+## MVP Scope
+
+- NSE equities
+- Chat interface
+- Natural-language questions
+- Slash commands
+- Five-year performance analysis
+- News research
+- Public sentiment analysis
+- Market-shift score
+- Technical and fundamental analysis
+- Five-day and twenty-day probabilistic predictions
+- Prediction history and evaluation
+- Source citations and data timestamps
+
+## Non-Goals for MVP
+
+- Real-money trading
+- Broker integration
+- Options recommendations
+- Intraday scalping
+- Leverage recommendations
+- Personalized investment allocation
+- Guaranteed-return language
+
+## Repository Documentation
+
+The `docs/` directory contains the source of truth for product, architecture, contracts, workflows, commands, security, compliance, testing, and implementation planning.

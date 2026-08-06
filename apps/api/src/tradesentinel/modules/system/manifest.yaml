@@ -1,0 +1,15 @@
+name: platform.system
+version: 1.0.0
+description: Reports platform availability without domain logic
+entrypoint: tradesentinel.modules.system.plugin:create_plugin
+capabilities:
+  - system.ping
+commands:
+  - /ping
+intents:
+  - system_health
+provides:
+  - system_status
+events_produces:
+  - system.ping.completed
+
