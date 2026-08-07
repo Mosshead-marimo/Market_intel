@@ -12,7 +12,7 @@ The workspace contains:
 - `apps/api/migrations`: central Alembic runner and platform-owned migrations.
 - `tests`: architecture-boundary tests.
 
-Capabilities are loaded from validated manifests. Commands and declarative workflows resolve through registries, capability execution remains framework-independent, and feature modules cannot be imported by the shared platform layer.
+Capabilities are loaded automatically from recursively discovered, strictly validated manifests. A new module needs a manifest and capability class—no plugin factory or manual registration. Commands, exact-example intents, direct capability calls, and declarative workflows use one framework-independent execution pipeline with scoped contexts, retries, events, persistence, and deterministic response rendering. Feature modules cannot be imported by the shared platform layer.
 
 ## Local development
 

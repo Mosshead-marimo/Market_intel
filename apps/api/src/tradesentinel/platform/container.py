@@ -5,8 +5,13 @@ from dataclasses import dataclass
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from tradesentinel.platform.commands import CommandParser
 from tradesentinel.platform.config import Settings
+from tradesentinel.platform.context import ExecutionContextManager
+from tradesentinel.platform.dependencies import DependencyResolver
 from tradesentinel.platform.events import EventBus, InMemoryEventBus, RedisStreamEventBus
+from tradesentinel.platform.execution import CapabilityExecutor
+from tradesentinel.platform.intents import ExactExampleIntentResolver
 from tradesentinel.platform.modules import ModuleLoader
 from tradesentinel.platform.persistence import (
     InMemoryRunRepository,
@@ -15,9 +20,17 @@ from tradesentinel.platform.persistence import (
     create_engine,
     create_session_factory,
 )
+from tradesentinel.platform.pipeline import ExecutionPipeline
 from tradesentinel.platform.rate_limits import InMemoryRateLimiter, RateLimiter, RedisRateLimiter
-from tradesentinel.platform.registries import CapabilityRegistry, CommandRegistry, WorkflowRegistry
-from tradesentinel.platform.workflows import WorkflowExecutor
+from tradesentinel.platform.registries import (
+    CapabilityRegistry,
+    CommandRegistry,
+    IntentRegistry,
+    WorkflowRegistry,
+)
+from tradesentinel.platform.rendering import ResponseRenderer
+from tradesentinel.platform.retry import RetryStrategy
+from tradesentinel.platform.workflows import WorkflowEngine, WorkflowExecutor
 
 
 @dataclass
@@ -30,9 +43,11 @@ class Container:
     rate_limiter: RateLimiter
     capabilities: CapabilityRegistry
     commands: CommandRegistry
+    intents: IntentRegistry
     workflows: WorkflowRegistry
     loader: ModuleLoader
     executor: WorkflowExecutor
+    pipeline: ExecutionPipeline
 
     async def close(self) -> None:
         await self.engine.dispose()
@@ -55,10 +70,25 @@ def build_container(settings: Settings) -> Container:
     )
     capabilities = CapabilityRegistry()
     commands = CommandRegistry()
+    intents = IntentRegistry()
     workflows = WorkflowRegistry(capabilities)
-    loader = ModuleLoader(capabilities, commands, workflows, events)
+    dependency_resolver = DependencyResolver()
+    loader = ModuleLoader(capabilities, commands, intents, workflows, events, dependency_resolver)
     loader.load(settings.module_roots)
-    executor = WorkflowExecutor(workflows, capabilities, events, runs)
+    contexts = ExecutionContextManager(events)
+    retry_strategy = RetryStrategy()
+    capability_executor = CapabilityExecutor(capabilities, contexts, retry_strategy, runs)
+    executor = WorkflowExecutor(workflows, WorkflowEngine(), capability_executor, contexts, runs)
+    pipeline = ExecutionPipeline(
+        CommandParser(commands),
+        intents,
+        ExactExampleIntentResolver(),
+        capability_executor,
+        executor,
+        contexts,
+        ResponseRenderer(),
+    )
+    loader.bind_event_consumers(pipeline)
     return Container(
         settings=settings,
         engine=engine,
@@ -68,7 +98,9 @@ def build_container(settings: Settings) -> Container:
         rate_limiter=rate_limiter,
         capabilities=capabilities,
         commands=commands,
+        intents=intents,
         workflows=workflows,
         loader=loader,
         executor=executor,
+        pipeline=pipeline,
     )

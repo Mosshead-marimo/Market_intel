@@ -21,9 +21,11 @@ from tradesentinel.api.schemas import (
 )
 from tradesentinel.platform.contracts import (
     CapabilityDescriptor,
+    CommandExecutionRequest,
     DependencyHealth,
     ExecutionContext,
     HealthResult,
+    WorkflowExecutionRequest,
 )
 from tradesentinel.platform.errors import CapabilityNotInstalledError, RateLimitError
 
@@ -99,14 +101,11 @@ async def execute_command(
     )
     if not allowed:
         raise RateLimitError(retry_after)
-    parsed = container.commands.parse(body.command)
-    descriptor = container.commands.get(parsed.name)
     context = ExecutionContext(request_id=request_id, session_id=body.session_id)
-    raw_payload: dict[str, object] = dict(parsed.options)
-    if parsed.arguments:
-        raw_payload["arguments"] = parsed.arguments
-    result = await container.capabilities.get(descriptor.capability).invoke(context, raw_payload)
-    return CommandResponse(request_id=request_id, result=result)
+    outcome = await container.pipeline.execute(
+        CommandExecutionRequest(command=body.command), context
+    )
+    return CommandResponse(request_id=request_id, result=outcome.result, response=outcome.response)
 
 
 @router.post(
@@ -122,8 +121,12 @@ async def execute_workflow(
 ) -> WorkflowResponse:
     request_id = UUID(request.state.request_id)
     context = ExecutionContext(request_id=request_id, session_id=body.session_id)
-    result = await container.executor.execute(workflow_name, context, body.input)
-    return WorkflowResponse(request_id=request_id, result=result)
+    outcome = await container.pipeline.execute(
+        WorkflowExecutionRequest(workflow=workflow_name, payload=body.input), context
+    )
+    if not hasattr(outcome.result, "workflow"):
+        raise RuntimeError("workflow pipeline returned a capability result")
+    return WorkflowResponse(request_id=request_id, result=outcome.result, response=outcome.response)
 
 
 @router.get("/api/v1/runs/{run_id}", tags=["runs"])

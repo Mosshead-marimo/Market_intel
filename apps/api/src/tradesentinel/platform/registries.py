@@ -1,35 +1,32 @@
 from __future__ import annotations
 
-import shlex
 from collections.abc import Iterable
-from dataclasses import dataclass
-from typing import Any
 
-from tradesentinel.platform.capabilities import Capability
-from tradesentinel.platform.contracts import CommandDescriptor, WorkflowDefinition
+from tradesentinel.platform.capabilities import RegisteredCapability
+from tradesentinel.platform.contracts import CommandDescriptor, IntentDescriptor, WorkflowDefinition
 from tradesentinel.platform.errors import RegistryError
 
 
 class CapabilityRegistry:
     def __init__(self) -> None:
-        self._items: dict[str, Capability[Any]] = {}
+        self._items: dict[str, RegisteredCapability] = {}
 
-    def register(self, capability: Capability[Any]) -> None:
+    def register(self, capability: RegisteredCapability) -> None:
         name = capability.descriptor.name
         if name in self._items:
             raise RegistryError(f"duplicate capability: {name}")
         self._items[name] = capability
 
-    def get(self, name: str) -> Capability[Any]:
+    def get(self, name: str) -> RegisteredCapability:
         try:
             return self._items[name]
         except KeyError as exc:
             raise RegistryError(f"unknown capability: {name}") from exc
 
-    def list(self) -> tuple[Capability[Any], ...]:
+    def list(self) -> tuple[RegisteredCapability, ...]:
         return tuple(self._items[name] for name in sorted(self._items))
 
-    def restore(self, items: Iterable[Capability[Any]]) -> None:
+    def restore(self, items: Iterable[RegisteredCapability]) -> None:
         self._items = {item.descriptor.name: item for item in items}
 
     def validate(self) -> None:
@@ -66,13 +63,6 @@ class CapabilityRegistry:
             visit(node)
 
 
-@dataclass(frozen=True)
-class ParsedCommand:
-    name: str
-    arguments: tuple[str, ...]
-    options: dict[str, str | bool]
-
-
 class CommandRegistry:
     def __init__(self) -> None:
         self._items: dict[str, CommandDescriptor] = {}
@@ -94,30 +84,27 @@ class CommandRegistry:
     def restore(self, items: Iterable[CommandDescriptor]) -> None:
         self._items = {item.name: item for item in items}
 
-    def parse(self, value: str) -> ParsedCommand:
-        tokens = shlex.split(value)
-        if not tokens or not tokens[0].startswith("/"):
-            raise RegistryError("command must start with '/'")
-        descriptor = self.get(tokens[0])
-        arguments: list[str] = []
-        options: dict[str, str | bool] = {}
-        index = 1
-        while index < len(tokens):
-            token = tokens[index]
-            if token.startswith("--"):
-                key = token[2:].replace("-", "_")
-                if not key:
-                    raise RegistryError("empty command option")
-                if index + 1 < len(tokens) and not tokens[index + 1].startswith("--"):
-                    options[key] = tokens[index + 1]
-                    index += 2
-                else:
-                    options[key] = True
-                    index += 1
-            else:
-                arguments.append(token)
-                index += 1
-        return ParsedCommand(descriptor.name, tuple(arguments), options)
+
+class IntentRegistry:
+    def __init__(self) -> None:
+        self._items: dict[str, IntentDescriptor] = {}
+
+    def register(self, intent: IntentDescriptor) -> None:
+        if intent.name in self._items:
+            raise RegistryError(f"duplicate intent: {intent.name}")
+        self._items[intent.name] = intent
+
+    def get(self, name: str) -> IntentDescriptor:
+        try:
+            return self._items[name]
+        except KeyError as exc:
+            raise RegistryError(f"unknown intent: {name}") from exc
+
+    def list(self) -> tuple[IntentDescriptor, ...]:
+        return tuple(self._items[name] for name in sorted(self._items))
+
+    def restore(self, items: Iterable[IntentDescriptor]) -> None:
+        self._items = {item.name: item for item in items}
 
 
 class WorkflowRegistry:

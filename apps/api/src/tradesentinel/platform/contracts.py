@@ -62,9 +62,11 @@ class CapabilityWarning(ContractModel):
 
 
 class RunMetadata(ContractModel):
+    run_id: UUID | None = None
     started_at: datetime
     completed_at: datetime | None = None
     duration_ms: int | None = Field(default=None, ge=0)
+    attempts: int = Field(default=1, ge=1)
     data_cutoff: datetime | None = None
     freshness: Literal["fresh", "stale", "unknown"] = "unknown"
 
@@ -207,13 +209,60 @@ class CapabilityDescriptor(ContractModel):
     dependencies: tuple[str, ...] = ()
     permissions: tuple[str, ...] = ()
     provides: tuple[str, ...] = ()
+    idempotent: bool = False
+
+
+class RetryPolicy(ContractModel):
+    max_attempts: int = Field(default=3, ge=1, le=10)
+    initial_delay_ms: int = Field(default=100, ge=0, le=60_000)
+    multiplier: float = Field(default=2.0, ge=1, le=10)
+    max_delay_ms: int = Field(default=2_000, ge=0, le=300_000)
+    jitter_ratio: float = Field(default=0.2, ge=0, le=1)
+
+
+class TargetKind(StrEnum):
+    CAPABILITY = "capability"
+    WORKFLOW = "workflow"
+
+
+class ExecutionTarget(ContractModel):
+    kind: TargetKind
+    name: str
+
+
+class CommandArgument(ContractModel):
+    name: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
+    required: bool = True
+
+
+class CommandOption(ContractModel):
+    name: str = Field(pattern=r"^[a-z][a-z0-9-]*$")
+    destination: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
+    flag: bool = False
+    required: bool = False
 
 
 class CommandDescriptor(ContractModel):
     name: str = Field(pattern=r"^/[a-z][a-z0-9-]*$")
     description: str
-    capability: str
+    target: ExecutionTarget
+    arguments: tuple[CommandArgument, ...] = ()
+    options: tuple[CommandOption, ...] = ()
     examples: tuple[str, ...] = ()
+
+
+class IntentDescriptor(ContractModel):
+    name: str = Field(pattern=r"^[a-z][a-z0-9_.-]*$")
+    description: str
+    examples: tuple[str, ...] = Field(min_length=1)
+    priority: int = 0
+    target: ExecutionTarget
+
+
+class IntentMatch(ContractModel):
+    intent: str
+    target: ExecutionTarget
+    confidence: float = Field(ge=0, le=1)
 
 
 class WorkflowStep(ContractModel):
@@ -252,6 +301,55 @@ class WorkflowResult(ContractModel):
     warnings: tuple[CapabilityWarning, ...] = ()
     started_at: datetime
     completed_at: datetime
+
+
+class CommandExecutionRequest(ContractModel):
+    type: Literal["command"] = "command"
+    command: str
+
+
+class IntentExecutionRequest(ContractModel):
+    type: Literal["intent"] = "intent"
+    text: str
+    payload: dict[str, JsonValue] = Field(default_factory=dict)
+
+
+class CapabilityExecutionRequest(ContractModel):
+    type: Literal["capability"] = "capability"
+    capability: str
+    payload: dict[str, JsonValue] = Field(default_factory=dict)
+
+
+class WorkflowExecutionRequest(ContractModel):
+    type: Literal["workflow"] = "workflow"
+    workflow: str
+    payload: dict[str, JsonValue] = Field(default_factory=dict)
+
+
+ExecutionRequest = Annotated[
+    CommandExecutionRequest
+    | IntentExecutionRequest
+    | CapabilityExecutionRequest
+    | WorkflowExecutionRequest,
+    Field(discriminator="type"),
+]
+
+
+class RenderedResponse(ContractModel):
+    status: RunStatus
+    text: str
+    components: tuple[ResponseComponent, ...] = ()
+    sources: tuple[EvidenceSource, ...] = ()
+    warnings: tuple[CapabilityWarning, ...] = ()
+    run_id: UUID | None = None
+    generated_at: datetime
+    trace: tuple[str, ...] = ()
+
+
+class ExecutionOutcome(ContractModel):
+    target: ExecutionTarget
+    result: CapabilityResult | WorkflowResult
+    response: RenderedResponse
 
 
 class EventEnvelope(ContractModel):
