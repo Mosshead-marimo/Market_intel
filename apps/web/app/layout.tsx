@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "TradeSentinel Platform Console",
-  description: "Inspect and verify the TradeSentinel capability platform.",
+  title: "TradeSentinel Chat",
+  description: "A capability-driven conversational runtime.",
 };
 
 export default function RootLayout({

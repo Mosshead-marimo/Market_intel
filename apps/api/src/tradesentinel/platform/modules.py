@@ -61,6 +61,9 @@ class ModuleLoader:
 
     def load(self, roots: tuple[Path, ...]) -> tuple[ModuleManifest, ...]:
         manifests = self.discover(roots)
+        return self.load_manifests(manifests)
+
+    def load_manifests(self, manifests: tuple[ModuleManifest, ...]) -> tuple[ModuleManifest, ...]:
         staged_capabilities = CapabilityRegistry()
         staged_commands = CommandRegistry()
         staged_intents = IntentRegistry()
@@ -105,6 +108,8 @@ class ModuleLoader:
                 staged_intents.register(IntentDescriptor(**intent_declaration.model_dump()))
             for workflow in manifest.workflows:
                 staged_workflows.register(workflow)
+
+        staged_intents.validate()
 
         for manifest in manifests:
             for command in manifest.commands:

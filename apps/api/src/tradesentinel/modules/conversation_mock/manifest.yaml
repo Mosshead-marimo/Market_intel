@@ -1,0 +1,50 @@
+name: conversation.mock
+version: 1.0.0
+description: Deterministic mock conversation module for exercising the chat runtime
+capabilities:
+  - name: conversation.mock_understand
+    class_path: tradesentinel.modules.conversation_mock.capability:MockUnderstandCapability
+    description: Produces deterministic metadata about a chat message
+    provides:
+      - mock_understanding
+    idempotent: true
+  - name: conversation.mock_reply
+    class_path: tradesentinel.modules.conversation_mock.capability:MockReplyCapability
+    description: Produces a clearly labelled deterministic mock response
+    dependencies:
+      - conversation.mock_understand
+    provides:
+      - mock_response
+    idempotent: true
+commands:
+  - name: /echo
+    description: Send a message through the deterministic mock workflow
+    target:
+      kind: workflow
+      name: conversation.mock
+    arguments:
+      - name: message
+    examples:
+      - /echo "hello TradeSentinel"
+intents:
+  - name: conversation.mock_fallback
+    description: Route unmatched natural-language messages to the mock workflow
+    match: fallback
+    input_field: message
+    target:
+      kind: workflow
+      name: conversation.mock
+workflows:
+  - name: conversation.mock
+    version: 1.0.0
+    description: Plans and renders a deterministic mock chat response
+    steps:
+      - id: understand
+        capability: conversation.mock_understand
+      - id: reply
+        capability: conversation.mock_reply
+        depends_on:
+          - understand
+events:
+  produces:
+    - conversation.mock.completed

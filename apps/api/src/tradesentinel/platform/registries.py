@@ -106,6 +106,14 @@ class IntentRegistry:
     def restore(self, items: Iterable[IntentDescriptor]) -> None:
         self._items = {item.name: item for item in items}
 
+    def validate(self) -> None:
+        fallbacks = [item.name for item in self._items.values() if item.match == "fallback"]
+        if len(fallbacks) > 1:
+            raise RegistryError(
+                "only one fallback intent may be registered",
+                {"intents": sorted(fallbacks)},
+            )
+
 
 class WorkflowRegistry:
     def __init__(self, capabilities: CapabilityRegistry) -> None:

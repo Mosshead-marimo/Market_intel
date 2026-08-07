@@ -66,3 +66,15 @@ name = "Platform remains independent of feature modules"
 type = "forbidden"
 source_modules = ["tradesentinel.platform"]
 forbidden_modules = ["tradesentinel.modules"]
+
+[[tool.importlinter.contracts]]
+name = "Platform remains independent of provider domain contracts"
+type = "forbidden"
+source_modules = ["tradesentinel.platform"]
+forbidden_modules = ["tradesentinel.providers"]
+
+[[tool.importlinter.contracts]]
+name = "Provider abstractions remain independent of feature modules"
+type = "forbidden"
+source_modules = ["tradesentinel.providers"]
+forbidden_modules = ["tradesentinel.modules"]

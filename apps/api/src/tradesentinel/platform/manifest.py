@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
@@ -31,6 +32,19 @@ class CapabilityManifest(ManifestModel):
     retry: RetryPolicy = Field(default_factory=RetryPolicy)
 
 
+class ProviderRateLimitManifest(ManifestModel):
+    requests: int = Field(default=60, ge=1)
+    window_seconds: int = Field(default=60, ge=1)
+
+
+class ProviderManifest(ManifestModel):
+    kind: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
+    name: str = Field(pattern=r"^[a-z][a-z0-9_.-]*$")
+    class_path: str
+    timeout_ms: int = Field(default=10_000, ge=1, le=300_000)
+    rate_limit: ProviderRateLimitManifest = Field(default_factory=ProviderRateLimitManifest)
+
+
 class CommandManifest(ManifestModel):
     name: str
     description: str
@@ -43,9 +57,19 @@ class CommandManifest(ManifestModel):
 class IntentManifest(ManifestModel):
     name: str
     description: str
-    examples: tuple[str, ...] = Field(min_length=1)
+    examples: tuple[str, ...] = ()
     priority: int = 0
     target: ExecutionTarget
+    match: Literal["exact", "fallback"] = "exact"
+    input_field: str = Field(default="message", pattern=r"^[a-z][a-z0-9_]*$")
+
+    @model_validator(mode="after")
+    def validate_matching(self) -> IntentManifest:
+        if self.match == "exact" and not self.examples:
+            raise ValueError("exact intents require at least one example")
+        if self.match == "fallback" and self.examples:
+            raise ValueError("fallback intents cannot declare examples")
+        return self
 
 
 class EventConsumerManifest(ManifestModel):
@@ -63,6 +87,7 @@ class ModuleManifest(ManifestModel):
     version: str = Field(pattern=r"^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
     description: str
     capabilities: tuple[CapabilityManifest, ...] = Field(min_length=1)
+    providers: tuple[ProviderManifest, ...] = ()
     commands: tuple[CommandManifest, ...] = ()
     intents: tuple[IntentManifest, ...] = ()
     workflows: tuple[WorkflowDefinition, ...] = ()
@@ -72,6 +97,7 @@ class ModuleManifest(ManifestModel):
     def validate_local_names(self) -> ModuleManifest:
         groups = {
             "capability": [item.name for item in self.capabilities],
+            "provider": [f"{item.kind}:{item.name}" for item in self.providers],
             "command": [item.name for item in self.commands],
             "intent": [item.name for item in self.intents],
             "workflow": [item.name for item in self.workflows],

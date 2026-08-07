@@ -7,6 +7,7 @@ from typing import Any, TypeVar, cast, get_type_hints
 from tradesentinel.platform.errors import DependencyResolutionError
 
 DependencyT = TypeVar("DependencyT")
+DependencySnapshot = tuple[dict[type[Any], object], dict[type[Any], Callable[[], object]]]
 
 
 class DependencyResolver:
@@ -14,13 +15,19 @@ class DependencyResolver:
         self._instances: dict[type[Any], object] = {}
         self._factories: dict[type[Any], Callable[[], object]] = {}
 
-    def register_instance(self, dependency_type: type[DependencyT], instance: DependencyT) -> None:
+    def register_instance(self, dependency_type: type[Any], instance: object) -> None:
         self._instances[dependency_type] = instance
 
     def register_factory(
         self, dependency_type: type[DependencyT], factory: Callable[[], DependencyT]
     ) -> None:
         self._factories[dependency_type] = factory
+
+    def snapshot(self) -> DependencySnapshot:
+        return self._instances.copy(), self._factories.copy()
+
+    def restore(self, snapshot: DependencySnapshot) -> None:
+        self._instances, self._factories = snapshot[0].copy(), snapshot[1].copy()
 
     def resolve(self, dependency_type: type[DependencyT]) -> DependencyT:
         return self._resolve(dependency_type, ())

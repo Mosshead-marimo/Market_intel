@@ -6,8 +6,12 @@
 
 ```text
 POST /api/v1/chat
+POST /api/v1/chat/sessions
 GET  /api/v1/chat/sessions
 GET  /api/v1/chat/sessions/{session_id}
+PATCH /api/v1/chat/sessions/{session_id}
+GET  /api/v1/chat/turns/{turn_id}
+GET  /api/v1/chat/turns/{turn_id}/events
 ```
 
 ### Commands
@@ -48,6 +52,8 @@ Use Server-Sent Events for chat progress and response streaming.
 Example event types:
 
 - status
+- typing
+- progress
 - component
 - warning
 - response
@@ -69,7 +75,7 @@ Example event types:
 
 ## Foundation Behavior
 
-`GET /health/live`, `GET /health/ready`, command/capability discovery, `/ping` execution, system workflow execution, run inspection, and SSE contract exposure are active. All documented market, chat, and prediction routes are registered but return HTTP 501 with `CAPABILITY_NOT_INSTALLED` until their owning module is installed. This is a stable product boundary, not a placeholder response.
+`POST /api/v1/chat` returns HTTP 202 with a durable turn and per-turn stream URL. The stream replays after `Last-Event-ID`, sends heartbeats every 15 seconds, and closes on `complete` or `error`. Session operations are scoped to the anonymous browser principal. Market and prediction routes continue to return typed HTTP 501 `CAPABILITY_NOT_INSTALLED` responses.
 
 Every response includes `X-Request-ID`. Domain errors include the same UUID in the response body. The additional foundation endpoint `POST /api/v1/workflows/{workflow_name}/execute` executes a registered declarative workflow.
 

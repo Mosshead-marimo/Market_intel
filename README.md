@@ -1,6 +1,6 @@
 # TradeSentinel
 
-TradeSentinel is a modular, capability-driven market-intelligence platform. This repository currently contains the domain-neutral platform foundation only: it deliberately ships no market, instrument, provider, or prediction implementation.
+TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation and typed provider ports, but deliberately ships no market capability, live vendor adapter, instrument implementation, or prediction implementation.
 
 ## Foundation
 
@@ -11,6 +11,8 @@ The workspace contains:
 - `packages/contracts`: generated OpenAPI declarations and runtime Zod validators.
 - `apps/api/migrations`: central Alembic runner and platform-owned migrations.
 - `tests`: architecture-boundary tests.
+
+Provider adapters are optional manifest declarations. Ordered provider chains are selected entirely through `TRADESENTINEL_*_PROVIDERS` JSON-array settings and injected by interface into capabilities. All chains are empty by default, so no external service is contacted by this foundation.
 
 Capabilities are loaded automatically from recursively discovered, strictly validated manifests. A new module needs a manifest and capability class—no plugin factory or manual registration. Commands, exact-example intents, direct capability calls, and declarative workflows use one framework-independent execution pipeline with scoped contexts, retries, events, persistence, and deterministic response rendering. Feature modules cannot be imported by the shared platform layer.
 
@@ -26,7 +28,9 @@ uv run uvicorn tradesentinel.api.app:app --reload
 pnpm dev
 ```
 
-The API is available at `http://localhost:8000`, its OpenAPI UI at `/docs`, and the console at `http://localhost:3000`. The default local configuration uses in-memory events and run persistence; copy `.env.example` to `.env` to use PostgreSQL and Redis.
+The API is available at `http://localhost:8000`, its OpenAPI UI at `/docs`, and the ChatGPT-style conversation UI at `http://localhost:3000`. The default local configuration uses in-memory events and persistence; Docker enables PostgreSQL-backed sessions, Redis worker execution, and resumable per-turn SSE streams.
+
+Normal text uses the manifest-declared `conversation.mock` fallback workflow. `/echo "hello"` exercises command planning and `/ping` exercises the system capability. Replies are deterministic mocks; no LLM or market-research capability is installed.
 
 Run the complete container stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start.
 

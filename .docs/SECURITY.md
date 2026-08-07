@@ -38,3 +38,10 @@
 - Pin dependencies.
 - Run vulnerability scanning.
 - Review model and package sources.
+
+## Provider Boundary
+
+- External clients and SDKs are restricted to provider adapter directories by architecture tests.
+- Provider facades enforce configured per-adapter timeouts and rate limits.
+- Logs contain provider identity, operation, duration, error code, and correlation IDs, never request payloads, raw responses, credentials, or tokens.
+- Authentication, configuration, licensing, and invalid-output failures are permanent and cannot silently fall through to another vendor.

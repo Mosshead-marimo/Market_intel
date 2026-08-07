@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime
 from time import perf_counter
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
@@ -13,6 +13,9 @@ from sqlalchemy import text
 from tradesentinel import __version__
 from tradesentinel.api.dependencies import ContainerDependency
 from tradesentinel.api.schemas import (
+    ChatRequest,
+    ChatSessionCreateRequest,
+    ChatSessionUpdateRequest,
     CommandRequest,
     CommandResponse,
     RunSourcesResponse,
@@ -21,13 +24,24 @@ from tradesentinel.api.schemas import (
 )
 from tradesentinel.platform.contracts import (
     CapabilityDescriptor,
+    ChatSession,
+    ChatSessionDetail,
+    ChatSessionPage,
+    ChatStreamEvent,
+    ChatTurn,
+    ChatTurnAccepted,
+    ChatTurnStatus,
     CommandExecutionRequest,
     DependencyHealth,
     ExecutionContext,
     HealthResult,
     WorkflowExecutionRequest,
 )
-from tradesentinel.platform.errors import CapabilityNotInstalledError, RateLimitError
+from tradesentinel.platform.errors import (
+    CapabilityNotInstalledError,
+    ChatStreamExpiredError,
+    RateLimitError,
+)
 
 router = APIRouter()
 
@@ -154,20 +168,132 @@ def unavailable(capability: str) -> None:
     raise CapabilityNotInstalledError(capability)
 
 
-@router.post("/api/v1/chat", tags=["future"])
-async def chat() -> None:
-    unavailable("conversation.chat")
+@router.post("/api/v1/chat/sessions", response_model=ChatSession, tags=["chat"])
+async def create_chat_session(
+    body: ChatSessionCreateRequest, request: Request, container: ContainerDependency
+) -> ChatSession:
+    return await container.chat_repository.create_session(
+        request.state.principal_id, body.title.strip()
+    )
 
 
-@router.get("/api/v1/chat/sessions", tags=["future"])
-async def chat_sessions() -> None:
-    unavailable("conversation.sessions")
+@router.get("/api/v1/chat/sessions", response_model=ChatSessionPage, tags=["chat"])
+async def chat_sessions(
+    request: Request,
+    container: ContainerDependency,
+    archived: bool = False,
+    cursor: str | None = None,
+    limit: int = 30,
+) -> ChatSessionPage:
+    return await container.chat_repository.list_sessions(
+        request.state.principal_id,
+        archived=archived,
+        cursor=cursor,
+        limit=min(max(limit, 1), 100),
+    )
 
 
-@router.get("/api/v1/chat/sessions/{session_id}", tags=["future"])
-async def chat_session(session_id: UUID) -> None:
-    del session_id
-    unavailable("conversation.sessions")
+@router.get(
+    "/api/v1/chat/sessions/{session_id}",
+    response_model=ChatSessionDetail,
+    tags=["chat"],
+)
+async def chat_session(
+    session_id: UUID, request: Request, container: ContainerDependency
+) -> ChatSessionDetail:
+    return await container.chat_repository.get_session(request.state.principal_id, session_id)
+
+
+@router.patch("/api/v1/chat/sessions/{session_id}", response_model=ChatSession, tags=["chat"])
+async def update_chat_session(
+    session_id: UUID,
+    body: ChatSessionUpdateRequest,
+    request: Request,
+    container: ContainerDependency,
+) -> ChatSession:
+    return await container.chat_repository.update_session(
+        request.state.principal_id,
+        session_id,
+        title=body.title.strip() if body.title is not None else None,
+        archived=body.archived,
+    )
+
+
+@router.post("/api/v1/chat", response_model=ChatTurnAccepted, status_code=202, tags=["chat"])
+async def chat(
+    body: ChatRequest, request: Request, container: ContainerDependency
+) -> ChatTurnAccepted:
+    request_id = UUID(request.state.request_id)
+    allowed, retry_after = await container.rate_limiter.allow(
+        f"chat:{request.state.principal_id}", container.settings.request_rate_limit
+    )
+    if not allowed:
+        raise RateLimitError(retry_after)
+    acceptance = await container.chat.accept(
+        request.state.principal_id,
+        session_id=body.session_id,
+        client_message_id=body.client_message_id,
+        message=body.message,
+        request_id=request_id,
+        correlation_id=uuid4(),
+    )
+    if acceptance.created:
+        container.tasks.start(container.chat.dispatch_pending_once())
+    return ChatTurnAccepted(
+        session_id=acceptance.turn.session_id,
+        turn_id=acceptance.turn.id,
+        user_message_id=acceptance.turn.user_message_id,
+        status=acceptance.turn.status,
+        stream_url=f"/api/v1/chat/turns/{acceptance.turn.id}/events",
+    )
+
+
+@router.get("/api/v1/chat/turns/{turn_id}", response_model=ChatTurn, tags=["chat"])
+async def get_chat_turn(
+    turn_id: UUID, request: Request, container: ContainerDependency
+) -> ChatTurn:
+    return await container.chat_repository.get_turn(request.state.principal_id, turn_id)
+
+
+@router.get("/api/v1/chat/turns/{turn_id}/events", tags=["chat"])
+async def chat_turn_events(
+    turn_id: UUID, request: Request, container: ContainerDependency
+) -> StreamingResponse:
+    turn = await container.chat_repository.get_turn(request.state.principal_id, turn_id)
+    after = request.headers.get("Last-Event-ID")
+    if (
+        after
+        and not await container.chat_streams.exists(turn_id)
+        and turn.status
+        in {
+            ChatTurnStatus.COMPLETED,
+            ChatTurnStatus.PARTIAL,
+            ChatTurnStatus.FAILED,
+        }
+    ):
+        raise ChatStreamExpiredError()
+
+    async def stream() -> AsyncIterator[str]:
+        cursor = after
+        while True:
+            records = await container.chat_streams.read(turn_id, cursor, block_ms=15_000)
+            if not records:
+                yield ": heartbeat\n\n"
+                continue
+            for record in records:
+                cursor = record.cursor
+                event: ChatStreamEvent = record.event
+                yield (
+                    f"id: {record.cursor}\nevent: {event.type}\ndata: {event.model_dump_json()}\n\n"
+                )
+                if event.type in {"complete", "error"}:
+                    return
+
+    return StreamingResponse(
+        stream(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @router.get("/api/v1/instruments/search", tags=["future"])

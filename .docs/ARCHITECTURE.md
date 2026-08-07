@@ -139,3 +139,15 @@ All execution enters a transport-neutral pipeline through a typed command, inten
 Workflow steps receive only original input and explicitly declared dependency results. Independent steps run concurrently, optional failures become warnings, and required failures skip dependent steps. Context scopes bind and restore request/run identifiers and emit lifecycle events for every attempt.
 
 Pydantic is the wire-contract source of truth. OpenAPI output generates TypeScript declarations, while Zod validators protect the rendering boundary. LangGraph remains uninstalled because the current DAG executor covers foundation behavior without coupling capability contracts to an orchestration framework.
+
+## Conversation Runtime
+
+Chat submission persists the session, user message, queued turn, and outbox record in one PostgreSQL transaction. The Redis worker claims each turn idempotently, builds a bounded conversation context, plans a command or intent, and invokes only registered targets. Memory mode uses the same orchestrator through a local background task.
+
+Per-turn Redis Streams retain typed status, typing, progress, response-delta, component, warning, completion, and error events for 24 hours. SSE reconnects use `Last-Event-ID`; PostgreSQL remains authoritative after stream expiry. Anonymous browser UUID cookies isolate sessions until authentication is installed.
+
+## Provider Runtime
+
+Financially shaped provider ports live in `tradesentinel.providers`, beside rather than inside the domain-agnostic platform package. Module manifests may declare adapter class entrypoints; the provider bootstrap validates and stages these declarations before the ordinary capability loader constructs any capability. The application composition root is outside `platform` and is the only layer that joins provider selection to platform dependency injection.
+
+Each category is configured as an ordered provider-name chain. A typed facade applies provider-scoped rate limits and timeouts, validates normalized Pydantic output, emits correlation-safe structured logs, and advances only after retryable availability failures. Permanent, authentication, configuration, licensing, invalid-output, and cancellation failures never trigger fallback. Provider failover makes one call per adapter; capability retry remains the outer idempotency boundary.

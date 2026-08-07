@@ -149,3 +149,50 @@ class RateLimitError(DomainError):
             details={"retry_after_seconds": retry_after_seconds},
             status_code=429,
         )
+
+
+class SessionNotFoundError(DomainError):
+    def __init__(self) -> None:
+        super().__init__(
+            "SESSION_NOT_FOUND", "The requested chat session was not found.", status_code=404
+        )
+
+
+class SessionArchivedError(DomainError):
+    def __init__(self) -> None:
+        super().__init__("SESSION_ARCHIVED", "The chat session is archived.", status_code=409)
+
+
+class ChatTurnActiveError(DomainError):
+    def __init__(self) -> None:
+        super().__init__(
+            "CHAT_TURN_ACTIVE",
+            "Another message is already being processed for this session.",
+            status_code=409,
+        )
+
+
+class ChatTurnNotFoundError(DomainError):
+    def __init__(self) -> None:
+        super().__init__(
+            "CHAT_TURN_NOT_FOUND", "The requested chat turn was not found.", status_code=404
+        )
+
+
+class ChatStreamExpiredError(DomainError):
+    def __init__(self) -> None:
+        super().__init__(
+            "CHAT_STREAM_EXPIRED",
+            "The replay stream has expired; retrieve the completed turn instead.",
+            status_code=410,
+        )
+
+
+class ChatQueueError(DomainError):
+    def __init__(self) -> None:
+        super().__init__(
+            "CHAT_QUEUE_UNAVAILABLE",
+            "The message was saved but could not be queued for execution.",
+            retryable=True,
+            status_code=503,
+        )

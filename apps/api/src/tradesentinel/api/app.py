@@ -12,8 +12,8 @@ from starlette.responses import Response
 
 from tradesentinel import __version__
 from tradesentinel.api.routes import router
+from tradesentinel.container import build_container
 from tradesentinel.platform.config import Settings, get_settings
-from tradesentinel.platform.container import build_container
 from tradesentinel.platform.contracts import ApiErrorDetail, ApiErrorResponse
 from tradesentinel.platform.errors import DomainError
 from tradesentinel.platform.logging import configure_logging, request_id_var
@@ -39,9 +39,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=resolved.cors_origins,
-        allow_credentials=False,
-        allow_methods=["GET", "POST"],
-        allow_headers=["Content-Type", "X-Request-ID"],
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PATCH"],
+        allow_headers=["Content-Type", "X-Request-ID", "X-Client-ID", "Last-Event-ID"],
     )
 
     @app.middleware("http")
@@ -54,10 +54,28 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         except ValueError:
             request_id = str(uuid4())
         request.state.request_id = request_id
+        incoming_client = request.cookies.get(
+            resolved.anonymous_cookie_name
+        ) or request.headers.get("X-Client-ID")
+        try:
+            client_id = str(UUID(incoming_client)) if incoming_client else str(uuid4())
+        except ValueError:
+            client_id = str(uuid4())
+        request.state.client_id = client_id
+        request.state.principal_id = f"anonymous:{client_id}"
         token = request_id_var.set(request_id)
         try:
             response = await call_next(request)
             response.headers["X-Request-ID"] = request_id
+            if request.cookies.get(resolved.anonymous_cookie_name) != client_id:
+                response.set_cookie(
+                    resolved.anonymous_cookie_name,
+                    client_id,
+                    max_age=31_536_000,
+                    httponly=True,
+                    secure=resolved.cookie_secure,
+                    samesite="lax",
+                )
             return response
         finally:
             request_id_var.reset(token)

@@ -3,8 +3,8 @@ from __future__ import annotations
 import asyncio
 import socket
 
+from tradesentinel.container import build_container
 from tradesentinel.platform.config import get_settings
-from tradesentinel.platform.container import build_container
 from tradesentinel.platform.events import RedisStreamEventBus
 
 
@@ -13,9 +13,13 @@ async def run() -> None:
     try:
         if not isinstance(container.events, RedisStreamEventBus):
             raise RuntimeError("worker requires TRADESENTINEL_EVENT_BACKEND=redis")
-        await container.events.consume_forever(
-            group="tradesentinel-workers", consumer=socket.gethostname()
-        )
+        async with asyncio.TaskGroup() as group:
+            group.create_task(
+                container.events.consume_forever(
+                    group="tradesentinel-workers", consumer=socket.gethostname()
+                )
+            )
+            group.create_task(container.chat.dispatch_forever())
     finally:
         await container.close()
 
