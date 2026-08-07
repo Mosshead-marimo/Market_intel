@@ -2,7 +2,7 @@ from typing import Annotated, cast
 
 from fastapi import Depends, Request
 
-from tradesentinel.platform.container import Container
+from tradesentinel.container import Container
 
 
 def get_container(request: Request) -> Container:

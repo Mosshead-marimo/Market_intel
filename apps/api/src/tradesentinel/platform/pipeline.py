@@ -11,6 +11,7 @@ from tradesentinel.platform.contracts import (
     CommandExecutionRequest,
     ExecutionContext,
     ExecutionOutcome,
+    ExecutionPlan,
     ExecutionRequest,
     ExecutionTarget,
     IntentExecutionRequest,
@@ -52,14 +53,37 @@ class ExecutionPipeline:
     ) -> ExecutionOutcome:
         execution_context = context or self._contexts.create()
         try:
-            target, payload = await self._resolve(request, execution_context)
+            plan = await self.plan(request, execution_context)
+            return await self.execute_plan(plan, execution_context)
+        except DomainError:
+            raise
+        except Exception as exc:
+            structlog.get_logger().exception(
+                "execution_pipeline_failed", error_type=type(exc).__name__
+            )
+            raise InternalExecutionError() from exc
+
+    async def plan(self, request: ExecutionRequest, context: ExecutionContext) -> ExecutionPlan:
+        target, payload, intent, confidence = await self._resolve(request, context)
+        return ExecutionPlan(
+            request=request,
+            target=target,
+            payload=payload,
+            intent=intent,
+            confidence=confidence,
+        )
+
+    async def execute_plan(
+        self, plan: ExecutionPlan, context: ExecutionContext
+    ) -> ExecutionOutcome:
+        try:
             result: CapabilityResult | WorkflowResult
-            if target.kind == TargetKind.CAPABILITY:
-                result = await self._capabilities.execute(target.name, execution_context, payload)
+            if plan.target.kind == TargetKind.CAPABILITY:
+                result = await self._capabilities.execute(plan.target.name, context, plan.payload)
             else:
-                result = await self._workflows.execute(target.name, execution_context, payload)
+                result = await self._workflows.execute(plan.target.name, context, plan.payload)
             return ExecutionOutcome(
-                target=target,
+                target=plan.target,
                 result=result,
                 response=self._renderer.render(result),
             )
@@ -73,21 +97,27 @@ class ExecutionPipeline:
 
     async def _resolve(
         self, request: ExecutionRequest, context: ExecutionContext
-    ) -> tuple[ExecutionTarget, dict[str, JsonValue]]:
+    ) -> tuple[ExecutionTarget, dict[str, JsonValue], str | None, float | None]:
         if isinstance(request, CommandExecutionRequest):
             parsed = self._commands.parse(request.command)
-            return parsed.target, parsed.payload
+            return parsed.target, parsed.payload, None, None
         if isinstance(request, IntentExecutionRequest):
             match = await self._intent_resolver.resolve(request.text, self._intents.list(), context)
-            return match.target, dict(request.payload)
+            payload = dict(request.payload)
+            payload[match.input_field] = request.text
+            return match.target, payload, match.intent, match.confidence
         if isinstance(request, CapabilityExecutionRequest):
             return (
                 ExecutionTarget(kind=TargetKind.CAPABILITY, name=request.capability),
                 dict(request.payload),
+                None,
+                None,
             )
         if isinstance(request, WorkflowExecutionRequest):
             return (
                 ExecutionTarget(kind=TargetKind.WORKFLOW, name=request.workflow),
                 dict(request.payload),
+                None,
+                None,
             )
         raise InternalExecutionError()

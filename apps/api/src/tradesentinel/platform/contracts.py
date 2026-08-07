@@ -29,6 +29,47 @@ class ComponentStatus(StrEnum):
     ERROR = "error"
 
 
+class ChatRole(StrEnum):
+    USER = "user"
+    ASSISTANT = "assistant"
+
+
+class ChatMessageStatus(StrEnum):
+    ACCEPTED = "accepted"
+    STREAMING = "streaming"
+    COMPLETED = "completed"
+    PARTIAL = "partial"
+    FAILED = "failed"
+
+
+class ChatTurnStatus(StrEnum):
+    QUEUED = "queued"
+    PLANNING = "planning"
+    EXECUTING = "executing"
+    RENDERING = "rendering"
+    COMPLETED = "completed"
+    PARTIAL = "partial"
+    FAILED = "failed"
+
+
+class ChatSessionStatus(StrEnum):
+    ACTIVE = "active"
+    ARCHIVED = "archived"
+
+
+class ConversationContextMessage(ContractModel):
+    id: UUID
+    role: ChatRole
+    content: str
+    created_at: datetime
+
+
+class ConversationContext(ContractModel):
+    session_id: UUID
+    turn_id: UUID
+    messages: tuple[ConversationContextMessage, ...] = ()
+
+
 class ExecutionContext(ContractModel):
     request_id: UUID = Field(default_factory=uuid4)
     session_id: UUID | None = None
@@ -41,6 +82,7 @@ class ExecutionContext(ContractModel):
     correlation_id: UUID = Field(default_factory=uuid4)
     causation_id: UUID | None = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    conversation: ConversationContext | None = None
 
 
 class EvidenceSource(ContractModel):
@@ -254,15 +296,26 @@ class CommandDescriptor(ContractModel):
 class IntentDescriptor(ContractModel):
     name: str = Field(pattern=r"^[a-z][a-z0-9_.-]*$")
     description: str
-    examples: tuple[str, ...] = Field(min_length=1)
+    examples: tuple[str, ...] = ()
     priority: int = 0
     target: ExecutionTarget
+    match: Literal["exact", "fallback"] = "exact"
+    input_field: str = Field(default="message", pattern=r"^[a-z][a-z0-9_]*$")
+
+    @model_validator(mode="after")
+    def validate_matching(self) -> IntentDescriptor:
+        if self.match == "exact" and not self.examples:
+            raise ValueError("exact intents require at least one example")
+        if self.match == "fallback" and self.examples:
+            raise ValueError("fallback intents cannot declare examples")
+        return self
 
 
 class IntentMatch(ContractModel):
     intent: str
     target: ExecutionTarget
     confidence: float = Field(ge=0, le=1)
+    input_field: str
 
 
 class WorkflowStep(ContractModel):
@@ -352,6 +405,150 @@ class ExecutionOutcome(ContractModel):
     response: RenderedResponse
 
 
+class ExecutionPlan(ContractModel):
+    request: ExecutionRequest
+    target: ExecutionTarget
+    payload: dict[str, JsonValue] = Field(default_factory=dict)
+    intent: str | None = None
+    confidence: float | None = Field(default=None, ge=0, le=1)
+
+
+class ApiErrorDetail(ContractModel):
+    code: str
+    message: str
+    retryable: bool = False
+    details: dict[str, JsonValue] = Field(default_factory=dict)
+
+
+class ChatSession(ContractModel):
+    id: UUID
+    title: str
+    status: ChatSessionStatus
+    created_at: datetime
+    updated_at: datetime
+    archived_at: datetime | None = None
+
+
+class ChatMessage(ContractModel):
+    id: UUID
+    session_id: UUID
+    turn_id: UUID
+    role: ChatRole
+    content: str
+    status: ChatMessageStatus
+    response: RenderedResponse | None = None
+    error: ApiErrorDetail | None = None
+    created_at: datetime
+    completed_at: datetime | None = None
+
+
+class ChatTurn(ContractModel):
+    id: UUID
+    session_id: UUID
+    client_message_id: UUID
+    user_message_id: UUID
+    assistant_message_id: UUID | None = None
+    status: ChatTurnStatus
+    request_id: UUID
+    correlation_id: UUID
+    run_id: UUID | None = None
+    attempt: int = Field(default=0, ge=0)
+    lease_expires_at: datetime | None = None
+    error: ApiErrorDetail | None = None
+    created_at: datetime
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
+
+
+class ChatSessionDetail(ContractModel):
+    session: ChatSession
+    messages: tuple[ChatMessage, ...] = ()
+    active_turn: ChatTurn | None = None
+
+
+class ChatSessionPage(ContractModel):
+    items: tuple[ChatSession, ...] = ()
+    next_cursor: str | None = None
+
+
+class ChatTurnAccepted(ContractModel):
+    session_id: UUID
+    turn_id: UUID
+    user_message_id: UUID
+    status: ChatTurnStatus
+    stream_url: str
+
+
+class ChatStreamBase(ContractModel):
+    version: str = "1.0.0"
+    event_id: UUID = Field(default_factory=uuid4)
+    sequence: int = Field(ge=1)
+    occurred_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    session_id: UUID
+    turn_id: UUID
+    request_id: UUID
+    correlation_id: UUID
+    run_id: UUID | None = None
+
+
+class ChatStatusEvent(ChatStreamBase):
+    type: Literal["status"] = "status"
+    status: ChatTurnStatus
+    message: str
+
+
+class ChatTypingEvent(ChatStreamBase):
+    type: Literal["typing"] = "typing"
+    active: bool
+
+
+class ChatProgressEvent(ChatStreamBase):
+    type: Literal["progress"] = "progress"
+    stage: str
+    label: str
+    current: int | None = Field(default=None, ge=0)
+    total: int | None = Field(default=None, ge=0)
+
+
+class ChatResponseEvent(ChatStreamBase):
+    type: Literal["response"] = "response"
+    delta: str
+
+
+class ChatComponentEvent(ChatStreamBase):
+    type: Literal["component"] = "component"
+    component: ResponseComponent
+
+
+class ChatWarningEvent(ChatStreamBase):
+    type: Literal["warning"] = "warning"
+    warning: CapabilityWarning
+
+
+class ChatCompleteEvent(ChatStreamBase):
+    type: Literal["complete"] = "complete"
+    turn: ChatTurn
+    message: ChatMessage
+
+
+class ChatErrorEvent(ChatStreamBase):
+    type: Literal["error"] = "error"
+    error: ApiErrorDetail
+
+
+ChatStreamEvent = Annotated[
+    ChatStatusEvent
+    | ChatTypingEvent
+    | ChatProgressEvent
+    | ChatResponseEvent
+    | ChatComponentEvent
+    | ChatWarningEvent
+    | ChatCompleteEvent
+    | ChatErrorEvent,
+    Field(discriminator="type"),
+]
+
+
 class EventEnvelope(ContractModel):
     event_id: UUID = Field(default_factory=uuid4)
     name: str
@@ -362,13 +559,6 @@ class EventEnvelope(ContractModel):
     producer: str
     payload: dict[str, JsonValue] = Field(default_factory=dict)
     attempt: int = Field(default=0, ge=0)
-
-
-class ApiErrorDetail(ContractModel):
-    code: str
-    message: str
-    retryable: bool = False
-    details: dict[str, JsonValue] = Field(default_factory=dict)
 
 
 class ApiErrorResponse(ContractModel):

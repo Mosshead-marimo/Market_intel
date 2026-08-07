@@ -95,6 +95,17 @@ class RedisStreamEventBus(EventBus):
         block_ms: int = 1_000,
     ) -> int:
         await self.ensure_group(group)
+        pending_messages: list[tuple[object, dict[object, object]]] = []
+        if hasattr(self.redis, "xautoclaim"):
+            claimed = await self.redis.xautoclaim(
+                self.stream,
+                group,
+                consumer,
+                min_idle_time=300_000,
+                start_id="0-0",
+                count=10,
+            )
+            pending_messages.extend(claimed[1])
         records = await self.redis.xreadgroup(
             group,
             consumer,
@@ -103,30 +114,37 @@ class RedisStreamEventBus(EventBus):
             block=block_ms,
         )
         processed = 0
-        for _, messages in records:
-            for message_id, fields in messages:
-                raw = fields.get(b"event") or fields.get("event")
-                if isinstance(raw, bytes):
-                    raw = raw.decode()
-                event = EventEnvelope.model_validate(json.loads(str(raw)))
-                try:
-                    for handler in tuple(self._handlers[event.name]):
-                        await handler(event)
-                except Exception as exc:
-                    retried = event.model_copy(update={"attempt": event.attempt + 1})
-                    if not is_retryable_error(exc) or retried.attempt >= self.max_attempts:
-                        await self.redis.xadd(
-                            self.dead_letter_stream,
-                            {
-                                "event": retried.model_dump_json(),
-                                "reason": type(exc).__name__,
-                            },
-                        )
-                    else:
-                        await self.publish(retried)
-                finally:
-                    await self.redis.xack(self.stream, group, message_id)
-                processed += 1
+        messages_to_process = pending_messages + [
+            message for _, messages in records for message in messages
+        ]
+        seen: set[str] = set()
+        for message_id, fields in messages_to_process:
+            identifier = message_id.decode() if isinstance(message_id, bytes) else str(message_id)
+            if identifier in seen:
+                continue
+            seen.add(identifier)
+            raw = fields.get(b"event") or fields.get("event")
+            if isinstance(raw, bytes):
+                raw = raw.decode()
+            event = EventEnvelope.model_validate(json.loads(str(raw)))
+            try:
+                for handler in tuple(self._handlers[event.name]):
+                    await handler(event)
+            except Exception as exc:
+                retried = event.model_copy(update={"attempt": event.attempt + 1})
+                if not is_retryable_error(exc) or retried.attempt >= self.max_attempts:
+                    await self.redis.xadd(
+                        self.dead_letter_stream,
+                        {
+                            "event": retried.model_dump_json(),
+                            "reason": type(exc).__name__,
+                        },
+                    )
+                else:
+                    await self.publish(retried)
+            finally:
+                await self.redis.xack(self.stream, group, message_id)
+            processed += 1
         return processed
 
     async def consume_forever(self, *, group: str, consumer: str) -> None:

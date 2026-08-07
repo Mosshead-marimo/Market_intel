@@ -71,3 +71,7 @@ A module may write only to its assigned schema. Cross-module access should use r
 ## Foundation Migration
 
 Revision `0001_platform_core` creates only `core` and `audit`. It includes chat/session records, workflow and capability runs, workflow step state, event-delivery idempotency records, and dead letters. No financial-domain schema is created. API routes use repository interfaces; SQLAlchemy models and sessions remain in the persistence adapter.
+
+Revision `0002_chat_runtime` adds ordered message state, rendered assistant responses, archive metadata, durable chat turns, one-active-turn enforcement, and the transactional chat outbox. PostgreSQL retains final history while Redis retains short-lived SSE replay data.
+
+Revision `0003_chat_worker_leases` adds attempt counters and renewable worker leases. An abandoned non-terminal turn becomes claimable after its lease expires, so Redis at-least-once delivery cannot leave a session permanently blocked.

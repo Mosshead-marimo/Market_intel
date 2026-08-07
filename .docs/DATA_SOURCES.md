@@ -1,56 +1,35 @@
-# Data Sources
+# Data Sources and Provider Ports
 
-## Principles
+## Boundaries
 
-- Use provider adapters.
-- Do not expose raw provider responses.
-- Every record must include provider and timestamp metadata.
-- Licensing and redistribution rules must be reviewed before production use.
-- Configure fallback providers where appropriate.
+- Capabilities and services call typed provider interfaces; they never call external APIs directly.
+- Vendor SDKs and HTTP clients are permitted only in module-local `providers/adapters` directories.
+- Adapters validate and normalize vendor payloads and perform no analysis, ranking, scoring, recommendation, or aggregation.
+- Raw provider responses never cross the adapter boundary.
+- Retrieved news and social content is always marked untrusted.
 
-## Source Categories
+## Interfaces
 
-- Market quotes
-- Historical prices
-- Corporate actions
-- Company fundamentals
-- Exchange announcements
-- Financial news
-- Public discussion
-- Economic data
-- Index and sector data
+- `MarketDataProvider`: instrument search, quotes, price history, and corporate actions.
+- `NewsProvider`: article search and full-document retrieval.
+- `SentimentProvider`: source mention collection and vendor-produced sentiment observations. TradeSentinel does not calculate sentiment in this layer.
+- `EconomicDataProvider`: economic-series search and dated observations.
+- `FundamentalsProvider`: company profiles, reported statements, and reported facts.
 
-## Market Data Interface
+Requests and results are immutable Pydantic contracts. Numeric market, economic, and fundamental values use `Decimal`; currency, unit, period, interval, exchange, and timestamps are explicit. Every returned record includes provider/source identity, observation and retrieval timestamps, timezone where relevant, license classification, and freshness.
 
-```python
-class MarketDataProvider:
-    async def search_instruments(self, query: str): ...
-    async def get_quote(self, instrument): ...
-    async def get_history(self, instrument, period, interval): ...
-    async def get_corporate_actions(self, instrument): ...
+## Configuration and Failover
+
+The following environment settings accept ordered JSON arrays of manifest provider names:
+
+```text
+TRADESENTINEL_MARKET_DATA_PROVIDERS=[]
+TRADESENTINEL_NEWS_PROVIDERS=[]
+TRADESENTINEL_SENTIMENT_PROVIDERS=[]
+TRADESENTINEL_ECONOMIC_DATA_PROVIDERS=[]
+TRADESENTINEL_FUNDAMENTALS_PROVIDERS=[]
 ```
 
-## News Interface
+Empty categories are valid until a capability requires that port. Unknown configured names and required-but-empty categories fail startup. Each adapter is attempted once. Availability, connection, timeout, and provider-rate-limit errors advance to the next configured name; permanent and invalid-output failures stop immediately.
 
-```python
-class NewsProvider:
-    async def search(self, instrument, start, end): ...
-    async def get_document(self, source_id: str): ...
-```
-
-## Sentiment Interface
-
-```python
-class SentimentSourceProvider:
-    async def collect_mentions(self, instrument, start, end): ...
-```
-
-## Required Metadata
-
-- Provider name
-- Original timestamp
-- Retrieval timestamp
-- Market timezone
-- Symbol and exchange
-- License or usage classification
-- Freshness status
+No production adapters or credentials are included in the foundation.

@@ -50,4 +50,4 @@
 
 ## Foundation Console
 
-The initial App Router application is a platform console rather than a market dashboard. It validates API responses with the shared contract package, displays readiness and registry discovery, executes `/ping`, and renders validated response components. API and SSE clients are isolated under `lib`; presentation components handle loading, empty, partial, stale, unsupported, and error states without trusting external shapes.
+The App Router application uses a ChatGPT-style shell with a responsive session sidebar, transcript, fixed composer, slash-command discovery, typing state, execution progress, reconnect state, and validated streamed response components. API access, session credentials, SSE parsing, replay deduplication, and stream reduction remain under `lib` outside presentation components.

@@ -112,3 +112,9 @@ The committed `packages/contracts/openapi.json` and generated TypeScript declara
 `ExecutionRequest` is a discriminated union with `command`, `intent`, `capability`, and `workflow` variants. Each resolves to an `ExecutionTarget` and produces one `ExecutionOutcome` containing the raw capability/workflow result plus a `RenderedResponse`.
 
 `RenderedResponse` contains deterministic plain text, ordered validated components, first-seen source deduplication, structured warnings, overall status, generation timestamp, run ID, and capability trace. `RetryPolicy` records bounded attempts, exponential delay, maximum delay, and jitter; additional attempts apply only to manifest-declared idempotent capabilities.
+
+## Chat Contracts
+
+`ChatSession`, `ChatMessage`, and `ChatTurn` are immutable records. Turns progress through `queued`, `planning`, `executing`, `rendering`, and a terminal `completed`, `partial`, or `failed` state. Assistant messages persist the complete `RenderedResponse`.
+
+`ChatStreamEvent` is a versioned discriminated union with request, session, turn, correlation, run, sequence, and event identifiers. Variants are `status`, `typing`, `progress`, `response`, `component`, `warning`, `complete`, and `error`.

@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 from pydantic import BaseModel
+from tradesentinel.container import build_container
 from tradesentinel.platform.capabilities import Capability, RegisteredCapability
 from tradesentinel.platform.commands import CommandParser
 from tradesentinel.platform.config import Settings
-from tradesentinel.platform.container import build_container
 from tradesentinel.platform.context import ExecutionContextManager
 from tradesentinel.platform.contracts import (
     CapabilityExecutionRequest,

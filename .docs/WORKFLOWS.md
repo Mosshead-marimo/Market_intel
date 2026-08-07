@@ -76,3 +76,5 @@ If public sentiment fails:
 Commands are parsed from manifest argument/option definitions. Natural-language requests use the injected intent resolver; the foundation resolver matches normalized manifest examples exactly. Direct capability and workflow requests bypass only target resolution, not permission checks, context scopes, retries, persistence, lifecycle events, or rendering.
 
 Retryable typed errors and built-in timeout/connection failures use bounded exponential backoff when the target is idempotent. Validation, permission, discovery, registry, cancellation, and permanent failures are never retried. Required workflow failures fail the run and skip dependents; optional failures preserve usable output and produce partial success.
+
+The conversation planner maps slash-prefixed input to command requests and other text to intent requests. Exact manifest intents precede the optional fallback. `conversation.mock` is a deterministic two-step reference workflow with no LLM or financial behavior.

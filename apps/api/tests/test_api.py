@@ -4,7 +4,7 @@ from httpx import AsyncClient
 async def test_platform_discovery_and_ping(client: AsyncClient) -> None:
     capabilities = await client.get("/api/v1/capabilities")
     assert capabilities.status_code == 200
-    assert capabilities.json()[0]["name"] == "system.ping"
+    assert "system.ping" in {item["name"] for item in capabilities.json()}
 
     response = await client.post("/api/v1/commands/execute", json={"command": "/ping"})
     assert response.status_code == 200

@@ -4,7 +4,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PATH="/app/.venv/bin:$PATH"
 RUN groupadd --system app && useradd --system --gid app --home /app app
 WORKDIR /app
 COPY --from=uv /uv /uvx /bin/
-COPY pyproject.toml uv.lock* ./
+COPY pyproject.toml uv.lock* alembic.ini ./
 COPY apps/api ./apps/api
 RUN uv sync --frozen --no-dev
 USER app

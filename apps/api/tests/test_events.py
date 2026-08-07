@@ -45,6 +45,20 @@ class FakeRedis:
         self.acknowledged.append(args)
 
 
+class FakeClaimingRedis(FakeRedis):
+    async def xautoclaim(self, *args: object, **kwargs: object):
+        del args, kwargs
+        return (
+            b"0-0",
+            [(b"0-1", {b"event": self.event.model_dump_json().encode()})],
+            [],
+        )
+
+    async def xreadgroup(self, *args: object, **kwargs: object):
+        del args, kwargs
+        return []
+
+
 async def test_redis_consumer_dead_letters_permanent_failures() -> None:
     context = ExecutionContext()
     event = EventEnvelope(
@@ -77,3 +91,21 @@ async def test_redis_consumer_requeues_transient_failures() -> None:
     await bus.consume_once(group="test", consumer="one", block_ms=0)
     assert redis.added[0][0] == "tradesentinel:events"
     assert '"attempt":1' in redis.added[0][1]["event"]
+
+
+async def test_redis_consumer_reclaims_and_acknowledges_stale_messages() -> None:
+    context = ExecutionContext()
+    event = EventEnvelope(
+        name="test.reclaimed", correlation_id=context.correlation_id, producer="test"
+    )
+    redis = FakeClaimingRedis(event)
+    bus = RedisStreamEventBus(cast(Any, redis))
+    received: list[str] = []
+
+    async def handler(received_event: EventEnvelope) -> None:
+        received.append(received_event.name)
+
+    bus.subscribe("test.reclaimed", handler)
+    assert await bus.consume_once(group="test", consumer="two", block_ms=0) == 1
+    assert received == ["test.reclaimed"]
+    assert redis.acknowledged[0][-1] == b"0-1"

@@ -30,6 +30,16 @@ class Settings(BaseSettings):
     )
     request_rate_limit: int = Field(default=120, ge=1)
     command_rate_limit: int = Field(default=30, ge=1)
+    chat_message_max_length: int = Field(default=20_000, ge=1, le=100_000)
+    chat_context_message_limit: int = Field(default=20, ge=1, le=200)
+    chat_event_retention_seconds: int = Field(default=86_400, ge=60)
+    anonymous_cookie_name: str = "tradesentinel_client_id"
+    cookie_secure: bool = False
+    market_data_providers: tuple[str, ...] = ()
+    news_providers: tuple[str, ...] = ()
+    sentiment_providers: tuple[str, ...] = ()
+    economic_data_providers: tuple[str, ...] = ()
+    fundamentals_providers: tuple[str, ...] = ()
 
     @model_validator(mode="after")
     def production_requires_external_infrastructure(self) -> Settings:

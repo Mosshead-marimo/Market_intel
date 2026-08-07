@@ -227,8 +227,151 @@ export const commandResponseSchema = z.object({
   response: renderedResponseSchema,
 });
 
+export const apiErrorDetailSchema = z.object({
+  code: z.string(),
+  message: z.string(),
+  retryable: z.boolean(),
+  details: z.record(z.unknown()),
+});
+
+export const chatSessionStatusSchema = z.enum(["active", "archived"]);
+export const chatTurnStatusSchema = z.enum([
+  "queued",
+  "planning",
+  "executing",
+  "rendering",
+  "completed",
+  "partial",
+  "failed",
+]);
+export const chatMessageStatusSchema = z.enum([
+  "accepted",
+  "streaming",
+  "completed",
+  "partial",
+  "failed",
+]);
+
+export const chatSessionSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  status: chatSessionStatusSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
+  archived_at: z.string().nullable().optional(),
+});
+
+export const chatMessageSchema = z.object({
+  id: z.string().uuid(),
+  session_id: z.string().uuid(),
+  turn_id: z.string().uuid(),
+  role: z.enum(["user", "assistant"]),
+  content: z.string(),
+  status: chatMessageStatusSchema,
+  response: renderedResponseSchema.nullable().optional(),
+  error: apiErrorDetailSchema.nullable().optional(),
+  created_at: z.string(),
+  completed_at: z.string().nullable().optional(),
+});
+
+export const chatTurnSchema = z.object({
+  id: z.string().uuid(),
+  session_id: z.string().uuid(),
+  client_message_id: z.string().uuid(),
+  user_message_id: z.string().uuid(),
+  assistant_message_id: z.string().uuid().nullable().optional(),
+  status: chatTurnStatusSchema,
+  request_id: z.string().uuid(),
+  correlation_id: z.string().uuid(),
+  run_id: z.string().uuid().nullable().optional(),
+  attempt: z.number().int().nonnegative(),
+  lease_expires_at: z.string().nullable().optional(),
+  error: apiErrorDetailSchema.nullable().optional(),
+  created_at: z.string(),
+  started_at: z.string().nullable().optional(),
+  completed_at: z.string().nullable().optional(),
+});
+
+export const chatSessionDetailSchema = z.object({
+  session: chatSessionSchema,
+  messages: z.array(chatMessageSchema),
+  active_turn: chatTurnSchema.nullable().optional(),
+});
+
+export const chatSessionPageSchema = z.object({
+  items: z.array(chatSessionSchema),
+  next_cursor: z.string().nullable().optional(),
+});
+
+export const chatTurnAcceptedSchema = z.object({
+  session_id: z.string().uuid(),
+  turn_id: z.string().uuid(),
+  user_message_id: z.string().uuid(),
+  status: chatTurnStatusSchema,
+  stream_url: z.string(),
+});
+
+const chatStreamBaseSchema = z.object({
+  version: z.string(),
+  event_id: z.string().uuid(),
+  sequence: z.number().int().positive(),
+  occurred_at: z.string(),
+  session_id: z.string().uuid(),
+  turn_id: z.string().uuid(),
+  request_id: z.string().uuid(),
+  correlation_id: z.string().uuid(),
+  run_id: z.string().uuid().nullable().optional(),
+});
+
+export const chatStreamEventSchema = z.discriminatedUnion("type", [
+  chatStreamBaseSchema.extend({
+    type: z.literal("status"),
+    status: chatTurnStatusSchema,
+    message: z.string(),
+  }),
+  chatStreamBaseSchema.extend({
+    type: z.literal("typing"),
+    active: z.boolean(),
+  }),
+  chatStreamBaseSchema.extend({
+    type: z.literal("progress"),
+    stage: z.string(),
+    label: z.string(),
+    current: z.number().int().nonnegative().nullable().optional(),
+    total: z.number().int().nonnegative().nullable().optional(),
+  }),
+  chatStreamBaseSchema.extend({
+    type: z.literal("response"),
+    delta: z.string(),
+  }),
+  chatStreamBaseSchema.extend({
+    type: z.literal("component"),
+    component: responseComponentSchema,
+  }),
+  chatStreamBaseSchema.extend({
+    type: z.literal("warning"),
+    warning: capabilityResultSchema.shape.warnings.element,
+  }),
+  chatStreamBaseSchema.extend({
+    type: z.literal("complete"),
+    turn: chatTurnSchema,
+    message: chatMessageSchema,
+  }),
+  chatStreamBaseSchema.extend({
+    type: z.literal("error"),
+    error: apiErrorDetailSchema,
+  }),
+]);
+
 export type ResponseComponent = z.infer<typeof responseComponentSchema>;
 export type CapabilityDescriptor = z.infer<typeof capabilityDescriptorSchema>;
 export type CommandDescriptor = z.infer<typeof commandDescriptorSchema>;
 export type Health = z.infer<typeof healthSchema>;
 export type CommandResponse = z.infer<typeof commandResponseSchema>;
+export type ChatSession = z.infer<typeof chatSessionSchema>;
+export type ChatMessage = z.infer<typeof chatMessageSchema>;
+export type ChatTurn = z.infer<typeof chatTurnSchema>;
+export type ChatSessionDetail = z.infer<typeof chatSessionDetailSchema>;
+export type ChatSessionPage = z.infer<typeof chatSessionPageSchema>;
+export type ChatTurnAccepted = z.infer<typeof chatTurnAcceptedSchema>;
+export type ChatStreamEvent = z.infer<typeof chatStreamEventSchema>;
