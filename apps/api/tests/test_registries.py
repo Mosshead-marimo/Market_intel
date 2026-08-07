@@ -2,11 +2,13 @@ from datetime import UTC, datetime
 
 import pytest
 from pydantic import BaseModel
-from tradesentinel.platform.capabilities import Capability
+from tradesentinel.platform.capabilities import Capability, RegisteredCapability
+from tradesentinel.platform.commands import CommandParser
 from tradesentinel.platform.contracts import (
     CapabilityDescriptor,
     CapabilityResult,
     ExecutionContext,
+    RetryPolicy,
     RunMetadata,
     RunStatus,
 )
@@ -37,23 +39,39 @@ class FakeCapability(Capability[EmptyInput]):
 
 def test_registry_rejects_duplicates() -> None:
     registry = CapabilityRegistry()
-    registry.register(FakeCapability("one"))
+    capability = FakeCapability("one")
+    registered = RegisteredCapability(capability.descriptor, capability, RetryPolicy())
+    registry.register(registered)
     with pytest.raises(RegistryError, match="duplicate"):
-        registry.register(FakeCapability("one"))
+        registry.register(registered)
 
 
 def test_registry_rejects_cycles() -> None:
     registry = CapabilityRegistry()
-    registry.register(FakeCapability("one", ("two",)))
-    registry.register(FakeCapability("two", ("one",)))
+    first = FakeCapability("one", ("two",))
+    second = FakeCapability("two", ("one",))
+    registry.register(RegisteredCapability(first.descriptor, first, RetryPolicy()))
+    registry.register(RegisteredCapability(second.descriptor, second, RetryPolicy()))
     with pytest.raises(RegistryError, match="cycle"):
         registry.validate()
 
 
 def test_command_parser_handles_options() -> None:
-    from tradesentinel.platform.contracts import CommandDescriptor
+    from tradesentinel.platform.contracts import (
+        CommandDescriptor,
+        CommandOption,
+        ExecutionTarget,
+        TargetKind,
+    )
 
     registry = CommandRegistry()
-    registry.register(CommandDescriptor(name="/ping", description="Ping", capability="system.ping"))
-    parsed = registry.parse("/ping --message hello")
-    assert parsed.options == {"message": "hello"}
+    registry.register(
+        CommandDescriptor(
+            name="/ping",
+            description="Ping",
+            target=ExecutionTarget(kind=TargetKind.CAPABILITY, name="system.ping"),
+            options=(CommandOption(name="message", destination="message"),),
+        )
+    )
+    parsed = CommandParser(registry).parse('/ping --message "hello world"')
+    assert parsed.payload == {"message": "hello world"}

@@ -9,6 +9,8 @@ async def test_platform_discovery_and_ping(client: AsyncClient) -> None:
     response = await client.post("/api/v1/commands/execute", json={"command": "/ping"})
     assert response.status_code == 200
     assert response.json()["result"]["data"]["reply"] == "pong"
+    assert response.json()["response"]["text"] == "TradeSentinel platform is responding."
+    assert response.json()["response"]["trace"] == ["system.ping"]
     assert response.headers["x-request-id"]
 
 

@@ -1,15 +1,41 @@
 name: platform.system
 version: 1.0.0
 description: Reports platform availability without domain logic
-entrypoint: tradesentinel.modules.system.plugin:create_plugin
 capabilities:
-  - system.ping
+  - name: system.ping
+    class_path: tradesentinel.modules.system.capability:SystemPingCapability
+    description: Checks that the capability runtime is available
+    provides:
+      - system_status
+    idempotent: true
 commands:
-  - /ping
+  - name: /ping
+    description: Check the TradeSentinel capability runtime
+    target:
+      kind: capability
+      name: system.ping
+    options:
+      - name: message
+        destination: message
+    examples:
+      - /ping
+      - /ping --message hello
 intents:
-  - system_health
-provides:
-  - system_status
-events_produces:
-  - system.ping.completed
-
+  - name: system_health
+    description: Check whether the platform capability runtime is available
+    examples:
+      - system health
+      - is the platform online
+    target:
+      kind: capability
+      name: system.ping
+workflows:
+  - name: system.health
+    version: 1.0.0
+    description: Runs the domain-neutral platform health capability
+    steps:
+      - id: ping
+        capability: system.ping
+events:
+  produces:
+    - system.ping.completed

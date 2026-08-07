@@ -116,7 +116,19 @@ export const capabilityDescriptorSchema = z.object({
 export const commandDescriptorSchema = z.object({
   name: z.string(),
   description: z.string(),
-  capability: z.string(),
+  target: z.object({
+    kind: z.enum(["capability", "workflow"]),
+    name: z.string(),
+  }),
+  arguments: z.array(z.object({ name: z.string(), required: z.boolean() })),
+  options: z.array(
+    z.object({
+      name: z.string(),
+      destination: z.string(),
+      flag: z.boolean(),
+      required: z.boolean(),
+    }),
+  ),
   examples: z.array(z.string()),
 });
 
@@ -160,9 +172,59 @@ export const capabilityResultSchema = z.object({
   metadata: z.record(z.unknown()),
 });
 
+export const workflowResultSchema = z.object({
+  workflow: z.string(),
+  run_id: z.string().uuid(),
+  status: z.enum([
+    "pending",
+    "running",
+    "completed",
+    "partial",
+    "failed",
+    "skipped",
+  ]),
+  steps: z.record(capabilityResultSchema),
+  warnings: z.array(
+    z.object({
+      code: z.string(),
+      message: z.string(),
+      retryable: z.boolean(),
+      details: z.record(z.unknown()),
+    }),
+  ),
+  started_at: z.string(),
+  completed_at: z.string(),
+});
+
+export const renderedResponseSchema = z.object({
+  status: z.enum([
+    "pending",
+    "running",
+    "completed",
+    "partial",
+    "failed",
+    "skipped",
+  ]),
+  text: z.string(),
+  components: z.array(responseComponentSchema),
+  sources: z.array(z.record(z.unknown())),
+  warnings: z.array(
+    z.object({
+      code: z.string(),
+      message: z.string(),
+      retryable: z.boolean(),
+      details: z.record(z.unknown()),
+    }),
+  ),
+  run_id: z.string().uuid().nullable().optional(),
+  generated_at: z.string(),
+  trace: z.array(z.string()),
+});
+
 export const commandResponseSchema = z.object({
   request_id: z.string().uuid(),
-  result: capabilityResultSchema,
+  result: z.union([capabilityResultSchema, workflowResultSchema]),
+  response: renderedResponseSchema,
 });
 
 export type ResponseComponent = z.infer<typeof responseComponentSchema>;

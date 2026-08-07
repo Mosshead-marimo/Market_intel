@@ -4,7 +4,11 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
-from tradesentinel.platform.contracts import CapabilityResult, WorkflowResult
+from tradesentinel.platform.contracts import (
+    CapabilityResult,
+    RenderedResponse,
+    WorkflowResult,
+)
 
 
 class CommandRequest(BaseModel):
@@ -22,13 +26,15 @@ class WorkflowRequest(BaseModel):
 class CommandResponse(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
     request_id: UUID
-    result: CapabilityResult
+    result: CapabilityResult | WorkflowResult
+    response: RenderedResponse
 
 
 class WorkflowResponse(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
     request_id: UUID
     result: WorkflowResult
+    response: RenderedResponse
 
 
 class RunSourcesResponse(BaseModel):

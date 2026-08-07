@@ -9,6 +9,8 @@ from collections.abc import Awaitable, Callable
 from redis.asyncio import Redis
 
 from tradesentinel.platform.contracts import EventEnvelope
+from tradesentinel.platform.errors import EventBusError
+from tradesentinel.platform.retry import is_retryable_error
 
 EventHandler = Callable[[EventEnvelope], Awaitable[None]]
 
@@ -29,6 +31,11 @@ class InMemoryEventBus(EventBus):
         self.events: list[EventEnvelope] = []
 
     def subscribe(self, event_name: str, handler: EventHandler) -> None:
+        if handler in self._handlers[event_name]:
+            raise EventBusError(
+                "EVENT_SUBSCRIPTION_DUPLICATE",
+                f"A handler is already subscribed to '{event_name}'.",
+            )
         self._handlers[event_name].append(handler)
 
     async def publish(self, event: EventEnvelope) -> str:
@@ -54,13 +61,23 @@ class RedisStreamEventBus(EventBus):
         self._handlers: dict[str, list[EventHandler]] = defaultdict(list)
 
     def subscribe(self, event_name: str, handler: EventHandler) -> None:
+        if handler in self._handlers[event_name]:
+            raise EventBusError(
+                "EVENT_SUBSCRIPTION_DUPLICATE",
+                f"A handler is already subscribed to '{event_name}'.",
+            )
         self._handlers[event_name].append(handler)
 
     async def publish(self, event: EventEnvelope) -> str:
-        identifier = await self.redis.xadd(
-            self.stream,
-            {"event": event.model_dump_json()},
-        )
+        try:
+            identifier = await self.redis.xadd(
+                self.stream,
+                {"event": event.model_dump_json()},
+            )
+        except Exception as exc:
+            raise EventBusError(
+                "EVENT_PUBLISH_FAILED", "The event could not be published.", retryable=True
+            ) from exc
         return identifier.decode() if isinstance(identifier, bytes) else str(identifier)
 
     async def ensure_group(self, group: str) -> None:
@@ -95,12 +112,15 @@ class RedisStreamEventBus(EventBus):
                 try:
                     for handler in tuple(self._handlers[event.name]):
                         await handler(event)
-                except Exception:
+                except Exception as exc:
                     retried = event.model_copy(update={"attempt": event.attempt + 1})
-                    if retried.attempt >= self.max_attempts:
+                    if not is_retryable_error(exc) or retried.attempt >= self.max_attempts:
                         await self.redis.xadd(
                             self.dead_letter_stream,
-                            {"event": retried.model_dump_json(), "reason": "handler_failure"},
+                            {
+                                "event": retried.model_dump_json(),
+                                "reason": type(exc).__name__,
+                            },
                         )
                     else:
                         await self.publish(retried)

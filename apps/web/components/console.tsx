@@ -165,7 +165,7 @@ export function PlatformConsole() {
               )}
               {result ? (
                 <div className="result-stack">
-                  {result.result.components.map((component) => (
+                  {result.response.components.map((component) => (
                     <ResponseComponentView
                       key={component.id}
                       value={component}
@@ -203,7 +203,7 @@ export function PlatformConsole() {
                   <div className="registry-item" key={item.name}>
                     <div>
                       <strong>{item.name}</strong>
-                      <small>{item.capability}</small>
+                      <small>{item.target.name}</small>
                     </div>
                     <code>active</code>
                   </div>

@@ -323,6 +323,11 @@ export interface components {
       dependencies: string[];
       /** Description */
       description: string;
+      /**
+       * Idempotent
+       * @default false
+       */
+      idempotent: boolean;
       /** Name */
       name: string;
       /**
@@ -425,7 +430,11 @@ export interface components {
        * Format: uuid
        */
       request_id: string;
-      result: components["schemas"]["CapabilityResult"];
+      response: components["schemas"]["RenderedResponse"];
+      /** Result */
+      result:
+        | components["schemas"]["CapabilityResult"]
+        | components["schemas"]["WorkflowResult"];
     };
     /** ComparisonTable */
     ComparisonTable: {
@@ -637,6 +646,51 @@ export interface components {
        */
       type: "price_chart";
     };
+    /** RenderedResponse */
+    RenderedResponse: {
+      /**
+       * Components
+       * @default []
+       */
+      components: (
+        | components["schemas"]["SummaryCard"]
+        | components["schemas"]["MetricGrid"]
+        | components["schemas"]["PriceChart"]
+        | components["schemas"]["SentimentChart"]
+        | components["schemas"]["NewsTimeline"]
+        | components["schemas"]["PredictionCard"]
+        | components["schemas"]["ScenarioTable"]
+        | components["schemas"]["ComparisonTable"]
+        | components["schemas"]["RiskCard"]
+        | components["schemas"]["SourceList"]
+        | components["schemas"]["WarningBanner"]
+      )[];
+      /**
+       * Generated At
+       * Format: date-time
+       */
+      generated_at: string;
+      /** Run Id */
+      run_id?: string | null;
+      /**
+       * Sources
+       * @default []
+       */
+      sources: components["schemas"]["EvidenceSource"][];
+      status: components["schemas"]["RunStatus"];
+      /** Text */
+      text: string;
+      /**
+       * Trace
+       * @default []
+       */
+      trace: string[];
+      /**
+       * Warnings
+       * @default []
+       */
+      warnings: components["schemas"]["CapabilityWarning"][];
+    };
     /** RiskCard */
     RiskCard: {
       /** Id */
@@ -672,6 +726,11 @@ export interface components {
     };
     /** RunMetadata */
     RunMetadata: {
+      /**
+       * Attempts
+       * @default 1
+       */
+      attempts: number;
       /** Completed At */
       completed_at?: string | null;
       /** Data Cutoff */
@@ -684,6 +743,8 @@ export interface components {
        * @enum {string}
        */
       freshness: "fresh" | "stale" | "unknown";
+      /** Run Id */
+      run_id?: string | null;
       /**
        * Started At
        * Format: date-time
@@ -868,6 +929,7 @@ export interface components {
        * Format: uuid
        */
       request_id: string;
+      response: components["schemas"]["RenderedResponse"];
       result: components["schemas"]["WorkflowResult"];
     };
     /** WorkflowResult */

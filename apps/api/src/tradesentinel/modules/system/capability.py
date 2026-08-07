@@ -4,7 +4,6 @@ from tradesentinel.modules.system.schemas import PingInput
 from tradesentinel.modules.system.service import SystemService
 from tradesentinel.platform.capabilities import Capability
 from tradesentinel.platform.contracts import (
-    CapabilityDescriptor,
     CapabilityResult,
     ExecutionContext,
     RunMetadata,
@@ -14,12 +13,6 @@ from tradesentinel.platform.contracts import (
 
 
 class SystemPingCapability(Capability[PingInput]):
-    descriptor = CapabilityDescriptor(
-        name="system.ping",
-        version="1.0.0",
-        description="Checks that the capability runtime is available.",
-        provides=("system_status",),
-    )
     input_model = PingInput
 
     def __init__(self, service: SystemService) -> None:
@@ -30,7 +23,7 @@ class SystemPingCapability(Capability[PingInput]):
         output = await self.service.ping(payload)
         completed = datetime.now(UTC)
         return CapabilityResult(
-            capability=self.descriptor.name,
+            capability="",
             status=RunStatus.COMPLETED,
             data=output.model_dump(mode="json"),
             summary="TradeSentinel platform is responding.",

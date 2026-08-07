@@ -1,51 +1,31 @@
 from __future__ import annotations
 
 import importlib
-from dataclasses import dataclass
+import inspect
 from pathlib import Path
-from typing import Any, Protocol, cast
+from typing import Any
 
-import yaml
-from pydantic import BaseModel, ConfigDict
-
-from tradesentinel.platform.capabilities import Capability
-from tradesentinel.platform.contracts import CommandDescriptor, WorkflowDefinition
-from tradesentinel.platform.errors import RegistryError
-from tradesentinel.platform.events import EventBus, EventHandler
-from tradesentinel.platform.registries import CapabilityRegistry, CommandRegistry, WorkflowRegistry
-
-
-class ModuleManifest(BaseModel):
-    model_config = ConfigDict(frozen=True, extra="forbid")
-    name: str
-    version: str
-    description: str
-    entrypoint: str
-    capabilities: tuple[str, ...]
-    commands: tuple[str, ...] = ()
-    intents: tuple[str, ...] = ()
-    dependencies: tuple[str, ...] = ()
-    provides: tuple[str, ...] = ()
-    events_consumes: tuple[str, ...] = ()
-    events_produces: tuple[str, ...] = ()
-
-
-@dataclass(frozen=True)
-class EventSubscription:
-    event_name: str
-    handler: EventHandler
-
-
-@dataclass(frozen=True)
-class ModuleRegistration:
-    capabilities: tuple[Capability[Any], ...]
-    commands: tuple[CommandDescriptor, ...] = ()
-    workflows: tuple[WorkflowDefinition, ...] = ()
-    subscriptions: tuple[EventSubscription, ...] = ()
-
-
-class ModuleFactory(Protocol):
-    def __call__(self) -> ModuleRegistration: ...
+from tradesentinel.platform.capabilities import Capability, RegisteredCapability
+from tradesentinel.platform.contracts import (
+    CapabilityDescriptor,
+    CapabilityExecutionRequest,
+    CommandDescriptor,
+    EventEnvelope,
+    ExecutionContext,
+    ExecutionTarget,
+    IntentDescriptor,
+    WorkflowExecutionRequest,
+)
+from tradesentinel.platform.dependencies import DependencyResolver
+from tradesentinel.platform.errors import DiscoveryError, RegistryError
+from tradesentinel.platform.events import EventBus
+from tradesentinel.platform.manifest import ManifestParser, ModuleManifest
+from tradesentinel.platform.registries import (
+    CapabilityRegistry,
+    CommandRegistry,
+    IntentRegistry,
+    WorkflowRegistry,
+)
 
 
 class ModuleLoader:
@@ -53,60 +33,147 @@ class ModuleLoader:
         self,
         capabilities: CapabilityRegistry,
         commands: CommandRegistry,
+        intents: IntentRegistry,
         workflows: WorkflowRegistry,
         events: EventBus,
+        resolver: DependencyResolver,
+        parser: ManifestParser | None = None,
     ) -> None:
         self.capabilities = capabilities
         self.commands = commands
+        self.intents = intents
         self.workflows = workflows
         self.events = events
-        self.loaded: list[ModuleManifest] = []
+        self.resolver = resolver
+        self.parser = parser or ManifestParser()
+        self.loaded: tuple[ModuleManifest, ...] = ()
 
     def discover(self, roots: tuple[Path, ...]) -> tuple[ModuleManifest, ...]:
-        manifests = sorted(path for root in roots for path in root.glob("*/manifest.yaml"))
-        parsed = [
-            ModuleManifest.model_validate(yaml.safe_load(path.read_text())) for path in manifests
-        ]
-        names = [manifest.name for manifest in parsed]
+        paths = sorted(
+            {path.resolve() for root in roots for path in root.resolve().rglob("manifest.yaml")},
+            key=lambda path: path.as_posix().casefold(),
+        )
+        manifests = tuple(self.parser.parse(path) for path in paths)
+        names = [manifest.name for manifest in manifests]
         if len(names) != len(set(names)):
             raise RegistryError("duplicate module names discovered")
-        return tuple(parsed)
+        return manifests
 
     def load(self, roots: tuple[Path, ...]) -> tuple[ModuleManifest, ...]:
         manifests = self.discover(roots)
-        registrations: list[tuple[ModuleManifest, ModuleRegistration]] = []
-        for manifest in manifests:
-            module_name, separator, attribute = manifest.entrypoint.partition(":")
-            if not separator:
-                raise RegistryError(f"invalid module entrypoint: {manifest.entrypoint}")
-            factory = cast(ModuleFactory, getattr(importlib.import_module(module_name), attribute))
-            registration = factory()
-            actual = {item.descriptor.name for item in registration.capabilities}
-            if actual != set(manifest.capabilities):
-                raise RegistryError(
-                    f"module {manifest.name} capability declarations do not match registration"
-                )
-            registrations.append((manifest, registration))
+        staged_capabilities = CapabilityRegistry()
+        staged_commands = CommandRegistry()
+        staged_intents = IntentRegistry()
+        staged_workflows = WorkflowRegistry(staged_capabilities)
 
-        capability_snapshot = self.capabilities.list()
-        command_snapshot = self.commands.list()
-        workflow_snapshot = self.workflows.list()
+        for manifest in manifests:
+            for capability_declaration in manifest.capabilities:
+                capability_class = self._import_capability(capability_declaration.class_path)
+                implementation = self.resolver.resolve(capability_class)
+                staged_capabilities.register(
+                    RegisteredCapability(
+                        descriptor=CapabilityDescriptor(
+                            name=capability_declaration.name,
+                            version=capability_declaration.version or manifest.version,
+                            description=capability_declaration.description,
+                            dependencies=capability_declaration.dependencies,
+                            permissions=capability_declaration.permissions,
+                            provides=capability_declaration.provides,
+                            idempotent=capability_declaration.idempotent,
+                        ),
+                        implementation=implementation,
+                        retry_policy=capability_declaration.retry,
+                    )
+                )
+        staged_capabilities.validate()
+
+        for manifest in manifests:
+            for command_declaration in manifest.commands:
+                self._validate_target(command_declaration.target, staged_capabilities)
+                staged_commands.register(
+                    CommandDescriptor(
+                        name=command_declaration.name,
+                        description=command_declaration.description,
+                        target=command_declaration.target,
+                        arguments=command_declaration.arguments,
+                        options=command_declaration.options,
+                        examples=command_declaration.examples,
+                    )
+                )
+            for intent_declaration in manifest.intents:
+                self._validate_target(intent_declaration.target, staged_capabilities)
+                staged_intents.register(IntentDescriptor(**intent_declaration.model_dump()))
+            for workflow in manifest.workflows:
+                staged_workflows.register(workflow)
+
+        for manifest in manifests:
+            for command in manifest.commands:
+                self._validate_final_target(command.target, staged_capabilities, staged_workflows)
+            for intent in manifest.intents:
+                self._validate_final_target(intent.target, staged_capabilities, staged_workflows)
+            for consumer in manifest.events.consumes:
+                self._validate_final_target(consumer.target, staged_capabilities, staged_workflows)
+
+        self.capabilities.restore(staged_capabilities.list())
+        self.commands.restore(staged_commands.list())
+        self.intents.restore(staged_intents.list())
+        self.workflows.restore(staged_workflows.list())
+        self.loaded = manifests
+        return manifests
+
+    def bind_event_consumers(self, pipeline: Any) -> None:
+        for manifest in self.loaded:
+            for consumer in manifest.events.consumes:
+                target = consumer.target
+
+                async def handler(event: EventEnvelope, target: ExecutionTarget = target) -> None:
+                    context = ExecutionContext(
+                        correlation_id=event.correlation_id,
+                        causation_id=event.event_id,
+                    )
+                    request = (
+                        CapabilityExecutionRequest(capability=target.name, payload=event.payload)
+                        if target.kind.value == "capability"
+                        else WorkflowExecutionRequest(workflow=target.name, payload=event.payload)
+                    )
+                    await pipeline.execute(request, context)
+
+                self.events.subscribe(consumer.name, handler)
+
+    @staticmethod
+    def _import_capability(class_path: str) -> type[Capability[Any]]:
+        module_name, separator, attribute = class_path.partition(":")
+        if not separator:
+            raise DiscoveryError("Capability class paths must use 'module:Class'.")
         try:
-            for _, registration in registrations:
-                for capability in registration.capabilities:
-                    self.capabilities.register(capability)
-                for command in registration.commands:
-                    self.commands.register(command)
-                for workflow in registration.workflows:
-                    self.workflows.register(workflow)
-            self.capabilities.validate()
-        except Exception:
-            self.capabilities.restore(capability_snapshot)
-            self.commands.restore(command_snapshot)
-            self.workflows.restore(workflow_snapshot)
-            raise
-        for manifest, registration in registrations:
-            for subscription in registration.subscriptions:
-                self.events.subscribe(subscription.event_name, subscription.handler)
-            self.loaded.append(manifest)
-        return tuple(self.loaded)
+            candidate = getattr(importlib.import_module(module_name), attribute)
+        except (ImportError, AttributeError) as exc:
+            raise DiscoveryError(
+                "A capability class could not be imported.", {"class_path": class_path}
+            ) from exc
+        if not inspect.isclass(candidate) or not issubclass(candidate, Capability):
+            raise DiscoveryError(
+                "A declared capability class does not implement Capability.",
+                {"class_path": class_path},
+            )
+        if inspect.isabstract(candidate):
+            raise DiscoveryError(
+                "A declared capability class is abstract.", {"class_path": class_path}
+            )
+        return candidate
+
+    @staticmethod
+    def _validate_target(target: ExecutionTarget, capabilities: CapabilityRegistry) -> None:
+        if target.kind.value == "capability":
+            capabilities.get(target.name)
+
+    @staticmethod
+    def _validate_final_target(
+        target: ExecutionTarget,
+        capabilities: CapabilityRegistry,
+        workflows: WorkflowRegistry,
+    ) -> None:
+        if target.kind.value == "capability":
+            capabilities.get(target.name)
+        else:
+            workflows.get(target.name)
