@@ -86,6 +86,7 @@ class ModuleManifest(ManifestModel):
     name: str
     version: str = Field(pattern=r"^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
     description: str
+    api_router: str | None = None
     capabilities: tuple[CapabilityManifest, ...] = Field(min_length=1)
     providers: tuple[ProviderManifest, ...] = ()
     commands: tuple[CommandManifest, ...] = ()

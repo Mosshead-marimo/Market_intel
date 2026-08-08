@@ -28,6 +28,7 @@ from tradesentinel.platform.intents import ExactExampleIntentResolver
 from tradesentinel.platform.modules import ModuleLoader
 from tradesentinel.platform.persistence import (
     InMemoryRunRepository,
+    PersistenceResources,
     RunRepository,
     SqlRunRepository,
     create_engine,
@@ -101,6 +102,10 @@ def build_container(settings: Settings) -> Container:
     dependency_resolver.register_instance(Settings, settings)
     dependency_resolver.register_instance(EventBus, events)
     dependency_resolver.register_instance(RateLimiter, rate_limiter)
+    dependency_resolver.register_instance(
+        PersistenceResources,
+        PersistenceResources(backend=settings.persistence_backend, sessions=session_factory),
+    )
     loader = ModuleLoader(capabilities, commands, intents, workflows, events, dependency_resolver)
     providers = ProviderRegistry()
     provider_factory = ProviderBootstrap(

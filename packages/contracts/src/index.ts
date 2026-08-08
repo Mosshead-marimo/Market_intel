@@ -363,6 +363,63 @@ export const chatStreamEventSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
+export const assetTypeSchema = z.enum([
+  "equity",
+  "etf",
+  "index",
+  "fund",
+  "currency",
+  "commodity",
+  "crypto",
+  "other",
+]);
+
+export const instrumentRefSchema = z.object({
+  instrument_id: z.string().uuid(),
+  symbol: z.string().min(1),
+  name: z.string().min(1),
+  exchange: z.string().min(1),
+  asset_type: assetTypeSchema,
+  currency: z.string().min(1),
+  aliases: z.array(z.string()),
+});
+
+export const instrumentMatchSchema = z.object({
+  instrument: instrumentRefSchema,
+  confidence: z.number().min(0).max(1),
+  matched_on: z.enum(["ticker", "name", "alias"]),
+  matched_value: z.string(),
+});
+
+export const instrumentSearchOutputSchema = z.object({
+  query: z.string(),
+  matches: z.array(instrumentMatchSchema),
+});
+
+export const instrumentAutocompleteOutputSchema = instrumentSearchOutputSchema;
+
+export const instrumentResolveOutputSchema = z
+  .object({
+    query: z.string(),
+    status: z.enum(["resolved", "ambiguous", "not_found"]),
+    match: instrumentMatchSchema.nullable().optional(),
+    candidates: z.array(instrumentMatchSchema),
+  })
+  .superRefine((value, context) => {
+    if (value.status === "resolved" && !value.match) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Resolved instruments require a match",
+      });
+    }
+    if (value.status === "ambiguous" && value.candidates.length < 2) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Ambiguous instruments require at least two candidates",
+      });
+    }
+  });
+
 export type ResponseComponent = z.infer<typeof responseComponentSchema>;
 export type CapabilityDescriptor = z.infer<typeof capabilityDescriptorSchema>;
 export type CommandDescriptor = z.infer<typeof commandDescriptorSchema>;
@@ -375,3 +432,15 @@ export type ChatSessionDetail = z.infer<typeof chatSessionDetailSchema>;
 export type ChatSessionPage = z.infer<typeof chatSessionPageSchema>;
 export type ChatTurnAccepted = z.infer<typeof chatTurnAcceptedSchema>;
 export type ChatStreamEvent = z.infer<typeof chatStreamEventSchema>;
+export type AssetType = z.infer<typeof assetTypeSchema>;
+export type InstrumentRef = z.infer<typeof instrumentRefSchema>;
+export type InstrumentMatch = z.infer<typeof instrumentMatchSchema>;
+export type InstrumentSearchOutput = z.infer<
+  typeof instrumentSearchOutputSchema
+>;
+export type InstrumentAutocompleteOutput = z.infer<
+  typeof instrumentAutocompleteOutputSchema
+>;
+export type InstrumentResolveOutput = z.infer<
+  typeof instrumentResolveOutputSchema
+>;

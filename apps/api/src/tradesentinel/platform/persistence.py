@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 from uuid import UUID
@@ -15,6 +16,13 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from tradesentinel.platform.contracts import CapabilityResult, WorkflowResult
+
+
+@dataclass(frozen=True)
+class PersistenceResources:
+    backend: str
+    sessions: async_sessionmaker[AsyncSession]
+
 
 NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",

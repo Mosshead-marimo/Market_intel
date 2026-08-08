@@ -1,6 +1,6 @@
 # TradeSentinel
 
-TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation and typed provider ports, but deliberately ships no market capability, live vendor adapter, instrument implementation, or prediction implementation.
+TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, and a deterministic canonical instrument-resolution module. It deliberately ships no quotes, market calculations, research, live vendor adapter, or prediction implementation.
 
 ## Foundation
 
@@ -31,6 +31,8 @@ pnpm dev
 The API is available at `http://localhost:8000`, its OpenAPI UI at `/docs`, and the ChatGPT-style conversation UI at `http://localhost:3000`. The default local configuration uses in-memory events and persistence; Docker enables PostgreSQL-backed sessions, Redis worker execution, and resumable per-turn SSE streams.
 
 Normal text uses the manifest-declared `conversation.mock` fallback workflow. `/echo "hello"` exercises command planning and `/ping` exercises the system capability. Replies are deterministic mocks; no LLM or market-research capability is installed.
+
+`/search "Tata Consultancy"` searches the representative 16-listing catalog. `/resolve TCS` returns typed cross-exchange ambiguity, while `/resolve TCS --exchange NSE` returns one canonical `InstrumentRef`. Match confidence is a deterministic text score, not a probability.
 
 Run the complete container stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start.
 
