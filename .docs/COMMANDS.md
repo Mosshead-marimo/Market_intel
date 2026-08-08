@@ -10,6 +10,22 @@ Natural-language requests must map to the same internal command handlers.
 
 ## Core Commands
 
+### `/search`
+
+Searches ticker, company-name, and alias fields using deterministic fuzzy matching.
+
+```text
+/search <query> --exchange NSE --asset-type equity --limit 20
+```
+
+### `/resolve`
+
+Returns one canonical instrument, typed ambiguity, or not-found status. Cross-listed instruments require an exchange when top scores are tied.
+
+```text
+/resolve <query> --exchange NSE --asset-type equity
+```
+
 ### `/analyze`
 
 Purpose: Complete stock overview.

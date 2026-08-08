@@ -149,6 +149,8 @@ providers:
 
 The class must implement the interface associated with its declared kind. Provider declarations are staged before capability construction, allowing a capability to request `MarketDataProvider`, `NewsProvider`, `SentimentProvider`, `EconomicDataProvider`, or `FundamentalsProvider` through its typed constructor. The module still requires at least one capability; provider-only modules are not features.
 
+Modules may declare `api_router: package.module:router`. The API adapter validates that the entrypoint exposes a FastAPI `APIRouter` and includes routers in deterministic manifest order. Routes remain thin and execute their own registered capabilities through the shared pipeline; the platform loader never imports FastAPI or feature routers.
+
 The manifest owns registration metadata. A capability class owns only its input model and async execution method. Annotated constructor dependencies are resolved from registered platform ports or recursively constructed module-private concrete services; unresolved, untyped, abstract, or cyclic dependencies fail startup.
 
 Discovery order is deterministic and registration is atomic. Commands, intents, workflows, and event consumers are generated from manifests after the complete capability graph validates. `platform.system` is the executable reference and contains no market logic.

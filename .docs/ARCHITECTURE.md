@@ -151,3 +151,9 @@ Per-turn Redis Streams retain typed status, typing, progress, response-delta, co
 Financially shaped provider ports live in `tradesentinel.providers`, beside rather than inside the domain-agnostic platform package. Module manifests may declare adapter class entrypoints; the provider bootstrap validates and stages these declarations before the ordinary capability loader constructs any capability. The application composition root is outside `platform` and is the only layer that joins provider selection to platform dependency injection.
 
 Each category is configured as an ordered provider-name chain. A typed facade applies provider-scoped rate limits and timeouts, validates normalized Pydantic output, emits correlation-safe structured logs, and advances only after retryable availability failures. Permanent, authentication, configuration, licensing, invalid-output, and cancellation failures never trigger fallback. Provider failover makes one call per adapter; capability retry remains the outer idempotency boundary.
+
+## Instrument Resolution
+
+Canonical instrument contracts live outside both platform and the feature module, allowing future modules to exchange stable UUID-backed `InstrumentRef` values without private imports. The instrument module owns its repository and `market` catalog tables. A domain-neutral persistence resource lets its concrete repository factory select PostgreSQL or memory without composition-root knowledge of the feature.
+
+Resolution normalizes text and applies fixed exact, prefix, and fuzzy similarity tiers. It surfaces tied cross-exchange matches as typed ambiguity rather than silently preferring an exchange. Module HTTP routers are optional manifest entrypoints loaded by a generic API adapter; the shared API and platform contain no instrument capability names.

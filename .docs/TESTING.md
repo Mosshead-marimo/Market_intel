@@ -59,3 +59,5 @@ Test:
 Chat coverage includes planner routing, fallback selection, bounded context, ownership, idempotency, active-turn enforcement, archive behavior, outbox delivery, stream ordering/replay, safe errors, reducer deduplication, typing/progress states, session restoration, and Docker execution through the Redis worker.
 
 Provider coverage validates all five interface mappings, strict normalized contracts, manifest class imports, class-kind compatibility, deterministic and duplicate-safe registration, configuration-only selection, dependency injection, atomic rollback, ordered fallback, timeouts, rate limits, exhaustion, permanent failures, invalid output, and cancellation. Architecture checks prevent external clients outside adapter directories and prevent provider-domain imports from entering the platform package.
+
+Instrument coverage validates Unicode normalization, exact/prefix/fuzzy score tiers, aliases, partial names, typo tolerance, stable ordering, exchange and asset filters, typed ambiguity, not-found results, memory/PostgreSQL seed parity, commands, automatic router discovery, HTTP contracts, and reversible migration behavior.

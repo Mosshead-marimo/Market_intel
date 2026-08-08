@@ -4,12 +4,17 @@
 
 ```json
 {
+  "instrument_id": "00000000-0000-4000-8000-000000000001",
   "symbol": "TCS",
+  "name": "Tata Consultancy Services Limited",
   "exchange": "NSE",
   "asset_type": "equity",
-  "currency": "INR"
+  "currency": "INR",
+  "aliases": ["Tata Consultancy Services", "Tata Consultancy"]
 }
 ```
+
+`InstrumentMatch` adds `confidence`, `matched_on`, and `matched_value`. Confidence is an auditable deterministic text-match score, never an LLM or prediction probability. `InstrumentResolveOutput` has a `resolved`, `ambiguous`, or `not_found` discriminator; ambiguous results include at least two ranked candidates and no selected match.
 
 ## EvidenceSource
 

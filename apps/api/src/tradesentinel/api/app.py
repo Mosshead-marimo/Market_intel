@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from starlette.responses import Response
 
 from tradesentinel import __version__
+from tradesentinel.api.module_routes import ModuleApiRouterLoader
 from tradesentinel.api.routes import router
 from tradesentinel.container import build_container
 from tradesentinel.platform.config import Settings, get_settings
@@ -95,6 +96,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return JSONResponse(status_code=exc.status_code, content=response.model_dump(mode="json"))
 
     app.include_router(router)
+    for module_router in ModuleApiRouterLoader().load(resolved.module_roots):
+        app.include_router(module_router)
     return app
 
 

@@ -75,3 +75,5 @@ Revision `0001_platform_core` creates only `core` and `audit`. It includes chat/
 Revision `0002_chat_runtime` adds ordered message state, rendered assistant responses, archive metadata, durable chat turns, one-active-turn enforcement, and the transactional chat outbox. PostgreSQL retains final history while Redis retains short-lived SSE replay data.
 
 Revision `0003_chat_worker_leases` adds attempt counters and renewable worker leases. An abandoned non-terminal turn becomes claimable after its lease expires, so Redis at-least-once delivery cannot leave a session permanently blocked.
+
+Revision `0004_instrument_catalog` creates the module-owned `market.exchanges`, `market.instruments`, and `market.instrument_aliases` tables with normalized lookup indexes and canonical uniqueness constraints. It seeds 16 explicitly labeled `builtin_seed_v1` equity listings across NSE, BSE, NASDAQ, and NYSE. The migration is reversible and removes only the instrument catalog schema it creates.

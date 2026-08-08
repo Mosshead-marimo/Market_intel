@@ -1,0 +1,61 @@
+name: instrument_resolution
+version: 1.0.0
+description: Resolves canonical instruments from a deterministic multi-exchange catalog
+api_router: tradesentinel.modules.instrument_resolution.api:router
+capabilities:
+  - name: instrument.resolve
+    class_path: tradesentinel.modules.instrument_resolution.capability:ResolveCapability
+    description: Resolves a query to one canonical instrument or typed ambiguity
+    provides:
+      - instrument_ref
+    idempotent: true
+  - name: instrument.search
+    class_path: tradesentinel.modules.instrument_resolution.capability:SearchCapability
+    description: Searches canonical instruments using deterministic fuzzy matching
+    provides:
+      - instrument_matches
+    idempotent: true
+  - name: instrument.autocomplete
+    class_path: tradesentinel.modules.instrument_resolution.capability:AutocompleteCapability
+    description: Returns deterministic ticker and name prefix matches
+    provides:
+      - instrument_suggestions
+    idempotent: true
+commands:
+  - name: /search
+    description: Search the canonical instrument catalog
+    target:
+      kind: capability
+      name: instrument.search
+    arguments:
+      - name: query
+    options:
+      - name: exchange
+        destination: exchange
+      - name: asset-type
+        destination: asset_type
+      - name: limit
+        destination: limit
+    examples:
+      - /search "Tata Consultancy"
+      - /search Apple --exchange NASDAQ
+  - name: /resolve
+    description: Resolve one canonical instrument or return exchange choices
+    target:
+      kind: capability
+      name: instrument.resolve
+    arguments:
+      - name: query
+    options:
+      - name: exchange
+        destination: exchange
+      - name: asset-type
+        destination: asset_type
+    examples:
+      - /resolve TCS --exchange NSE
+      - /resolve "Microsoft Corporation"
+events:
+  produces:
+    - instrument.resolved
+    - instrument.searched
+    - instrument.autocompleted

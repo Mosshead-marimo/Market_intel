@@ -296,11 +296,6 @@ async def chat_turn_events(
     )
 
 
-@router.get("/api/v1/instruments/search", tags=["future"])
-async def instrument_search() -> None:
-    unavailable("instrument.search")
-
-
 @router.get("/api/v1/instruments/{symbol}/quote", tags=["future"])
 async def instrument_quote(symbol: str) -> None:
     del symbol

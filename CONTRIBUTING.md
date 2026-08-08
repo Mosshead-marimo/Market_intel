@@ -1,5 +1,9 @@
 # Contributing
 
+Feature HTTP routes belong in the owning module and are exposed through the manifest `api_router` entrypoint. They must call the execution pipeline and must not access repositories or external clients directly. Shared API files must not contain feature capability names.
+
+Repository-backed modules should inject a concrete module-local factory from the generic `PersistenceResources`; composition-root conditionals for individual modules are prohibited.
+
 ## Workflow
 
 1. Select one roadmap task.

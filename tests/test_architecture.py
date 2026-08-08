@@ -49,3 +49,18 @@ def test_modules_keep_external_clients_inside_provider_adapters() -> None:
         ):
             relative_parts = path.relative_to(modules_root).parts
             assert "providers" in relative_parts and "adapters" in relative_parts, path
+
+
+def test_shared_api_does_not_hardcode_instrument_capabilities() -> None:
+    api_root = Path("apps/api/src/tradesentinel/api")
+    source = "\n".join(path.read_text(encoding="utf-8") for path in api_root.rglob("*.py"))
+    assert "instrument.search" not in source
+    assert "instrument.resolve" not in source
+    assert "instrument.autocomplete" not in source
+
+
+def test_instrument_routes_and_capabilities_do_not_access_database_directly() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/instrument_resolution")
+    for filename in ("api.py", "capability.py", "service.py"):
+        source = (module / filename).read_text(encoding="utf-8")
+        assert "sqlalchemy" not in source
