@@ -30,8 +30,10 @@ TRADESENTINEL_ECONOMIC_DATA_PROVIDERS=[]
 TRADESENTINEL_FUNDAMENTALS_PROVIDERS=[]
 ```
 
-Empty categories are valid until a capability requires that port. Unknown configured names and required-but-empty categories fail startup. Each adapter is attempted once. Availability, connection, timeout, and provider-rate-limit errors advance to the next configured name; permanent and invalid-output failures stop immediately.
+Empty categories receive a typed unavailable facade so modules remain discoverable and application startup succeeds. Invoking a capability that needs an empty category returns `PROVIDER_NOT_CONFIGURED` with HTTP 503. Unknown configured names still fail startup. Each configured adapter is attempted once. Availability, connection, timeout, and provider-rate-limit errors advance to the next configured name; permanent and invalid-output failures stop immediately.
 
-No production adapters or credentials are included. The installed market-data module requires a configured `MarketDataProvider`, so startup fails safely until an external adapter manifest is discovered and selected.
+No production adapters or credentials are included. Installed market-data and research modules are discoverable without adapters, but provider-backed executions fail safely with `PROVIDER_NOT_CONFIGURED` until external adapter manifests are discovered and selected.
+
+News document requests carry the provider that produced the search result. The facade routes the request only to that adapter, preventing provider-local source identifiers from being sent to another vendor. Research stores normalized metadata, hashes, and bounded evidence excerpts rather than unrestricted article bodies.
 
 Validated quote, history, and corporate-action responses are cached behind `CacheStore`. Default TTLs are 15 seconds, six hours, and 24 hours. Versioned cache keys include the normalized request and provider-chain fingerprint. Failures are never cached, invalid entries are evicted, and expired values are not served after provider failure.

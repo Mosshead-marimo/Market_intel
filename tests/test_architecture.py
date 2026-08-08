@@ -81,3 +81,22 @@ def test_stock_market_data_is_structured_and_provider_bound() -> None:
         assert not any(name in source for name in forbidden), path
     service = (module / "service.py").read_text(encoding="utf-8")
     assert "MarketDataProvider" in service
+
+
+def test_shared_api_does_not_hardcode_research_capabilities() -> None:
+    api_root = Path("apps/api/src/tradesentinel/api")
+    source = "\n".join(path.read_text(encoding="utf-8") for path in api_root.rglob("*.py"))
+    assert "research.news.search" not in source
+    assert "research.report" not in source
+
+
+def test_research_transport_and_logic_respect_boundaries() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/research")
+    for filename in ("api.py", "capability.py", "service.py"):
+        source = (module / filename).read_text(encoding="utf-8").casefold()
+        assert "sqlalchemy" not in source
+        assert "httpx" not in source
+        assert "requests" not in source
+        assert "openai" not in source
+        assert "anthropic" not in source
+    assert "NewsProvider" in (module / "service.py").read_text(encoding="utf-8")

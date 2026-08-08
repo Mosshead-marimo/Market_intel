@@ -414,6 +414,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/research/events/{event_id}/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Event Evidence */
+        get: operations["get_event_evidence_api_v1_research_events__event_id__evidence_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research/news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search News */
+        get: operations["search_news_api_v1_research_news_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Report */
+        post: operations["create_report_api_v1_research_reports_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/research/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Timeline */
+        post: operations["create_timeline_api_v1_research_timeline_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/runs/{run_id}": {
         parameters: {
             query?: never;
@@ -925,6 +993,11 @@ export interface components {
          */
         ComponentStatus: "ready" | "partial" | "empty" | "stale" | "error";
         /**
+         * ConfidenceBasis
+         * @enum {string}
+         */
+        ConfidenceBasis: "strong_title_phrase" | "title_rule" | "summary_rule" | "document_rule";
+        /**
          * CorporateActionType
          * @enum {string}
          */
@@ -942,6 +1015,18 @@ export interface components {
              * @enum {string}
              */
             status: "healthy" | "unhealthy" | "disabled";
+        };
+        /** DuplicateGroup */
+        DuplicateGroup: {
+            /** Duplicate Source Ids */
+            duplicate_source_ids: string[];
+            /**
+             * Reason
+             * @enum {string}
+             */
+            reason: "provider_source" | "canonical_url" | "document_hash" | "title_day";
+            /** Representative Source Id */
+            representative_source_id: string;
         };
         /** EvidenceSource */
         EvidenceSource: {
@@ -1132,6 +1217,24 @@ export interface components {
             /** Value */
             value: string;
         };
+        /** NewsSearchInput */
+        NewsSearchInput: {
+            /** End */
+            end?: string | null;
+            /** Limit */
+            limit?: number | null;
+            /** Query */
+            query: string;
+            /** Start */
+            start?: string | null;
+        };
+        /** NewsSearchOutput */
+        NewsSearchOutput: {
+            /** Query */
+            query: string;
+            /** Sources */
+            sources: components["schemas"]["ResearchSource"][];
+        };
         /** NewsTimeline */
         NewsTimeline: {
             /** Id */
@@ -1303,6 +1406,177 @@ export interface components {
              * @default []
              */
             warnings: components["schemas"]["CapabilityWarning"][];
+        };
+        /** ResearchClaim */
+        ResearchClaim: {
+            /**
+             * Claim Id
+             * Format: uuid
+             */
+            claim_id: string;
+            /** Confidence */
+            confidence: number;
+            confidence_basis: components["schemas"]["ConfidenceBasis"];
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            /** Evidence Excerpt */
+            evidence_excerpt: string;
+            /** Extraction Version */
+            extraction_version: string;
+            /** Provider */
+            provider: string;
+            source: components["schemas"]["ResearchSource"];
+            /** Text */
+            text: string;
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+            timestamp_basis: components["schemas"]["TimestampBasis"];
+        };
+        /** ResearchCoverage */
+        ResearchCoverage: {
+            /** Claim Count */
+            claim_count: number;
+            /** Document Failure Count */
+            document_failure_count: number;
+            /** Duplicate Count */
+            duplicate_count: number;
+            /** Event Count */
+            event_count: number;
+            /** Source Count */
+            source_count: number;
+            /** Unmatched Count */
+            unmatched_count: number;
+        };
+        /** ResearchEvent */
+        ResearchEvent: {
+            /** Claims */
+            claims: components["schemas"]["ResearchClaim"][];
+            /** Confidence */
+            confidence: number;
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            event_type: components["schemas"]["ResearchEventType"];
+            /** Extraction Version */
+            extraction_version: string;
+            /** Headline */
+            headline: string;
+            /**
+             * Observed At
+             * Format: date-time
+             */
+            observed_at: string;
+            /** Query */
+            query: string;
+            /** Source Ids */
+            source_ids: string[];
+            timestamp_basis: components["schemas"]["TimestampBasis"];
+        };
+        /**
+         * ResearchEventType
+         * @enum {string}
+         */
+        ResearchEventType: "earnings" | "guidance" | "dividend" | "merger_acquisition" | "leadership" | "product" | "partnership" | "financing" | "regulatory_legal" | "operations" | "other";
+        /** ResearchEvidenceOutput */
+        ResearchEvidenceOutput: {
+            /** Claims */
+            claims: components["schemas"]["ResearchClaim"][];
+            event: components["schemas"]["ResearchEvent"];
+            /** Sources */
+            sources: components["schemas"]["ResearchSource"][];
+        };
+        /** ResearchReportOutput */
+        ResearchReportOutput: {
+            coverage: components["schemas"]["ResearchCoverage"];
+            /** Duplicate Groups */
+            duplicate_groups: components["schemas"]["DuplicateGroup"][];
+            /** Events */
+            events: components["schemas"]["ResearchEvent"][];
+            /** Query */
+            query: string;
+            /** Sources */
+            sources: components["schemas"]["ResearchSource"][];
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "completed" | "partial" | "empty";
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /** ResearchSource */
+        ResearchSource: {
+            /** Document Hash */
+            document_hash?: string | null;
+            /**
+             * Freshness
+             * @default unknown
+             */
+            freshness: string;
+            /**
+             * License
+             * @default unknown
+             */
+            license: string;
+            /** Provider */
+            provider: string;
+            /** Provider Source Id */
+            provider_source_id: string;
+            /** Published At */
+            published_at?: string | null;
+            /**
+             * Retrieved At
+             * Format: date-time
+             */
+            retrieved_at: string;
+            /** Source Id */
+            source_id: string;
+            /** Summary */
+            summary?: string | null;
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+            timestamp_basis: components["schemas"]["TimestampBasis"];
+            /** Title */
+            title: string;
+            /**
+             * Untrusted
+             * @default true
+             * @constant
+             */
+            untrusted: true;
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+        };
+        /** ResearchTimelineInput */
+        ResearchTimelineInput: {
+            /** Events */
+            events: components["schemas"]["ResearchEvent"][];
+            /** Query */
+            query: string;
+        };
+        /** ResearchTimelineOutput */
+        ResearchTimelineOutput: {
+            /** Events */
+            events: components["schemas"]["ResearchEvent"][];
+            /** Query */
+            query: string;
         };
         /** RiskCard */
         RiskCard: {
@@ -1678,6 +1952,11 @@ export interface components {
             /** Source Id */
             source_id?: string | null;
         };
+        /**
+         * TimestampBasis
+         * @enum {string}
+         */
+        TimestampBasis: "published" | "retrieved";
         /** ValidationError */
         ValidationError: {
             /** Context */
@@ -2564,6 +2843,137 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_event_evidence_api_v1_research_events__event_id__evidence_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchEvidenceOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_news_api_v1_research_news_get: {
+        parameters: {
+            query: {
+                q: string;
+                start?: string | null;
+                end?: string | null;
+                limit?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsSearchOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_report_api_v1_research_reports_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NewsSearchInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchReportOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_timeline_api_v1_research_timeline_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResearchTimelineInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearchTimelineOutput"];
                 };
             };
             /** @description Validation Error */

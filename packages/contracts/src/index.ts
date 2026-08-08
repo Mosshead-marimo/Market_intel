@@ -555,6 +555,115 @@ export const benchmarkComparisonOutputSchema = z.object({
   excess_cagr: decimalSchema,
 });
 
+export const researchSourceSchema = z.object({
+  source_id: z.string().min(1),
+  provider_source_id: z.string().min(1),
+  provider: z.string().min(1),
+  title: z.string().min(1),
+  url: z.string().url(),
+  published_at: z.string().nullable().optional(),
+  retrieved_at: z.string(),
+  timestamp: z.string(),
+  timestamp_basis: z.enum(["published", "retrieved"]),
+  summary: z.string().nullable().optional(),
+  document_hash: z
+    .string()
+    .regex(/^[0-9a-f]{64}$/)
+    .nullable()
+    .optional(),
+  license: z.string(),
+  freshness: z.string(),
+  untrusted: z.literal(true),
+});
+
+export const researchClaimSchema = z.object({
+  claim_id: z.string().uuid(),
+  event_id: z.string().uuid(),
+  text: z.string().min(1),
+  source: researchSourceSchema,
+  provider: z.string().min(1),
+  timestamp: z.string(),
+  timestamp_basis: z.enum(["published", "retrieved"]),
+  confidence: z.number().min(0).max(1),
+  confidence_basis: z.enum([
+    "strong_title_phrase",
+    "title_rule",
+    "summary_rule",
+    "document_rule",
+  ]),
+  extraction_version: z.string().min(1),
+  evidence_excerpt: z.string().min(1),
+});
+
+export const researchEventSchema = z.object({
+  event_id: z.string().uuid(),
+  query: z.string(),
+  event_type: z.enum([
+    "earnings",
+    "guidance",
+    "dividend",
+    "merger_acquisition",
+    "leadership",
+    "product",
+    "partnership",
+    "financing",
+    "regulatory_legal",
+    "operations",
+    "other",
+  ]),
+  headline: z.string().min(1),
+  observed_at: z.string(),
+  timestamp_basis: z.enum(["published", "retrieved"]),
+  confidence: z.number().min(0).max(1),
+  extraction_version: z.string().min(1),
+  claims: z.array(researchClaimSchema).min(1),
+  source_ids: z.array(z.string()).min(1),
+});
+
+export const duplicateGroupSchema = z.object({
+  representative_source_id: z.string(),
+  duplicate_source_ids: z.array(z.string()),
+  reason: z.enum([
+    "provider_source",
+    "canonical_url",
+    "document_hash",
+    "title_day",
+  ]),
+});
+
+export const newsSearchOutputSchema = z.object({
+  query: z.string(),
+  sources: z.array(researchSourceSchema),
+});
+
+export const researchTimelineOutputSchema = z.object({
+  query: z.string(),
+  events: z.array(researchEventSchema),
+});
+
+export const researchEvidenceOutputSchema = z.object({
+  event: researchEventSchema,
+  sources: z.array(researchSourceSchema),
+  claims: z.array(researchClaimSchema),
+});
+
+export const researchReportOutputSchema = z.object({
+  query: z.string(),
+  status: z.enum(["completed", "partial", "empty"]),
+  coverage: z.object({
+    source_count: z.number().int().nonnegative(),
+    duplicate_count: z.number().int().nonnegative(),
+    event_count: z.number().int().nonnegative(),
+    claim_count: z.number().int().nonnegative(),
+    unmatched_count: z.number().int().nonnegative(),
+    document_failure_count: z.number().int().nonnegative(),
+  }),
+  events: z.array(researchEventSchema),
+  sources: z.array(researchSourceSchema),
+  duplicate_groups: z.array(duplicateGroupSchema),
+  warnings: z.array(z.string()),
+});
+
 export type ResponseComponent = z.infer<typeof responseComponentSchema>;
 export type CapabilityDescriptor = z.infer<typeof capabilityDescriptorSchema>;
 export type CommandDescriptor = z.infer<typeof commandDescriptorSchema>;
@@ -594,3 +703,14 @@ export type FiveYearPerformanceOutput = z.infer<
 export type BenchmarkComparisonOutput = z.infer<
   typeof benchmarkComparisonOutputSchema
 >;
+export type ResearchSource = z.infer<typeof researchSourceSchema>;
+export type ResearchClaim = z.infer<typeof researchClaimSchema>;
+export type ResearchEvent = z.infer<typeof researchEventSchema>;
+export type NewsSearchOutput = z.infer<typeof newsSearchOutputSchema>;
+export type ResearchTimelineOutput = z.infer<
+  typeof researchTimelineOutputSchema
+>;
+export type ResearchEvidenceOutput = z.infer<
+  typeof researchEvidenceOutputSchema
+>;
+export type ResearchReportOutput = z.infer<typeof researchReportOutputSchema>;

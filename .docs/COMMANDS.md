@@ -90,11 +90,11 @@ Compares an instrument with an explicitly named benchmark; no index is inferred.
 
 ### `/research`
 
-Builds a sourced company research report.
+Builds a structured, sourced evidence index for a free-text query without LLM prose.
 
 ### `/news`
 
-Returns recent relevant news and extracted events.
+Returns normalized news and deterministically extracted events. Optional `--start`, `--end`, and `--limit` values constrain provider search.
 
 ### `/public-sentiment`
 

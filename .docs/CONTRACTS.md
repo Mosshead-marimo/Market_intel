@@ -54,6 +54,12 @@ Market outputs use `Decimal`, canonical `InstrumentRef`, UTC timestamps, provide
 }
 ```
 
+## Research Evidence
+
+`ResearchEvent` uses a closed event taxonomy, an evidence timestamp with an explicit `published` or `retrieved` basis, extraction version, deterministic confidence, and at least one `ResearchClaim`. Every claim embeds its normalized source, provider, evidence timestamp, timestamp basis, confidence basis, extraction version, and bounded excerpt. Confidence describes rule-match strength and is not a truth probability.
+
+`ResearchReportOutput` is an evidence index containing coverage counts, duplicate groups, ordered events, claims, sources, and warnings. It never contains generated narrative analysis.
+
 ## SentimentSnapshot
 
 ```json

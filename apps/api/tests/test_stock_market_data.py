@@ -19,16 +19,13 @@ from tradesentinel.domain.market_data import (
     StockQuoteInput,
 )
 from tradesentinel.modules.instrument_resolution.seed import SEED_INSTRUMENTS
-from tradesentinel.modules.stock_market_data.capability import QuoteCapability
 from tradesentinel.modules.stock_market_data.errors import InsufficientHistoryError
 from tradesentinel.modules.stock_market_data.service import StockMarketDataService
 from tradesentinel.platform.cache import CacheStore, InMemoryCacheStore
 from tradesentinel.platform.config import Settings
 from tradesentinel.platform.contracts import ExecutionContext
-from tradesentinel.platform.dependencies import DependencyResolver
-from tradesentinel.platform.errors import DependencyResolutionError
 from tradesentinel.providers.contracts import MarketQuote, PriceBar, ProviderContext, QuoteRequest
-from tradesentinel.providers.errors import ProviderUnavailableError
+from tradesentinel.providers.errors import ProviderNotConfiguredError, ProviderUnavailableError
 
 
 def _instrument(symbol: str, exchange: str = "NSE") -> InstrumentRef:
@@ -194,12 +191,29 @@ async def test_five_year_leap_day_and_insufficient_history() -> None:
         StockMarketDataService._calculate((), MarketInterval.DAILY)
 
 
-def test_market_data_capability_requires_a_configured_provider() -> None:
-    resolver = DependencyResolver()
-    resolver.register_instance(CacheStore, InMemoryCacheStore())
-    resolver.register_instance(Settings, Settings())
-    with pytest.raises(DependencyResolutionError, match="MarketDataProvider"):
-        resolver.resolve(QuoteCapability)
+async def test_market_data_capability_is_discoverable_without_a_provider() -> None:
+    from tradesentinel.container import build_container
+    from tradesentinel.platform.contracts import CapabilityExecutionRequest
+
+    container = build_container(
+        Settings(
+            environment="test",
+            persistence_backend="memory",
+            event_backend="memory",
+            cache_backend="memory",
+        )
+    )
+    try:
+        assert container.capabilities.get("stock.quote")
+        with pytest.raises(ProviderNotConfiguredError):
+            await container.pipeline.execute(
+                CapabilityExecutionRequest(
+                    capability="stock.quote",
+                    payload={"instrument": _instrument("TCS").model_dump(mode="json")},
+                )
+            )
+    finally:
+        await container.close()
 
 
 async def test_manifest_registers_every_capability_command_and_route(client: AsyncClient) -> None:

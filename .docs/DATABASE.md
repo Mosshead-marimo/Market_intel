@@ -77,3 +77,5 @@ Revision `0002_chat_runtime` adds ordered message state, rendered assistant resp
 Revision `0003_chat_worker_leases` adds attempt counters and renewable worker leases. An abandoned non-terminal turn becomes claimable after its lease expires, so Redis at-least-once delivery cannot leave a session permanently blocked.
 
 Revision `0004_instrument_catalog` creates the module-owned `market.exchanges`, `market.instruments`, and `market.instrument_aliases` tables with normalized lookup indexes and canonical uniqueness constraints. It seeds 16 explicitly labeled `builtin_seed_v1` equity listings across NSE, BSE, NASDAQ, and NYSE. The migration is reversible and removes only the instrument catalog schema it creates.
+
+Revision `0005_research_events` creates module-owned `research.sources`, `research.documents`, `research.events`, `research.event_sources`, and `research.claims`. Deterministic identifiers and uniqueness constraints make extraction idempotent. Documents retain metadata and hashes, while claims retain bounded excerpts and complete source/provider/timestamp/confidence provenance.

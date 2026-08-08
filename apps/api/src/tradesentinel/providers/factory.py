@@ -44,6 +44,7 @@ from tradesentinel.providers.errors import (
     ProviderError,
     ProviderInvocationError,
     ProviderNotConfiguredError,
+    ProviderNotFoundError,
     ProviderOutputError,
     ProviderRateLimitedError,
     ProviderRegistryError,
@@ -81,8 +82,18 @@ class _ProviderChain:
         request: object,
         output: TypeAdapter[OutputT],
     ) -> OutputT:
+        if not self._providers:
+            raise ProviderNotConfiguredError(self._kind)
+        requested_provider = getattr(request, "provider", None)
+        providers = self._providers
+        if requested_provider is not None:
+            providers = tuple(
+                item for item in self._providers if item[0].name == requested_provider
+            )
+            if not providers:
+                raise ProviderNotFoundError(self._kind, requested_provider)
         attempted: list[str] = []
-        for descriptor, adapter in self._providers:
+        for descriptor, adapter in providers:
             attempted.append(descriptor.name)
             started = perf_counter()
             try:
@@ -261,6 +272,8 @@ class ProviderFactory:
         for kind in ProviderKind:
             names = selections.get(kind, ())
             if not names:
+                unavailable = CHAIN_BY_KIND[kind](kind, (), self.rate_limiter)
+                self.resolver.register_instance(INTERFACE_BY_KIND[kind], unavailable)
                 continue
             if len(names) != len(set(names)):
                 raise ProviderRegistryError(

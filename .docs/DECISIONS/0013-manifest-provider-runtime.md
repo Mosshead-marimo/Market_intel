@@ -1,5 +1,7 @@
 # ADR 0013: Manifest-Driven Provider Runtime
 
+> Amended by ADR 0016: empty provider categories now use lazy unavailable facades instead of failing module startup.
+
 ## Status
 
 Accepted

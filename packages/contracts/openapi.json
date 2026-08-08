@@ -1042,6 +1042,16 @@
         "title": "ComponentStatus",
         "type": "string"
       },
+      "ConfidenceBasis": {
+        "enum": [
+          "strong_title_phrase",
+          "title_rule",
+          "summary_rule",
+          "document_rule"
+        ],
+        "title": "ConfidenceBasis",
+        "type": "string"
+      },
       "CorporateActionType": {
         "enum": [
           "dividend",
@@ -1099,6 +1109,39 @@
           "status"
         ],
         "title": "DependencyHealth",
+        "type": "object"
+      },
+      "DuplicateGroup": {
+        "additionalProperties": false,
+        "properties": {
+          "duplicate_source_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Duplicate Source Ids",
+            "type": "array"
+          },
+          "reason": {
+            "enum": [
+              "provider_source",
+              "canonical_url",
+              "document_hash",
+              "title_day"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "representative_source_id": {
+            "title": "Representative Source Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "representative_source_id",
+          "duplicate_source_ids",
+          "reason"
+        ],
+        "title": "DuplicateGroup",
         "type": "object"
       },
       "EvidenceSource": {
@@ -1549,6 +1592,81 @@
         "title": "MetricItem",
         "type": "object"
       },
+      "NewsSearchInput": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit"
+          },
+          "query": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "NewsSearchInput",
+        "type": "object"
+      },
+      "NewsSearchOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchSource"
+            },
+            "title": "Sources",
+            "type": "array"
+          }
+        },
+        "required": [
+          "query",
+          "sources"
+        ],
+        "title": "NewsSearchOutput",
+        "type": "object"
+      },
       "NewsTimeline": {
         "additionalProperties": false,
         "properties": {
@@ -1992,6 +2110,451 @@
           "generated_at"
         ],
         "title": "RenderedResponse",
+        "type": "object"
+      },
+      "ResearchClaim": {
+        "additionalProperties": false,
+        "properties": {
+          "claim_id": {
+            "format": "uuid",
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "confidence": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "type": "number"
+          },
+          "confidence_basis": {
+            "$ref": "#/components/schemas/ConfidenceBasis"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "evidence_excerpt": {
+            "minLength": 1,
+            "title": "Evidence Excerpt",
+            "type": "string"
+          },
+          "extraction_version": {
+            "minLength": 1,
+            "title": "Extraction Version",
+            "type": "string"
+          },
+          "provider": {
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ResearchSource"
+          },
+          "text": {
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "timestamp_basis": {
+            "$ref": "#/components/schemas/TimestampBasis"
+          }
+        },
+        "required": [
+          "claim_id",
+          "event_id",
+          "text",
+          "source",
+          "provider",
+          "timestamp",
+          "timestamp_basis",
+          "confidence",
+          "confidence_basis",
+          "extraction_version",
+          "evidence_excerpt"
+        ],
+        "title": "ResearchClaim",
+        "type": "object"
+      },
+      "ResearchCoverage": {
+        "additionalProperties": false,
+        "properties": {
+          "claim_count": {
+            "minimum": 0.0,
+            "title": "Claim Count",
+            "type": "integer"
+          },
+          "document_failure_count": {
+            "minimum": 0.0,
+            "title": "Document Failure Count",
+            "type": "integer"
+          },
+          "duplicate_count": {
+            "minimum": 0.0,
+            "title": "Duplicate Count",
+            "type": "integer"
+          },
+          "event_count": {
+            "minimum": 0.0,
+            "title": "Event Count",
+            "type": "integer"
+          },
+          "source_count": {
+            "minimum": 0.0,
+            "title": "Source Count",
+            "type": "integer"
+          },
+          "unmatched_count": {
+            "minimum": 0.0,
+            "title": "Unmatched Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "source_count",
+          "duplicate_count",
+          "event_count",
+          "claim_count",
+          "unmatched_count",
+          "document_failure_count"
+        ],
+        "title": "ResearchCoverage",
+        "type": "object"
+      },
+      "ResearchEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "claims": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchClaim"
+            },
+            "minItems": 1,
+            "title": "Claims",
+            "type": "array"
+          },
+          "confidence": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "type": "number"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "event_type": {
+            "$ref": "#/components/schemas/ResearchEventType"
+          },
+          "extraction_version": {
+            "minLength": 1,
+            "title": "Extraction Version",
+            "type": "string"
+          },
+          "headline": {
+            "minLength": 1,
+            "title": "Headline",
+            "type": "string"
+          },
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "source_ids": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "timestamp_basis": {
+            "$ref": "#/components/schemas/TimestampBasis"
+          }
+        },
+        "required": [
+          "event_id",
+          "query",
+          "event_type",
+          "headline",
+          "observed_at",
+          "timestamp_basis",
+          "confidence",
+          "extraction_version",
+          "claims",
+          "source_ids"
+        ],
+        "title": "ResearchEvent",
+        "type": "object"
+      },
+      "ResearchEventType": {
+        "enum": [
+          "earnings",
+          "guidance",
+          "dividend",
+          "merger_acquisition",
+          "leadership",
+          "product",
+          "partnership",
+          "financing",
+          "regulatory_legal",
+          "operations",
+          "other"
+        ],
+        "title": "ResearchEventType",
+        "type": "string"
+      },
+      "ResearchEvidenceOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "claims": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchClaim"
+            },
+            "title": "Claims",
+            "type": "array"
+          },
+          "event": {
+            "$ref": "#/components/schemas/ResearchEvent"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchSource"
+            },
+            "title": "Sources",
+            "type": "array"
+          }
+        },
+        "required": [
+          "event",
+          "sources",
+          "claims"
+        ],
+        "title": "ResearchEvidenceOutput",
+        "type": "object"
+      },
+      "ResearchReportOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "coverage": {
+            "$ref": "#/components/schemas/ResearchCoverage"
+          },
+          "duplicate_groups": {
+            "items": {
+              "$ref": "#/components/schemas/DuplicateGroup"
+            },
+            "title": "Duplicate Groups",
+            "type": "array"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchSource"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "partial",
+              "empty"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "query",
+          "status",
+          "coverage",
+          "events",
+          "sources",
+          "duplicate_groups"
+        ],
+        "title": "ResearchReportOutput",
+        "type": "object"
+      },
+      "ResearchSource": {
+        "additionalProperties": false,
+        "properties": {
+          "document_hash": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Hash"
+          },
+          "freshness": {
+            "default": "unknown",
+            "title": "Freshness",
+            "type": "string"
+          },
+          "license": {
+            "default": "unknown",
+            "title": "License",
+            "type": "string"
+          },
+          "provider": {
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "provider_source_id": {
+            "minLength": 1,
+            "title": "Provider Source Id",
+            "type": "string"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "retrieved_at": {
+            "format": "date-time",
+            "title": "Retrieved At",
+            "type": "string"
+          },
+          "source_id": {
+            "minLength": 1,
+            "title": "Source Id",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "timestamp_basis": {
+            "$ref": "#/components/schemas/TimestampBasis"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "untrusted": {
+            "const": true,
+            "default": true,
+            "title": "Untrusted",
+            "type": "boolean"
+          },
+          "url": {
+            "format": "uri",
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "provider_source_id",
+          "provider",
+          "title",
+          "url",
+          "retrieved_at",
+          "timestamp",
+          "timestamp_basis"
+        ],
+        "title": "ResearchSource",
+        "type": "object"
+      },
+      "ResearchTimelineInput": {
+        "additionalProperties": false,
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "query": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query",
+          "events"
+        ],
+        "title": "ResearchTimelineInput",
+        "type": "object"
+      },
+      "ResearchTimelineOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query",
+          "events"
+        ],
+        "title": "ResearchTimelineOutput",
         "type": "object"
       },
       "RiskCard": {
@@ -2983,6 +3546,14 @@
         ],
         "title": "TimelineItem",
         "type": "object"
+      },
+      "TimestampBasis": {
+        "enum": [
+          "published",
+          "retrieved"
+        ],
+        "title": "TimestampBasis",
+        "type": "string"
       },
       "ValidationError": {
         "properties": {
@@ -4399,6 +4970,223 @@
         "summary": "Get Prediction Evaluation",
         "tags": [
           "future"
+        ]
+      }
+    },
+    "/api/v1/research/events/{event_id}/evidence": {
+      "get": {
+        "operationId": "get_event_evidence_api_v1_research_events__event_id__evidence_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchEvidenceOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Event Evidence",
+        "tags": [
+          "research"
+        ]
+      }
+    },
+    "/api/v1/research/news": {
+      "get": {
+        "operationId": "search_news_api_v1_research_news_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsSearchOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search News",
+        "tags": [
+          "research"
+        ]
+      }
+    },
+    "/api/v1/research/reports": {
+      "post": {
+        "operationId": "create_report_api_v1_research_reports_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewsSearchInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchReportOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Report",
+        "tags": [
+          "research"
+        ]
+      }
+    },
+    "/api/v1/research/timeline": {
+      "post": {
+        "operationId": "create_timeline_api_v1_research_timeline_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResearchTimelineInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchTimelineOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Timeline",
+        "tags": [
+          "research"
         ]
       }
     },

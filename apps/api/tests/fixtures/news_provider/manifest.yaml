@@ -1,0 +1,12 @@
+name: test.news_provider
+version: 1.0.0
+description: Deterministic news provider used only by tests
+capabilities:
+  - name: test.news_provider.anchor
+    class_path: tradesentinel.modules.system.capability:SystemPingCapability
+    description: Test provider module anchor
+providers:
+  - kind: news
+    name: fake_news
+    class_path: support.fake_news_provider:FakeNewsProvider
+    timeout_ms: 1000
