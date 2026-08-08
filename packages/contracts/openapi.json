@@ -1,6 +1,63 @@
 {
   "components": {
     "schemas": {
+      "AdjustedPriceBar": {
+        "additionalProperties": false,
+        "properties": {
+          "adjusted_close": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Adjusted Close",
+            "type": "string"
+          },
+          "close": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Close",
+            "type": "string"
+          },
+          "high": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "High",
+            "type": "string"
+          },
+          "low": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Low",
+            "type": "string"
+          },
+          "open": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Open",
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "volume": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Volume"
+          }
+        },
+        "required": [
+          "timestamp",
+          "open",
+          "high",
+          "low",
+          "close",
+          "adjusted_close"
+        ],
+        "title": "AdjustedPriceBar",
+        "type": "object"
+      },
       "ApiErrorDetail": {
         "additionalProperties": false,
         "properties": {
@@ -25,7 +82,10 @@
             "type": "boolean"
           }
         },
-        "required": ["code", "message"],
+        "required": [
+          "code",
+          "message"
+        ],
         "title": "ApiErrorDetail",
         "type": "object"
       },
@@ -42,6 +102,107 @@
         ],
         "title": "AssetType",
         "type": "string"
+      },
+      "BenchmarkComparisonInput": {
+        "additionalProperties": false,
+        "properties": {
+          "benchmark": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval",
+            "default": "1d"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "benchmark",
+          "start",
+          "end"
+        ],
+        "title": "BenchmarkComparisonInput",
+        "type": "object"
+      },
+      "BenchmarkComparisonOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "benchmark": {
+            "$ref": "#/components/schemas/StockComparisonItem"
+          },
+          "excess_cagr": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Excess Cagr",
+            "type": "string"
+          },
+          "excess_total_return": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Excess Total Return",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/StockComparisonItem"
+          },
+          "overlapping_observations": {
+            "minimum": 2.0,
+            "title": "Overlapping Observations",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "instrument",
+          "benchmark",
+          "overlapping_observations",
+          "excess_total_return",
+          "excess_cagr"
+        ],
+        "title": "BenchmarkComparisonOutput",
+        "type": "object"
+      },
+      "CacheDisposition": {
+        "enum": [
+          "hit",
+          "miss"
+        ],
+        "title": "CacheDisposition",
+        "type": "string"
+      },
+      "CacheMetadata": {
+        "additionalProperties": false,
+        "properties": {
+          "cached_at": {
+            "format": "date-time",
+            "title": "Cached At",
+            "type": "string"
+          },
+          "disposition": {
+            "$ref": "#/components/schemas/CacheDisposition"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "disposition",
+          "cached_at",
+          "expires_at"
+        ],
+        "title": "CacheMetadata",
+        "type": "object"
       },
       "CapabilityDescriptor": {
         "additionalProperties": false,
@@ -88,7 +249,11 @@
             "type": "string"
           }
         },
-        "required": ["name", "version", "description"],
+        "required": [
+          "name",
+          "version",
+          "description"
+        ],
         "title": "CapabilityDescriptor",
         "type": "object"
       },
@@ -198,7 +363,11 @@
             "type": "array"
           }
         },
-        "required": ["capability", "status", "metadata"],
+        "required": [
+          "capability",
+          "status",
+          "metadata"
+        ],
         "title": "CapabilityResult",
         "type": "object"
       },
@@ -226,7 +395,10 @@
             "type": "boolean"
           }
         },
-        "required": ["code", "message"],
+        "required": [
+          "code",
+          "message"
+        ],
         "title": "CapabilityWarning",
         "type": "object"
       },
@@ -243,7 +415,10 @@
             "type": "number"
           }
         },
-        "required": ["timestamp", "value"],
+        "required": [
+          "timestamp",
+          "value"
+        ],
         "title": "ChartPoint",
         "type": "object"
       },
@@ -262,7 +437,10 @@
             "type": "array"
           }
         },
-        "required": ["name", "points"],
+        "required": [
+          "name",
+          "points"
+        ],
         "title": "ChartSeries",
         "type": "object"
       },
@@ -345,7 +523,13 @@
         "type": "object"
       },
       "ChatMessageStatus": {
-        "enum": ["accepted", "streaming", "completed", "partial", "failed"],
+        "enum": [
+          "accepted",
+          "streaming",
+          "completed",
+          "partial",
+          "failed"
+        ],
         "title": "ChatMessageStatus",
         "type": "string"
       },
@@ -376,12 +560,18 @@
             "title": "Session Id"
           }
         },
-        "required": ["message", "client_message_id"],
+        "required": [
+          "message",
+          "client_message_id"
+        ],
         "title": "ChatRequest",
         "type": "object"
       },
       "ChatRole": {
-        "enum": ["user", "assistant"],
+        "enum": [
+          "user",
+          "assistant"
+        ],
         "title": "ChatRole",
         "type": "string"
       },
@@ -423,7 +613,13 @@
             "type": "string"
           }
         },
-        "required": ["id", "title", "status", "created_at", "updated_at"],
+        "required": [
+          "id",
+          "title",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
         "title": "ChatSession",
         "type": "object"
       },
@@ -466,7 +662,9 @@
             "$ref": "#/components/schemas/ChatSession"
           }
         },
-        "required": ["session"],
+        "required": [
+          "session"
+        ],
         "title": "ChatSessionDetail",
         "type": "object"
       },
@@ -497,7 +695,10 @@
         "type": "object"
       },
       "ChatSessionStatus": {
-        "enum": ["active", "archived"],
+        "enum": [
+          "active",
+          "archived"
+        ],
         "title": "ChatSessionStatus",
         "type": "string"
       },
@@ -734,7 +935,9 @@
             "title": "Session Id"
           }
         },
-        "required": ["command"],
+        "required": [
+          "command"
+        ],
         "title": "CommandRequest",
         "type": "object"
       },
@@ -761,7 +964,11 @@
             "title": "Result"
           }
         },
-        "required": ["request_id", "result", "response"],
+        "required": [
+          "request_id",
+          "result",
+          "response"
+        ],
         "title": "CommandResponse",
         "type": "object"
       },
@@ -816,13 +1023,35 @@
             "type": "string"
           }
         },
-        "required": ["id", "columns", "rows"],
+        "required": [
+          "id",
+          "columns",
+          "rows"
+        ],
         "title": "ComparisonTable",
         "type": "object"
       },
       "ComponentStatus": {
-        "enum": ["ready", "partial", "empty", "stale", "error"],
+        "enum": [
+          "ready",
+          "partial",
+          "empty",
+          "stale",
+          "error"
+        ],
         "title": "ComponentStatus",
+        "type": "string"
+      },
+      "CorporateActionType": {
+        "enum": [
+          "dividend",
+          "split",
+          "spinoff",
+          "merger",
+          "symbol_change",
+          "other"
+        ],
+        "title": "CorporateActionType",
         "type": "string"
       },
       "DependencyHealth": {
@@ -856,12 +1085,19 @@
             "type": "string"
           },
           "status": {
-            "enum": ["healthy", "unhealthy", "disabled"],
+            "enum": [
+              "healthy",
+              "unhealthy",
+              "disabled"
+            ],
             "title": "Status",
             "type": "string"
           }
         },
-        "required": ["name", "status"],
+        "required": [
+          "name",
+          "status"
+        ],
         "title": "DependencyHealth",
         "type": "object"
       },
@@ -932,6 +1168,58 @@
         "title": "EvidenceSource",
         "type": "object"
       },
+      "FiveYearPerformanceInput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "instrument"
+        ],
+        "title": "FiveYearPerformanceInput",
+        "type": "object"
+      },
+      "FiveYearPerformanceOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "effective_start": {
+            "format": "date-time",
+            "title": "Effective Start",
+            "type": "string"
+          },
+          "performance": {
+            "$ref": "#/components/schemas/StockPerformanceOutput"
+          },
+          "requested_as_of": {
+            "format": "date-time",
+            "title": "Requested As Of",
+            "type": "string"
+          }
+        },
+        "required": [
+          "requested_as_of",
+          "effective_start",
+          "performance"
+        ],
+        "title": "FiveYearPerformanceOutput",
+        "type": "object"
+      },
+      "FreshnessStatus": {
+        "enum": [
+          "fresh",
+          "stale",
+          "unknown"
+        ],
+        "title": "FreshnessStatus",
+        "type": "string"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -967,7 +1255,11 @@
             "type": "string"
           },
           "status": {
-            "enum": ["healthy", "degraded", "unhealthy"],
+            "enum": [
+              "healthy",
+              "degraded",
+              "unhealthy"
+            ],
             "title": "Status",
             "type": "string"
           },
@@ -976,7 +1268,11 @@
             "type": "string"
           }
         },
-        "required": ["version", "status", "checked_at"],
+        "required": [
+          "version",
+          "status",
+          "checked_at"
+        ],
         "title": "HealthResult",
         "type": "object"
       },
@@ -995,7 +1291,10 @@
             "type": "string"
           }
         },
-        "required": ["query", "matches"],
+        "required": [
+          "query",
+          "matches"
+        ],
         "title": "InstrumentAutocompleteOutput",
         "type": "object"
       },
@@ -1012,7 +1311,11 @@
             "$ref": "#/components/schemas/InstrumentRef"
           },
           "matched_on": {
-            "enum": ["ticker", "name", "alias"],
+            "enum": [
+              "ticker",
+              "name",
+              "alias"
+            ],
             "title": "Matched On",
             "type": "string"
           },
@@ -1021,7 +1324,12 @@
             "type": "string"
           }
         },
-        "required": ["instrument", "confidence", "matched_on", "matched_value"],
+        "required": [
+          "instrument",
+          "confidence",
+          "matched_on",
+          "matched_value"
+        ],
         "title": "InstrumentMatch",
         "type": "object"
       },
@@ -1102,12 +1410,19 @@
             "type": "string"
           },
           "status": {
-            "enum": ["resolved", "ambiguous", "not_found"],
+            "enum": [
+              "resolved",
+              "ambiguous",
+              "not_found"
+            ],
             "title": "Status",
             "type": "string"
           }
         },
-        "required": ["query", "status"],
+        "required": [
+          "query",
+          "status"
+        ],
         "title": "InstrumentResolveOutput",
         "type": "object"
       },
@@ -1126,11 +1441,33 @@
             "type": "string"
           }
         },
-        "required": ["query", "matches"],
+        "required": [
+          "query",
+          "matches"
+        ],
         "title": "InstrumentSearchOutput",
         "type": "object"
       },
       "JsonValue": {},
+      "LicenseClassification": {
+        "enum": [
+          "internal",
+          "redistributable",
+          "restricted",
+          "unknown"
+        ],
+        "title": "LicenseClassification",
+        "type": "string"
+      },
+      "MarketInterval": {
+        "enum": [
+          "1d",
+          "1wk",
+          "1mo"
+        ],
+        "title": "MarketInterval",
+        "type": "string"
+      },
       "MetricGrid": {
         "additionalProperties": false,
         "properties": {
@@ -1175,7 +1512,10 @@
             "type": "string"
           }
         },
-        "required": ["id", "metrics"],
+        "required": [
+          "id",
+          "metrics"
+        ],
         "title": "MetricGrid",
         "type": "object"
       },
@@ -1202,7 +1542,10 @@
             "type": "string"
           }
         },
-        "required": ["label", "value"],
+        "required": [
+          "label",
+          "value"
+        ],
         "title": "MetricItem",
         "type": "object"
       },
@@ -1250,8 +1593,74 @@
             "type": "string"
           }
         },
-        "required": ["id", "items"],
+        "required": [
+          "id",
+          "items"
+        ],
         "title": "NewsTimeline",
+        "type": "object"
+      },
+      "PerformanceMetrics": {
+        "additionalProperties": false,
+        "properties": {
+          "annualized_volatility": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Annualized Volatility",
+            "type": "string"
+          },
+          "cagr": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cagr",
+            "type": "string"
+          },
+          "end_at": {
+            "format": "date-time",
+            "title": "End At",
+            "type": "string"
+          },
+          "end_value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "End Value",
+            "type": "string"
+          },
+          "maximum_drawdown": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Maximum Drawdown",
+            "type": "string"
+          },
+          "observations": {
+            "minimum": 2.0,
+            "title": "Observations",
+            "type": "integer"
+          },
+          "start_at": {
+            "format": "date-time",
+            "title": "Start At",
+            "type": "string"
+          },
+          "start_value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Start Value",
+            "type": "string"
+          },
+          "total_return": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Total Return",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_at",
+          "end_at",
+          "start_value",
+          "end_value",
+          "observations",
+          "total_return",
+          "cagr",
+          "annualized_volatility",
+          "maximum_drawdown"
+        ],
+        "title": "PerformanceMetrics",
         "type": "object"
       },
       "PredictionCard": {
@@ -1269,7 +1678,12 @@
             "type": "string"
           },
           "direction": {
-            "enum": ["rise", "sideways", "decline", "uncertain"],
+            "enum": [
+              "rise",
+              "sideways",
+              "decline",
+              "uncertain"
+            ],
             "title": "Direction",
             "type": "string"
           },
@@ -1376,8 +1790,90 @@
             "type": "string"
           }
         },
-        "required": ["id", "series"],
+        "required": [
+          "id",
+          "series"
+        ],
         "title": "PriceChart",
+        "type": "object"
+      },
+      "ProviderMetadata": {
+        "additionalProperties": false,
+        "properties": {
+          "freshness": {
+            "$ref": "#/components/schemas/FreshnessStatus",
+            "default": "unknown"
+          },
+          "license": {
+            "$ref": "#/components/schemas/LicenseClassification",
+            "default": "unknown"
+          },
+          "observed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed At"
+          },
+          "provider": {
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "retrieved_at": {
+            "format": "date-time",
+            "title": "Retrieved At",
+            "type": "string"
+          },
+          "source_id": {
+            "minLength": 1,
+            "title": "Source Id",
+            "type": "string"
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timezone"
+          }
+        },
+        "required": [
+          "provider",
+          "source_id",
+          "retrieved_at"
+        ],
+        "title": "ProviderMetadata",
+        "type": "object"
+      },
+      "RebasedPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "value"
+        ],
+        "title": "RebasedPoint",
         "type": "object"
       },
       "RenderedResponse": {
@@ -1490,7 +1986,11 @@
             "type": "array"
           }
         },
-        "required": ["status", "text", "generated_at"],
+        "required": [
+          "status",
+          "text",
+          "generated_at"
+        ],
         "title": "RenderedResponse",
         "type": "object"
       },
@@ -1538,7 +2038,10 @@
             "type": "string"
           }
         },
-        "required": ["id", "risks"],
+        "required": [
+          "id",
+          "risks"
+        ],
         "title": "RiskCard",
         "type": "object"
       },
@@ -1554,12 +2057,21 @@
             "type": "string"
           },
           "severity": {
-            "enum": ["low", "medium", "high", "unknown"],
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "unknown"
+            ],
             "title": "Severity",
             "type": "string"
           }
         },
-        "required": ["label", "severity", "description"],
+        "required": [
+          "label",
+          "severity",
+          "description"
+        ],
         "title": "RiskItem",
         "type": "object"
       },
@@ -1610,7 +2122,11 @@
           },
           "freshness": {
             "default": "unknown",
-            "enum": ["fresh", "stale", "unknown"],
+            "enum": [
+              "fresh",
+              "stale",
+              "unknown"
+            ],
             "title": "Freshness",
             "type": "string"
           },
@@ -1632,7 +2148,9 @@
             "type": "string"
           }
         },
-        "required": ["started_at"],
+        "required": [
+          "started_at"
+        ],
         "title": "RunMetadata",
         "type": "object"
       },
@@ -1651,7 +2169,9 @@
             "type": "array"
           }
         },
-        "required": ["run_id"],
+        "required": [
+          "run_id"
+        ],
         "title": "RunSourcesResponse",
         "type": "object"
       },
@@ -1718,7 +2238,11 @@
             "type": "string"
           }
         },
-        "required": ["id", "columns", "rows"],
+        "required": [
+          "id",
+          "columns",
+          "rows"
+        ],
         "title": "ScenarioTable",
         "type": "object"
       },
@@ -1766,7 +2290,10 @@
             "type": "string"
           }
         },
-        "required": ["id", "series"],
+        "required": [
+          "id",
+          "series"
+        ],
         "title": "SentimentChart",
         "type": "object"
       },
@@ -1814,8 +2341,535 @@
             "type": "string"
           }
         },
-        "required": ["id", "sources"],
+        "required": [
+          "id",
+          "sources"
+        ],
         "title": "SourceList",
+        "type": "object"
+      },
+      "StockComparisonInput": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "instruments": {
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "maxItems": 10,
+            "minItems": 2,
+            "title": "Instruments",
+            "type": "array"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval",
+            "default": "1d"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instruments",
+          "start",
+          "end"
+        ],
+        "title": "StockComparisonInput",
+        "type": "object"
+      },
+      "StockComparisonItem": {
+        "additionalProperties": false,
+        "properties": {
+          "cache": {
+            "$ref": "#/components/schemas/CacheMetadata"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/PerformanceMetrics"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/RebasedPoint"
+            },
+            "title": "Series",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "currency",
+          "metrics",
+          "series",
+          "provider",
+          "cache"
+        ],
+        "title": "StockComparisonItem",
+        "type": "object"
+      },
+      "StockComparisonOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/StockComparisonItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "interval",
+          "items"
+        ],
+        "title": "StockComparisonOutput",
+        "type": "object"
+      },
+      "StockCorporateAction": {
+        "additionalProperties": false,
+        "properties": {
+          "action_type": {
+            "$ref": "#/components/schemas/CorporateActionType"
+          },
+          "amount": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "effective_at": {
+            "format": "date-time",
+            "title": "Effective At",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "ratio": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ratio"
+          }
+        },
+        "required": [
+          "instrument",
+          "action_type",
+          "effective_at",
+          "provider"
+        ],
+        "title": "StockCorporateAction",
+        "type": "object"
+      },
+      "StockCorporateActionsInput": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "start",
+          "end"
+        ],
+        "title": "StockCorporateActionsInput",
+        "type": "object"
+      },
+      "StockCorporateActionsOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/components/schemas/StockCorporateAction"
+            },
+            "title": "Actions",
+            "type": "array"
+          },
+          "cache": {
+            "$ref": "#/components/schemas/CacheMetadata"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "start",
+          "end",
+          "actions",
+          "provider",
+          "cache"
+        ],
+        "title": "StockCorporateActionsOutput",
+        "type": "object"
+      },
+      "StockHistoryInput": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval",
+            "default": "1d"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "start",
+          "end"
+        ],
+        "title": "StockHistoryInput",
+        "type": "object"
+      },
+      "StockHistoryOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "bars": {
+            "items": {
+              "$ref": "#/components/schemas/AdjustedPriceBar"
+            },
+            "title": "Bars",
+            "type": "array"
+          },
+          "cache": {
+            "$ref": "#/components/schemas/CacheMetadata"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "price_basis": {
+            "const": "adjusted",
+            "default": "adjusted",
+            "title": "Price Basis",
+            "type": "string"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "currency",
+          "bars",
+          "provider",
+          "cache"
+        ],
+        "title": "StockHistoryOutput",
+        "type": "object"
+      },
+      "StockPerformanceInput": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval",
+            "default": "1d"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "start",
+          "end"
+        ],
+        "title": "StockPerformanceInput",
+        "type": "object"
+      },
+      "StockPerformanceOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "cache": {
+            "$ref": "#/components/schemas/CacheMetadata"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/PerformanceMetrics"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/RebasedPoint"
+            },
+            "title": "Series",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "currency",
+          "metrics",
+          "series",
+          "provider",
+          "cache"
+        ],
+        "title": "StockPerformanceOutput",
+        "type": "object"
+      },
+      "StockQuoteInput": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "instrument"
+        ],
+        "title": "StockQuoteInput",
+        "type": "object"
+      },
+      "StockQuoteOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "cache": {
+            "$ref": "#/components/schemas/CacheMetadata"
+          },
+          "change": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change"
+          },
+          "change_percent": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Percent"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "high": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "High"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "low": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Low"
+          },
+          "market_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Market Status"
+          },
+          "open": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Open"
+          },
+          "previous_close": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous Close"
+          },
+          "price": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Price",
+            "type": "string"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "volume": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Volume"
+          }
+        },
+        "required": [
+          "instrument",
+          "price",
+          "currency",
+          "as_of",
+          "provider",
+          "cache"
+        ],
+        "title": "StockQuoteOutput",
         "type": "object"
       },
       "SummaryCard": {
@@ -1863,7 +2917,11 @@
             "type": "string"
           }
         },
-        "required": ["id", "heading", "body"],
+        "required": [
+          "id",
+          "heading",
+          "body"
+        ],
         "title": "SummaryCard",
         "type": "object"
       },
@@ -1878,7 +2936,9 @@
             "type": "array"
           }
         },
-        "required": ["cells"],
+        "required": [
+          "cells"
+        ],
         "title": "TableRow",
         "type": "object"
       },
@@ -1917,7 +2977,10 @@
             "title": "Source Id"
           }
         },
-        "required": ["occurred_at", "headline"],
+        "required": [
+          "occurred_at",
+          "headline"
+        ],
         "title": "TimelineItem",
         "type": "object"
       },
@@ -1953,7 +3016,11 @@
             "type": "string"
           }
         },
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError",
         "type": "object"
       },
@@ -2002,7 +3069,11 @@
             "type": "string"
           }
         },
-        "required": ["id", "code", "message"],
+        "required": [
+          "id",
+          "code",
+          "message"
+        ],
         "title": "WarningBanner",
         "type": "object"
       },
@@ -2047,7 +3118,11 @@
             "$ref": "#/components/schemas/WorkflowResult"
           }
         },
-        "required": ["request_id", "result", "response"],
+        "required": [
+          "request_id",
+          "result",
+          "response"
+        ],
         "title": "WorkflowResponse",
         "type": "object"
       },
@@ -2132,7 +3207,9 @@
           }
         },
         "summary": "List Capabilities",
-        "tags": ["registry"]
+        "tags": [
+          "registry"
+        ]
       }
     },
     "/api/v1/chat": {
@@ -2171,7 +3248,9 @@
           }
         },
         "summary": "Chat",
-        "tags": ["chat"]
+        "tags": [
+          "chat"
+        ]
       }
     },
     "/api/v1/chat/sessions": {
@@ -2238,7 +3317,9 @@
           }
         },
         "summary": "Chat Sessions",
-        "tags": ["chat"]
+        "tags": [
+          "chat"
+        ]
       },
       "post": {
         "operationId": "create_chat_session_api_v1_chat_sessions_post",
@@ -2275,7 +3356,9 @@
           }
         },
         "summary": "Create Chat Session",
-        "tags": ["chat"]
+        "tags": [
+          "chat"
+        ]
       }
     },
     "/api/v1/chat/sessions/{session_id}": {
@@ -2316,7 +3399,9 @@
           }
         },
         "summary": "Chat Session",
-        "tags": ["chat"]
+        "tags": [
+          "chat"
+        ]
       },
       "patch": {
         "operationId": "update_chat_session_api_v1_chat_sessions__session_id__patch",
@@ -2365,7 +3450,9 @@
           }
         },
         "summary": "Update Chat Session",
-        "tags": ["chat"]
+        "tags": [
+          "chat"
+        ]
       }
     },
     "/api/v1/chat/turns/{turn_id}": {
@@ -2406,7 +3493,9 @@
           }
         },
         "summary": "Get Chat Turn",
-        "tags": ["chat"]
+        "tags": [
+          "chat"
+        ]
       }
     },
     "/api/v1/chat/turns/{turn_id}/events": {
@@ -2445,7 +3534,9 @@
           }
         },
         "summary": "Chat Turn Events",
-        "tags": ["chat"]
+        "tags": [
+          "chat"
+        ]
       }
     },
     "/api/v1/commands": {
@@ -2471,7 +3562,9 @@
           }
         },
         "summary": "List Commands",
-        "tags": ["registry"]
+        "tags": [
+          "registry"
+        ]
       }
     },
     "/api/v1/commands/execute": {
@@ -2510,7 +3603,9 @@
           }
         },
         "summary": "Execute Command",
-        "tags": ["commands"]
+        "tags": [
+          "commands"
+        ]
       }
     },
     "/api/v1/events/stream": {
@@ -2527,7 +3622,9 @@
           }
         },
         "summary": "Event Stream",
-        "tags": ["events"]
+        "tags": [
+          "events"
+        ]
       }
     },
     "/api/v1/instruments/autocomplete": {
@@ -2609,7 +3706,9 @@
           }
         },
         "summary": "Autocomplete Instruments",
-        "tags": ["instruments"]
+        "tags": [
+          "instruments"
+        ]
       }
     },
     "/api/v1/instruments/resolve": {
@@ -2681,7 +3780,9 @@
           }
         },
         "summary": "Resolve Instrument",
-        "tags": ["instruments"]
+        "tags": [
+          "instruments"
+        ]
       }
     },
     "/api/v1/instruments/search": {
@@ -2763,12 +3864,14 @@
           }
         },
         "summary": "Search Instruments",
-        "tags": ["instruments"]
+        "tags": [
+          "instruments"
+        ]
       }
     },
     "/api/v1/instruments/{symbol}/history": {
       "get": {
-        "operationId": "instrument_history_api_v1_instruments__symbol__history_get",
+        "operationId": "history_by_symbol_api_v1_instruments__symbol__history_get",
         "parameters": [
           {
             "in": "path",
@@ -2778,13 +3881,60 @@
               "title": "Symbol",
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "title": "Start",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "title": "End",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "exchange",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Exchange"
+            }
+          },
+          {
+            "in": "query",
+            "name": "interval",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/MarketInterval",
+              "default": "1d"
+            }
           }
         ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/StockHistoryOutput"
+                }
               }
             },
             "description": "Successful Response"
@@ -2800,13 +3950,15 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Instrument History",
-        "tags": ["future"]
+        "summary": "History By Symbol",
+        "tags": [
+          "market-data"
+        ]
       }
     },
     "/api/v1/instruments/{symbol}/quote": {
       "get": {
-        "operationId": "instrument_quote_api_v1_instruments__symbol__quote_get",
+        "operationId": "quote_by_symbol_api_v1_instruments__symbol__quote_get",
         "parameters": [
           {
             "in": "path",
@@ -2816,13 +3968,31 @@
               "title": "Symbol",
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "exchange",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Exchange"
+            }
           }
         ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/StockQuoteOutput"
+                }
               }
             },
             "description": "Successful Response"
@@ -2838,8 +4008,297 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Instrument Quote",
-        "tags": ["future"]
+        "summary": "Quote By Symbol",
+        "tags": [
+          "market-data"
+        ]
+      }
+    },
+    "/api/v1/market-data/benchmark-comparison": {
+      "post": {
+        "operationId": "benchmark_comparison_api_v1_market_data_benchmark_comparison_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BenchmarkComparisonInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BenchmarkComparisonOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Benchmark Comparison",
+        "tags": [
+          "market-data"
+        ]
+      }
+    },
+    "/api/v1/market-data/comparison": {
+      "post": {
+        "operationId": "comparison_api_v1_market_data_comparison_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockComparisonInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockComparisonOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Comparison",
+        "tags": [
+          "market-data"
+        ]
+      }
+    },
+    "/api/v1/market-data/corporate-actions": {
+      "post": {
+        "operationId": "corporate_actions_api_v1_market_data_corporate_actions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockCorporateActionsInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockCorporateActionsOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Corporate Actions",
+        "tags": [
+          "market-data"
+        ]
+      }
+    },
+    "/api/v1/market-data/five-year-performance": {
+      "post": {
+        "operationId": "five_year_performance_api_v1_market_data_five_year_performance_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FiveYearPerformanceInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiveYearPerformanceOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Five Year Performance",
+        "tags": [
+          "market-data"
+        ]
+      }
+    },
+    "/api/v1/market-data/history": {
+      "post": {
+        "operationId": "history_api_v1_market_data_history_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockHistoryInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockHistoryOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "History",
+        "tags": [
+          "market-data"
+        ]
+      }
+    },
+    "/api/v1/market-data/performance": {
+      "post": {
+        "operationId": "performance_api_v1_market_data_performance_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockPerformanceInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockPerformanceOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Performance",
+        "tags": [
+          "market-data"
+        ]
+      }
+    },
+    "/api/v1/market-data/quote": {
+      "post": {
+        "operationId": "quote_api_v1_market_data_quote_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockQuoteInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockQuoteOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Quote",
+        "tags": [
+          "market-data"
+        ]
       }
     },
     "/api/v1/predictions": {
@@ -2856,7 +4315,9 @@
           }
         },
         "summary": "Create Prediction",
-        "tags": ["future"]
+        "tags": [
+          "future"
+        ]
       }
     },
     "/api/v1/predictions/{prediction_id}": {
@@ -2895,7 +4356,9 @@
           }
         },
         "summary": "Get Prediction",
-        "tags": ["future"]
+        "tags": [
+          "future"
+        ]
       }
     },
     "/api/v1/predictions/{prediction_id}/evaluation": {
@@ -2934,7 +4397,9 @@
           }
         },
         "summary": "Get Prediction Evaluation",
-        "tags": ["future"]
+        "tags": [
+          "future"
+        ]
       }
     },
     "/api/v1/runs/{run_id}": {
@@ -2975,7 +4440,9 @@
           }
         },
         "summary": "Get Run",
-        "tags": ["runs"]
+        "tags": [
+          "runs"
+        ]
       }
     },
     "/api/v1/runs/{run_id}/sources": {
@@ -3016,7 +4483,9 @@
           }
         },
         "summary": "Get Run Sources",
-        "tags": ["runs"]
+        "tags": [
+          "runs"
+        ]
       }
     },
     "/api/v1/workflows/{workflow_name}/execute": {
@@ -3066,7 +4535,9 @@
           }
         },
         "summary": "Execute Workflow",
-        "tags": ["workflows"]
+        "tags": [
+          "workflows"
+        ]
       }
     },
     "/health/live": {
@@ -3085,7 +4556,9 @@
           }
         },
         "summary": "Liveness",
-        "tags": ["health"]
+        "tags": [
+          "health"
+        ]
       }
     },
     "/health/ready": {
@@ -3104,7 +4577,9 @@
           }
         },
         "summary": "Readiness",
-        "tags": ["health"]
+        "tags": [
+          "health"
+        ]
       }
     }
   }

@@ -64,3 +64,20 @@ def test_instrument_routes_and_capabilities_do_not_access_database_directly() ->
     for filename in ("api.py", "capability.py", "service.py"):
         source = (module / filename).read_text(encoding="utf-8")
         assert "sqlalchemy" not in source
+
+
+def test_shared_api_does_not_hardcode_stock_market_capabilities() -> None:
+    api_root = Path("apps/api/src/tradesentinel/api")
+    source = "\n".join(path.read_text(encoding="utf-8") for path in api_root.rglob("*.py"))
+    assert "stock.quote" not in source
+    assert "stock_market_data" not in source
+
+
+def test_stock_market_data_is_structured_and_provider_bound() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/stock_market_data")
+    forbidden = ("httpx", "requests", "aiohttp", "openai", "anthropic", "sqlalchemy")
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8")
+        assert not any(name in source for name in forbidden), path
+    service = (module / "service.py").read_text(encoding="utf-8")
+    assert "MarketDataProvider" in service

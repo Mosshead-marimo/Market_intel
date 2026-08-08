@@ -16,6 +16,12 @@
 
 `InstrumentMatch` adds `confidence`, `matched_on`, and `matched_value`. Confidence is an auditable deterministic text-match score, never an LLM or prediction probability. `InstrumentResolveOutput` has a `resolved`, `ambiguous`, or `not_found` discriminator; ambiguous results include at least two ranked candidates and no selected match.
 
+## Structured Market Data
+
+Market outputs use `Decimal`, canonical `InstrumentRef`, UTC timestamps, provider metadata, explicit freshness, and cache provenance. History requires `adjusted_close` and declares `price_basis: adjusted`. Performance includes total return, CAGR, annualized log-return volatility, maximum drawdown, observation bounds, and rebased-to-100 series. These values are deterministic calculations, not probabilities or LLM output.
+
+`StockComparisonOutput` preserves input order for two to ten unique same-currency instruments. `BenchmarkComparisonOutput` records the explicit benchmark, overlapping observation count, and excess total return/CAGR. Corporate actions use a closed normalized type enum and retain provider metadata.
+
 ## EvidenceSource
 
 ```json

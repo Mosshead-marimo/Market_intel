@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from tradesentinel.providers.contracts import (
     CompanyProfile,
     CompanyProfileRequest,
-    CorporateAction,
+    CorporateActions,
     CorporateActionsRequest,
     EconomicObservationSeries,
     EconomicObservationsRequest,
@@ -48,7 +48,7 @@ class MarketDataProvider(ABC):
     @abstractmethod
     async def get_corporate_actions(
         self, context: ProviderContext, request: CorporateActionsRequest
-    ) -> tuple[CorporateAction, ...]: ...
+    ) -> CorporateActions: ...
 
 
 class NewsProvider(ABC):

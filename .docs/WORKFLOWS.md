@@ -78,3 +78,5 @@ Commands are parsed from manifest argument/option definitions. Natural-language 
 Retryable typed errors and built-in timeout/connection failures use bounded exponential backoff when the target is idempotent. Validation, permission, discovery, registry, cancellation, and permanent failures are never retried. Required workflow failures fail the run and skip dependents; optional failures preserve usable output and produce partial success.
 
 The conversation planner maps slash-prefixed input to command requests and other text to intent requests. Exact manifest intents precede the optional fallback. `conversation.mock` is a deterministic two-step reference workflow with no LLM or financial behavior.
+
+Workflow steps may declare `input_bindings`. Sources use `input.<path>` or `steps.<declared-dependency>.data.<path>`; optional missing sources are omitted and required missing sources raise `WORKFLOW_INPUT_BINDING_FAILED`. Bound steps receive only declared fields. Steps without bindings retain the original input-plus-dependencies behavior. Market-data command workflows use bindings to resolve canonical instruments before execution.

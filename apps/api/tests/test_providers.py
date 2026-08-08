@@ -30,7 +30,7 @@ from tradesentinel.platform.registries import (
     WorkflowRegistry,
 )
 from tradesentinel.providers.contracts import (
-    CorporateAction,
+    CorporateActions,
     CorporateActionsRequest,
     FreshnessStatus,
     InstrumentRecord,
@@ -108,9 +108,14 @@ class MarketAdapter(MarketDataProvider):
 
     async def get_corporate_actions(
         self, context: ProviderContext, request: CorporateActionsRequest
-    ) -> tuple[CorporateAction, ...]:
-        del context, request
-        return ()
+    ) -> CorporateActions:
+        del context
+        observed = datetime.now(UTC)
+        return CorporateActions(
+            instrument=request.instrument,
+            actions=(),
+            metadata=_metadata("market").model_copy(update={"observed_at": observed}),
+        )
 
 
 class UnavailableMarket(MarketAdapter):

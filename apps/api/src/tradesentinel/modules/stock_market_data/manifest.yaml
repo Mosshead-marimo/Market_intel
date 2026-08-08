@@ -1,0 +1,240 @@
+name: stock_market_data
+version: 1.0.0
+description: Structured provider-backed quotes, adjusted history, actions, and performance
+api_router: tradesentinel.modules.stock_market_data.api:router
+capabilities:
+  - name: stock.quote
+    class_path: tradesentinel.modules.stock_market_data.capability:QuoteCapability
+    description: Returns a validated current quote
+    provides: [stock_quote]
+    idempotent: true
+  - name: stock.history
+    class_path: tradesentinel.modules.stock_market_data.capability:HistoryCapability
+    description: Returns validated adjusted price history
+    provides: [stock_history]
+    idempotent: true
+  - name: stock.performance
+    class_path: tradesentinel.modules.stock_market_data.capability:PerformanceCapability
+    description: Calculates deterministic adjusted-price performance
+    provides: [stock_performance]
+    idempotent: true
+  - name: stock.comparison
+    class_path: tradesentinel.modules.stock_market_data.capability:ComparisonCapability
+    description: Compares adjusted-price performance for two to ten instruments
+    provides: [stock_comparison]
+    idempotent: true
+  - name: stock.corporate_actions
+    class_path: tradesentinel.modules.stock_market_data.capability:CorporateActionsCapability
+    description: Returns normalized corporate actions
+    provides: [stock_corporate_actions]
+    idempotent: true
+  - name: stock.performance.five_year
+    class_path: tradesentinel.modules.stock_market_data.capability:FiveYearPerformanceCapability
+    description: Calculates five calendar years of adjusted-price performance
+    provides: [stock_five_year_performance]
+    idempotent: true
+  - name: stock.benchmark.comparison
+    class_path: tradesentinel.modules.stock_market_data.capability:BenchmarkComparisonCapability
+    description: Compares an instrument with an explicitly selected benchmark
+    provides: [stock_benchmark_comparison]
+    idempotent: true
+commands:
+  - name: /quote
+    description: Return a current structured quote
+    target: {kind: workflow, name: stock.quote.request}
+    arguments: [{name: query}]
+    options:
+      - {name: exchange, destination: exchange}
+    examples: [/quote TCS --exchange NSE]
+  - name: /history
+    description: Return adjusted history for an explicit period
+    target: {kind: workflow, name: stock.history.request}
+    arguments: [{name: query}, {name: start}, {name: end}]
+    options:
+      - {name: exchange, destination: exchange}
+      - {name: interval, destination: interval}
+    examples: [/history TCS 2025-01-01T00:00:00Z 2026-01-01T00:00:00Z --exchange NSE]
+  - name: /performance
+    description: Calculate adjusted-price performance for an explicit period
+    target: {kind: workflow, name: stock.performance.request}
+    arguments: [{name: query}, {name: start}, {name: end}]
+    options:
+      - {name: exchange, destination: exchange}
+      - {name: interval, destination: interval}
+    examples: [/performance TCS 2025-01-01T00:00:00Z 2026-01-01T00:00:00Z --exchange NSE]
+  - name: /compare
+    description: Compare two instruments over an explicit period
+    target: {kind: workflow, name: stock.comparison.request}
+    arguments:
+      - {name: query}
+      - {name: comparison}
+      - {name: start}
+      - {name: end}
+    options:
+      - {name: exchange, destination: exchange}
+      - {name: comparison-exchange, destination: comparison_exchange}
+      - {name: interval, destination: interval}
+    examples: [/compare TCS INFY 2025-01-01T00:00:00Z 2026-01-01T00:00:00Z --exchange NSE --comparison-exchange NSE]
+  - name: /corporate-actions
+    description: Return corporate actions for an explicit period
+    target: {kind: workflow, name: stock.corporate_actions.request}
+    arguments: [{name: query}, {name: start}, {name: end}]
+    options:
+      - {name: exchange, destination: exchange}
+    examples: [/corporate-actions TCS 2025-01-01T00:00:00Z 2026-01-01T00:00:00Z --exchange NSE]
+  - name: /five-year-performance
+    description: Calculate five calendar years of adjusted performance
+    target: {kind: workflow, name: stock.performance.five_year.request}
+    arguments: [{name: query}]
+    options:
+      - {name: exchange, destination: exchange}
+      - {name: as-of, destination: as_of}
+    examples: [/five-year-performance TCS --exchange NSE]
+  - name: /benchmark-compare
+    description: Compare an instrument with an explicit benchmark
+    target: {kind: workflow, name: stock.benchmark.comparison.request}
+    arguments:
+      - {name: query}
+      - {name: benchmark}
+      - {name: start}
+      - {name: end}
+    options:
+      - {name: exchange, destination: exchange}
+      - {name: benchmark-exchange, destination: benchmark_exchange}
+      - {name: interval, destination: interval}
+    examples: [/benchmark-compare TCS NIFTY 2025-01-01T00:00:00Z 2026-01-01T00:00:00Z --exchange NSE --benchmark-exchange NSE]
+workflows:
+  - name: stock.quote.request
+    version: 1.0.0
+    description: Resolve an instrument and return its quote
+    steps:
+      - id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: quote
+        capability: stock.quote
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+  - name: stock.history.request
+    version: 1.0.0
+    description: Resolve an instrument and return adjusted history
+    steps:
+      - id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: history
+        capability: stock.history
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          start: {source: input.start}
+          end: {source: input.end}
+          interval: {source: input.interval, required: false}
+  - name: stock.performance.request
+    version: 1.0.0
+    description: Resolve an instrument and calculate adjusted performance
+    steps:
+      - id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: performance
+        capability: stock.performance
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          start: {source: input.start}
+          end: {source: input.end}
+          interval: {source: input.interval, required: false}
+  - name: stock.comparison.request
+    version: 1.0.0
+    description: Resolve and compare two instruments
+    steps:
+      - id: resolve_primary
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: resolve_comparison
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.comparison}
+          exchange: {source: input.comparison_exchange, required: false}
+      - id: comparison
+        capability: stock.comparison
+        depends_on: [resolve_primary, resolve_comparison]
+        input_bindings:
+          instruments.0: {source: steps.resolve_primary.data.match.instrument}
+          instruments.1: {source: steps.resolve_comparison.data.match.instrument}
+          start: {source: input.start}
+          end: {source: input.end}
+          interval: {source: input.interval, required: false}
+  - name: stock.corporate_actions.request
+    version: 1.0.0
+    description: Resolve an instrument and return corporate actions
+    steps:
+      - id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: corporate_actions
+        capability: stock.corporate_actions
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          start: {source: input.start}
+          end: {source: input.end}
+  - name: stock.performance.five_year.request
+    version: 1.0.0
+    description: Resolve an instrument and calculate five-year performance
+    steps:
+      - id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: five_year_performance
+        capability: stock.performance.five_year
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          as_of: {source: input.as_of, required: false}
+  - name: stock.benchmark.comparison.request
+    version: 1.0.0
+    description: Resolve an instrument and explicit benchmark and compare them
+    steps:
+      - id: resolve_instrument
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: resolve_benchmark
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.benchmark}
+          exchange: {source: input.benchmark_exchange, required: false}
+      - id: benchmark_comparison
+        capability: stock.benchmark.comparison
+        depends_on: [resolve_instrument, resolve_benchmark]
+        input_bindings:
+          instrument: {source: steps.resolve_instrument.data.match.instrument}
+          benchmark: {source: steps.resolve_benchmark.data.match.instrument}
+          start: {source: input.start}
+          end: {source: input.end}
+          interval: {source: input.interval, required: false}
+events:
+  produces:
+    - stock.quote.completed
+    - stock.history.completed
+    - stock.performance.completed
+    - stock.comparison.completed
+    - stock.corporate_actions.completed
+    - stock.performance.five_year.completed
+    - stock.benchmark.comparison.completed

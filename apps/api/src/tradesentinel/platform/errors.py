@@ -99,6 +99,15 @@ class WorkflowCompilationError(DomainError):
         super().__init__("WORKFLOW_INVALID", message, status_code=500)
 
 
+class WorkflowInputBindingError(DomainError):
+    def __init__(self, step: str, destination: str, source: str) -> None:
+        super().__init__(
+            "WORKFLOW_INPUT_BINDING_FAILED",
+            "A workflow step input could not be resolved.",
+            details={"step": step, "destination": destination, "source": source},
+        )
+
+
 class RetryExhaustedError(DomainError):
     def __init__(self, attempts: int, last_error: Exception) -> None:
         super().__init__(

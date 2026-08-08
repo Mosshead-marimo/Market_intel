@@ -296,18 +296,6 @@ async def chat_turn_events(
     )
 
 
-@router.get("/api/v1/instruments/{symbol}/quote", tags=["future"])
-async def instrument_quote(symbol: str) -> None:
-    del symbol
-    unavailable("instrument.quote")
-
-
-@router.get("/api/v1/instruments/{symbol}/history", tags=["future"])
-async def instrument_history(symbol: str) -> None:
-    del symbol
-    unavailable("instrument.history")
-
-
 @router.post("/api/v1/predictions", tags=["future"])
 async def create_prediction() -> None:
     unavailable("prediction.create")

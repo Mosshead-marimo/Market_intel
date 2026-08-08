@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     redis_url: SecretStr = SecretStr("redis://localhost:6379/0")
     persistence_backend: Literal["memory", "postgres"] = "memory"
     event_backend: Literal["memory", "redis"] = "memory"
+    cache_backend: Literal["memory", "redis"] = "memory"
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
     module_roots: tuple[Path, ...] = Field(
         default_factory=lambda: (Path(__file__).parents[1] / "modules",)
@@ -40,12 +41,21 @@ class Settings(BaseSettings):
     sentiment_providers: tuple[str, ...] = ()
     economic_data_providers: tuple[str, ...] = ()
     fundamentals_providers: tuple[str, ...] = ()
+    stock_quote_cache_ttl_seconds: int = Field(default=15, ge=1, le=3_600)
+    stock_history_cache_ttl_seconds: int = Field(default=21_600, ge=1, le=604_800)
+    stock_actions_cache_ttl_seconds: int = Field(default=86_400, ge=1, le=2_592_000)
 
     @model_validator(mode="after")
     def production_requires_external_infrastructure(self) -> Settings:
         if self.environment == "production":
-            if self.persistence_backend != "postgres" or self.event_backend != "redis":
-                raise ValueError("production requires PostgreSQL persistence and Redis events")
+            if (
+                self.persistence_backend != "postgres"
+                or self.event_backend != "redis"
+                or self.cache_backend != "redis"
+            ):
+                raise ValueError(
+                    "production requires PostgreSQL persistence, Redis events, and Redis cache"
+                )
             if "localhost" in self.database_url.get_secret_value():
                 raise ValueError("production database URL must not use localhost")
         return self

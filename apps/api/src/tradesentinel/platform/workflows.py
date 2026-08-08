@@ -17,7 +17,11 @@ from tradesentinel.platform.contracts import (
     WorkflowResult,
     WorkflowStep,
 )
-from tradesentinel.platform.errors import DomainError, WorkflowCompilationError
+from tradesentinel.platform.errors import (
+    DomainError,
+    WorkflowCompilationError,
+    WorkflowInputBindingError,
+)
 from tradesentinel.platform.execution import CapabilityExecutor
 from tradesentinel.platform.persistence import RunRepository
 from tradesentinel.platform.registries import WorkflowRegistry
@@ -152,8 +156,24 @@ class WorkflowExecutor:
         workflow_input: dict[str, JsonValue],
         results: dict[str, CapabilityResult],
     ) -> tuple[str, CapabilityResult, bool]:
-        dependency_data = {key: results[key].data for key in step.depends_on}
-        raw_payload = {**workflow_input, "dependencies": dependency_data}
+        dependency_data: dict[str, JsonValue] = {key: results[key].data for key in step.depends_on}
+        if step.input_bindings:
+            raw_payload: dict[str, JsonValue] = {}
+            step_values: dict[str, JsonValue] = {
+                key: {"data": value} for key, value in dependency_data.items()
+            }
+            roots: dict[str, JsonValue] = {
+                "input": workflow_input,
+                "steps": step_values,
+            }
+            for destination, binding in step.input_bindings.items():
+                found, value = self._resolve_binding(roots, binding.source)
+                if found:
+                    self._set_destination(raw_payload, destination, value, step.id)
+                elif binding.required:
+                    raise WorkflowInputBindingError(step.id, destination, binding.source)
+        else:
+            raw_payload = {**workflow_input, "dependencies": dependency_data}
         try:
             result = await self._capabilities.execute(step.capability, context, raw_payload)
         except DomainError as exc:
@@ -171,3 +191,44 @@ class WorkflowExecutor:
                 metadata=RunMetadata(started_at=now, completed_at=now, duration_ms=0),
             )
         return step.id, result, step.required
+
+    @staticmethod
+    def _resolve_binding(root: dict[str, JsonValue], source: str) -> tuple[bool, JsonValue]:
+        current: JsonValue = root
+        for part in source.split("."):
+            if not isinstance(current, dict) or part not in current:
+                return False, None
+            current = current[part]
+        return True, current
+
+    @staticmethod
+    def _set_destination(
+        root: dict[str, JsonValue], destination: str, value: JsonValue, step_id: str
+    ) -> None:
+        parts = destination.split(".")
+        current: dict[str, JsonValue] = root
+        for index, part in enumerate(parts[:-1]):
+            next_part = parts[index + 1]
+            existing = current.get(part)
+            if next_part.isdigit():
+                if existing is None:
+                    existing = []
+                    current[part] = existing
+                if not isinstance(existing, list):
+                    raise WorkflowInputBindingError(step_id, destination, destination)
+                position = int(next_part)
+                while len(existing) <= position:
+                    existing.append(None)
+                if index + 1 == len(parts) - 1:
+                    existing[position] = value
+                    return
+                raise WorkflowInputBindingError(step_id, destination, destination)
+            if existing is None:
+                nested: dict[str, JsonValue] = {}
+                current[part] = nested
+                current = nested
+            elif isinstance(existing, dict):
+                current = existing
+            else:
+                raise WorkflowInputBindingError(step_id, destination, destination)
+        current[parts[-1]] = value

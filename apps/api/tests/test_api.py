@@ -15,7 +15,7 @@ async def test_platform_discovery_and_ping(client: AsyncClient) -> None:
 
 
 async def test_future_capability_returns_typed_501(client: AsyncClient) -> None:
-    response = await client.get("/api/v1/instruments/TEST/quote")
+    response = await client.get("/api/v1/predictions/00000000-0000-4000-8000-000000000001")
     assert response.status_code == 501
     assert response.json()["error"]["code"] == "CAPABILITY_NOT_INSTALLED"
     assert response.json()["request_id"]

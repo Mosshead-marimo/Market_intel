@@ -1,6 +1,6 @@
 # TradeSentinel
 
-TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, and a deterministic canonical instrument-resolution module. It deliberately ships no quotes, market calculations, research, live vendor adapter, or prediction implementation.
+TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, and provider-backed structured stock market data. It ships no live vendor adapter, credentials, research, LLM market analysis, recommendations, or prediction implementation.
 
 ## Foundation
 
@@ -12,7 +12,7 @@ The workspace contains:
 - `apps/api/migrations`: central Alembic runner and platform-owned migrations.
 - `tests`: architecture-boundary tests.
 
-Provider adapters are optional manifest declarations. Ordered provider chains are selected entirely through `TRADESENTINEL_*_PROVIDERS` JSON-array settings and injected by interface into capabilities. All chains are empty by default, so no external service is contacted by this foundation.
+Provider adapters are manifest declarations. Ordered provider chains are selected entirely through `TRADESENTINEL_*_PROVIDERS` JSON-array settings and injected by interface into capabilities. Chains are empty by default, so no external service is contacted. Because `stock_market_data` requires `MarketDataProvider`, API and worker startup intentionally fail until an external adapter is discovered and selected.
 
 Capabilities are loaded automatically from recursively discovered, strictly validated manifests. A new module needs a manifest and capability class—no plugin factory or manual registration. Commands, exact-example intents, direct capability calls, and declarative workflows use one framework-independent execution pipeline with scoped contexts, retries, events, persistence, and deterministic response rendering. Feature modules cannot be imported by the shared platform layer.
 
@@ -28,13 +28,15 @@ uv run uvicorn tradesentinel.api.app:app --reload
 pnpm dev
 ```
 
-The API is available at `http://localhost:8000`, its OpenAPI UI at `/docs`, and the ChatGPT-style conversation UI at `http://localhost:3000`. The default local configuration uses in-memory events and persistence; Docker enables PostgreSQL-backed sessions, Redis worker execution, and resumable per-turn SSE streams.
+After a market-data adapter is configured, the API is available at `http://localhost:8000`, its OpenAPI UI at `/docs`, and the ChatGPT-style conversation UI at `http://localhost:3000`. Local settings use memory storage by default; Docker uses PostgreSQL, Redis worker execution, resumable SSE, and Redis caching.
 
 Normal text uses the manifest-declared `conversation.mock` fallback workflow. `/echo "hello"` exercises command planning and `/ping` exercises the system capability. Replies are deterministic mocks; no LLM or market-research capability is installed.
 
 `/search "Tata Consultancy"` searches the representative 16-listing catalog. `/resolve TCS` returns typed cross-exchange ambiguity, while `/resolve TCS --exchange NSE` returns one canonical `InstrumentRef`. Match confidence is a deterministic text score, not a probability.
 
-Run the complete container stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start.
+The market-data manifest exposes `/quote`, `/history`, `/performance`, `/compare`, `/corporate-actions`, `/five-year-performance`, and `/benchmark-compare`. Commands resolve canonical instruments first. Direct `/api/v1/market-data/*` endpoints accept structured `InstrumentRef` payloads. Performance uses adjusted closes only and returns Decimal-backed contracts without generated commentary.
+
+Build containers with `docker compose build`. `docker compose up` requires an external provider module and a matching `TRADESENTINEL_MARKET_DATA_PROVIDERS` selection. The migration service upgrades PostgreSQL before the API and worker start.
 
 ## Quality checks
 

@@ -2,15 +2,13 @@ from collections.abc import AsyncIterator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
+from support.fake_market_provider import market_test_settings
 from tradesentinel.api.app import create_app
-from tradesentinel.platform.config import Settings
 
 
 @pytest.fixture
 async def client() -> AsyncIterator[AsyncClient]:
-    app = create_app(
-        Settings(environment="test", persistence_backend="memory", event_backend="memory")
-    )
+    app = create_app(market_test_settings())
     async with app.router.lifespan_context(app):
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url="http://test"

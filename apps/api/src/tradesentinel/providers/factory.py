@@ -13,7 +13,7 @@ from tradesentinel.platform.rate_limits import RateLimiter
 from tradesentinel.providers.contracts import (
     CompanyProfile,
     CompanyProfileRequest,
-    CorporateAction,
+    CorporateActions,
     CorporateActionsRequest,
     EconomicObservationSeries,
     EconomicObservationsRequest,
@@ -163,9 +163,9 @@ class _MarketDataChain(_ProviderChain, MarketDataProvider):
 
     async def get_corporate_actions(
         self, context: ProviderContext, request: CorporateActionsRequest
-    ) -> tuple[CorporateAction, ...]:
+    ) -> CorporateActions:
         return await self._invoke(
-            "get_corporate_actions", context, request, TypeAdapter(tuple[CorporateAction, ...])
+            "get_corporate_actions", context, request, TypeAdapter(CorporateActions)
         )
 
 
