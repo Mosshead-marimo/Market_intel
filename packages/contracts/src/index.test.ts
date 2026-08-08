@@ -3,6 +3,8 @@ import {
   benchmarkComparisonOutputSchema,
   instrumentResolveOutputSchema,
   instrumentSearchOutputSchema,
+  researchClaimSchema,
+  researchReportOutputSchema,
   responseComponentSchema,
   stockQuoteOutputSchema,
 } from "./index";
@@ -111,5 +113,75 @@ describe("instrument contracts", () => {
         candidates: [match],
       }),
     ).toThrow();
+  });
+});
+
+describe("research evidence contracts", () => {
+  const source = {
+    source_id: "test-news:article-1",
+    provider_source_id: "article-1",
+    provider: "test-news",
+    title: "Example reports earnings",
+    url: "https://example.test/article-1",
+    published_at: "2026-08-08T10:00:00Z",
+    retrieved_at: "2026-08-08T10:01:00Z",
+    timestamp: "2026-08-08T10:00:00Z",
+    timestamp_basis: "published",
+    license: "redistributable",
+    freshness: "fresh",
+    untrusted: true,
+  } as const;
+  const claim = {
+    claim_id: "00000000-0000-4000-8000-000000000011",
+    event_id: "00000000-0000-4000-8000-000000000012",
+    text: "Example reports earnings",
+    source,
+    provider: source.provider,
+    timestamp: source.timestamp,
+    timestamp_basis: source.timestamp_basis,
+    confidence: 0.95,
+    confidence_basis: "strong_title_phrase",
+    extraction_version: "rules-v1",
+    evidence_excerpt: "Example reports earnings",
+  } as const;
+
+  it("requires complete claim evidence", () => {
+    expect(researchClaimSchema.parse(claim).source.provider).toBe("test-news");
+    expect(() =>
+      researchClaimSchema.parse({ ...claim, source: undefined }),
+    ).toThrow();
+  });
+
+  it("validates structured evidence-index reports", () => {
+    const event = {
+      event_id: claim.event_id,
+      query: "Example",
+      event_type: "earnings",
+      headline: claim.text,
+      observed_at: source.timestamp,
+      timestamp_basis: source.timestamp_basis,
+      confidence: claim.confidence,
+      extraction_version: "rules-v1",
+      claims: [claim],
+      source_ids: [source.source_id],
+    };
+    expect(
+      researchReportOutputSchema.parse({
+        query: "Example",
+        status: "completed",
+        coverage: {
+          source_count: 1,
+          duplicate_count: 0,
+          event_count: 1,
+          claim_count: 1,
+          unmatched_count: 0,
+          document_failure_count: 0,
+        },
+        events: [event],
+        sources: [source],
+        duplicate_groups: [],
+        warnings: [],
+      }).events[0]?.event_type,
+    ).toBe("earnings");
   });
 });

@@ -61,3 +61,7 @@ Provider facades log `provider_call_completed`, `provider_call_unavailable`, or 
 ## Market Data Cache
 
 Market-data cache logs record only operation and hit/miss/invalid outcome. Cache keys, request payloads, provider responses, symbols, and credentials are not logged. Structured output metadata carries provider, retrieval, freshness, cache time, and expiry for request-level inspection.
+
+## Research Evidence
+
+Research lifecycle events report source, duplicate, event, persistence, and report counts with request/run correlation. Provider calls retain the standard safe metadata. Article titles, summaries, documents, excerpts, URLs, and query payloads are excluded from structured logs.

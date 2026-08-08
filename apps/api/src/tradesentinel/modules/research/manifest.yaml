@@ -1,0 +1,144 @@
+name: research
+version: 1.0.0
+description: Deterministic evidence-first news research without LLM processing
+api_router: tradesentinel.modules.research.api:router
+capabilities:
+  - name: research.news.search
+    class_path: tradesentinel.modules.research.capability:SearchNewsCapability
+    description: Searches normalized news through the configured provider chain
+    provides: [research_sources]
+    idempotent: true
+  - name: research.news.deduplicate
+    class_path: tradesentinel.modules.research.capability:DeduplicateCapability
+    description: Conservatively deduplicates normalized news sources
+    provides: [deduplicated_sources]
+    idempotent: true
+  - name: research.events.extract
+    class_path: tradesentinel.modules.research.capability:ExtractEventsCapability
+    description: Extracts versioned rule-based structured events and persists evidence
+    provides: [research_events]
+    idempotent: true
+  - name: research.timeline
+    class_path: tradesentinel.modules.research.capability:TimelineCapability
+    description: Orders structured research events into a deterministic timeline
+    provides: [research_timeline]
+    idempotent: true
+  - name: research.report
+    class_path: tradesentinel.modules.research.capability:ReportCapability
+    description: Builds a structured evidence index without narrative generation
+    provides: [research_report]
+    idempotent: true
+  - name: research.evidence
+    class_path: tradesentinel.modules.research.capability:EvidenceCapability
+    description: Loads persisted source and claim provenance for an event
+    provides: [research_evidence]
+    idempotent: true
+commands:
+  - name: /news
+    description: Search news and extract deterministic events
+    target: {kind: workflow, name: research.news.request}
+    arguments:
+      - {name: query, required: true}
+    options:
+      - {name: start, destination: start}
+      - {name: end, destination: end}
+      - {name: limit, destination: limit}
+    examples:
+      - '/news "Microsoft" --limit 20'
+  - name: /research
+    description: Build a structured evidence index for a free-text query
+    target: {kind: workflow, name: research.report.request}
+    arguments:
+      - {name: query, required: true}
+    options:
+      - {name: start, destination: start}
+      - {name: end, destination: end}
+      - {name: limit, destination: limit}
+    examples:
+      - '/research "Microsoft" --limit 20'
+  - name: /sources
+    description: Load persisted evidence for one research event
+    target: {kind: capability, name: research.evidence}
+    arguments:
+      - {name: event_id, required: true}
+    examples:
+      - /sources 00000000-0000-4000-8000-000000000001
+workflows:
+  - name: research.news.request
+    version: 1.0.0
+    description: Search, deduplicate, extract, and order research events
+    steps:
+      - id: search
+        capability: research.news.search
+        input_bindings:
+          query: {source: input.query}
+          start: {source: input.start, required: false}
+          end: {source: input.end, required: false}
+          limit: {source: input.limit, required: false}
+      - id: deduplicate
+        capability: research.news.deduplicate
+        depends_on: [search]
+        input_bindings:
+          query: {source: input.query}
+          sources: {source: steps.search.data.sources}
+      - id: extract
+        capability: research.events.extract
+        depends_on: [deduplicate]
+        input_bindings:
+          query: {source: input.query}
+          sources: {source: steps.deduplicate.data.sources}
+      - id: timeline
+        capability: research.timeline
+        depends_on: [extract]
+        input_bindings:
+          query: {source: input.query}
+          events: {source: steps.extract.data.events}
+  - name: research.report.request
+    version: 1.0.0
+    description: Build a structured evidence index from normalized news
+    steps:
+      - id: search
+        capability: research.news.search
+        input_bindings:
+          query: {source: input.query}
+          start: {source: input.start, required: false}
+          end: {source: input.end, required: false}
+          limit: {source: input.limit, required: false}
+      - id: deduplicate
+        capability: research.news.deduplicate
+        depends_on: [search]
+        input_bindings:
+          query: {source: input.query}
+          sources: {source: steps.search.data.sources}
+      - id: extract
+        capability: research.events.extract
+        depends_on: [deduplicate]
+        input_bindings:
+          query: {source: input.query}
+          sources: {source: steps.deduplicate.data.sources}
+      - id: timeline
+        capability: research.timeline
+        depends_on: [extract]
+        input_bindings:
+          query: {source: input.query}
+          events: {source: steps.extract.data.events}
+      - id: report
+        capability: research.report
+        depends_on: [deduplicate, extract, timeline]
+        input_bindings:
+          query: {source: input.query}
+          events: {source: steps.timeline.data.events}
+          sources: {source: steps.extract.data.sources}
+          duplicate_groups: {source: steps.deduplicate.data.duplicate_groups}
+          input_count: {source: steps.deduplicate.data.input_count}
+          unmatched_source_ids: {source: steps.extract.data.unmatched_source_ids}
+          document_failures: {source: steps.extract.data.document_failures}
+events:
+  produces:
+    - research.news.search.completed
+    - research.news.deduplicated
+    - research.events.extracted
+    - research.events.persisted
+    - research.timeline.completed
+    - research.report.completed
+    - research.evidence.loaded

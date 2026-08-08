@@ -165,3 +165,9 @@ Each category is configured as an ordered provider-name chain. A typed facade ap
 Canonical instrument contracts live outside both platform and the feature module, allowing future modules to exchange stable UUID-backed `InstrumentRef` values without private imports. The instrument module owns its repository and `market` catalog tables. A domain-neutral persistence resource lets its concrete repository factory select PostgreSQL or memory without composition-root knowledge of the feature.
 
 Resolution normalizes text and applies fixed exact, prefix, and fuzzy similarity tiers. It surfaces tied cross-exchange matches as typed ambiguity rather than silently preferring an exchange. Module HTTP routers are optional manifest entrypoints loaded by a generic API adapter; the shared API and platform contain no instrument capability names.
+
+## Deterministic Research
+
+The `research` module depends only on `NewsProvider`, execution context, settings, and its module-owned repository. Its manifest owns six capabilities, `/news`, `/research`, `/sources`, two workflows, lifecycle events, and its API router. Empty news-provider configuration preserves startup and fails only at invocation with typed HTTP 503.
+
+Articles remain untrusted. The module canonicalizes and deduplicates source metadata, conditionally retrieves documents from the originating provider, applies versioned phrase rules, and stores normalized events plus source-backed claims in the `research` schema. Reports are structured evidence indexes; there is no LLM, narrative synthesis, sentiment, recommendation, or inferred event date.

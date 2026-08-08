@@ -45,3 +45,4 @@
 - Provider facades enforce configured per-adapter timeouts and rate limits.
 - Logs contain provider identity, operation, duration, error code, and correlation IDs, never request payloads, raw responses, credentials, or tokens.
 - Authentication, configuration, licensing, and invalid-output failures are permanent and cannot silently fall through to another vendor.
+- Research rules inspect untrusted text as data only. They never execute retrieved instructions, render raw HTML, log bodies, or forward content to an LLM. Persisted excerpts are bounded by configuration.

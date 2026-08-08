@@ -1,6 +1,6 @@
 # TradeSentinel
 
-TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, and provider-backed structured stock market data. It ships no live vendor adapter, credentials, research, LLM market analysis, recommendations, or prediction implementation.
+TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, structured stock market data, and deterministic evidence-first news research. It ships no live vendor adapter, credentials, LLM market analysis, recommendations, or prediction implementation.
 
 ## Foundation
 
@@ -30,13 +30,15 @@ pnpm dev
 
 The API is available at `http://localhost:8000`, its OpenAPI UI at `/docs`, and the ChatGPT-style conversation UI at `http://localhost:3000`. Local settings use memory storage by default; Docker uses PostgreSQL, Redis worker execution, resumable SSE, and Redis caching.
 
-Normal text uses the manifest-declared `conversation.mock` fallback workflow. `/echo "hello"` exercises command planning and `/ping` exercises the system capability. Replies are deterministic mocks; no LLM or market-research capability is installed.
+Normal text uses the manifest-declared `conversation.mock` fallback workflow. `/echo "hello"` exercises command planning and `/ping` exercises the system capability. Replies are deterministic mocks; no LLM is installed.
 
 `/search "Tata Consultancy"` searches the representative 16-listing catalog. `/resolve TCS` returns typed cross-exchange ambiguity, while `/resolve TCS --exchange NSE` returns one canonical `InstrumentRef`. Match confidence is a deterministic text score, not a probability.
 
 The market-data manifest exposes `/quote`, `/history`, `/performance`, `/compare`, `/corporate-actions`, `/five-year-performance`, and `/benchmark-compare`. Commands resolve canonical instruments first. Direct `/api/v1/market-data/*` endpoints accept structured `InstrumentRef` payloads. Performance uses adjusted closes only and returns Decimal-backed contracts without generated commentary.
 
-Run the stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start. Market-data execution remains unavailable until an external provider module is selected, but the API, worker, web application, and non-provider capabilities start normally.
+The research manifest exposes `/news`, `/research`, and `/sources`. It searches a configured `NewsProvider`, conservatively deduplicates articles, applies versioned phrase rules, stores normalized events and evidence, and returns timelines and evidence indexes. Confidence is extraction-rule strength rather than truth probability. Retrieved content remains untrusted and is never sent to an LLM.
+
+Run the stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start. Market-data and research execution remain unavailable until their external provider modules are selected, but the API, worker, web application, and provider-free capabilities start normally.
 
 ## Quality checks
 

@@ -79,4 +79,6 @@ Retryable typed errors and built-in timeout/connection failures use bounded expo
 
 The conversation planner maps slash-prefixed input to command requests and other text to intent requests. Exact manifest intents precede the optional fallback. `conversation.mock` is a deterministic two-step reference workflow with no LLM or financial behavior.
 
+Research manifests define `research.news.request` as search → deduplicate → extract → timeline and `research.report.request` as the same graph followed by report assembly. Full-document failures preserve source metadata, produce partial warnings, and never invent an event. Extraction persists normalized events before downstream timeline/report steps.
+
 Workflow steps may declare `input_bindings`. Sources use `input.<path>` or `steps.<declared-dependency>.data.<path>`; optional missing sources are omitted and required missing sources raise `WORKFLOW_INPUT_BINDING_FAILED`. Bound steps receive only declared fields. Steps without bindings retain the original input-plus-dependencies behavior. Market-data command workflows use bindings to resolve canonical instruments before execution.

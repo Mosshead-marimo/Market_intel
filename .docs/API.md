@@ -46,6 +46,15 @@ POST /api/v1/market-data/five-year-performance
 POST /api/v1/market-data/benchmark-comparison
 ```
 
+### Research
+
+```text
+GET  /api/v1/research/news
+POST /api/v1/research/timeline
+POST /api/v1/research/reports
+GET  /api/v1/research/events/{event_id}/evidence
+```
+
 ### Predictions
 
 ```text
@@ -84,7 +93,7 @@ Example event types:
 
 ## Foundation Behavior
 
-`POST /api/v1/chat` returns HTTP 202 with a durable turn and per-turn stream URL. The stream replays after `Last-Event-ID`, sends heartbeats every 15 seconds, and closes on `complete` or `error`. Session operations are scoped to the anonymous browser principal. Instrument resolution and structured market-data routes are installed; research and prediction routes continue to return typed HTTP 501 `CAPABILITY_NOT_INSTALLED` responses.
+`POST /api/v1/chat` returns HTTP 202 with a durable turn and per-turn stream URL. The stream replays after `Last-Event-ID`, sends heartbeats every 15 seconds, and closes on `complete` or `error`. Session operations are scoped to the anonymous browser principal. Instrument, market-data, and deterministic research routes are installed; prediction routes continue to return typed HTTP 501 `CAPABILITY_NOT_INSTALLED` responses.
 
 Every response includes `X-Request-ID`. Domain errors include the same UUID in the response body. The additional foundation endpoint `POST /api/v1/workflows/{workflow_name}/execute` executes a registered declarative workflow.
 
@@ -95,3 +104,5 @@ Instrument endpoints accept `q`, optional `exchange` and `asset_type`, and bound
 Symbol quote/history routes resolve the instrument through manifest workflows. `/market-data` POST routes accept canonical references and return typed contracts. Comparison accepts two to ten instruments; benchmark comparison always requires an explicit benchmark.
 
 When no market-data adapter is configured, discovery and readiness remain available. Market-data execution returns HTTP 503 with `PROVIDER_NOT_CONFIGURED` and `details.kind: market_data`; no synthetic or stale value is substituted.
+
+Research search accepts free-text `q`, optional UTC `start`/`end`, and a bounded `limit`. Reports run the manifest workflow and return coverage, duplicate groups, events, source-backed claims, sources, and warnings. Missing news configuration returns HTTP 503 with `details.kind: news`.

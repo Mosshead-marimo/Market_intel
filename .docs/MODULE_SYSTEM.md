@@ -153,6 +153,8 @@ Modules may declare `api_router: package.module:router`. The API adapter validat
 
 `stock_market_data` demonstrates a required provider port: discovery and startup succeed without an adapter through a typed unavailable facade, while execution returns `PROVIDER_NOT_CONFIGURED`. Commands target declarative resolution workflows and the module router exposes structured capability inputs without central API conditionals.
 
+`research` follows the same lazy news-provider boundary. Its manifest registers search, deduplication, extraction, timeline, report, and evidence capabilities plus two workflows and module-owned routes. The service applies versioned deterministic rules and writes only through its repository to the `research` schema; no platform or central API code names a research target.
+
 The manifest owns registration metadata. A capability class owns only its input model and async execution method. Annotated constructor dependencies are resolved from registered platform ports or recursively constructed module-private concrete services; unresolved, untyped, abstract, or cyclic dependencies fail startup.
 
 Discovery order is deterministic and registration is atomic. Commands, intents, workflows, and event consumers are generated from manifests after the complete capability graph validates. `platform.system` is the executable reference and contains no market logic.
