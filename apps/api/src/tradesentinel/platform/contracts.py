@@ -318,11 +318,17 @@ class IntentMatch(ContractModel):
     input_field: str
 
 
+class WorkflowInputBinding(ContractModel):
+    source: str = Field(pattern=r"^(?:input|steps\.[a-zA-Z0-9_-]+\.data)(?:\.[a-zA-Z0-9_-]+)+$")
+    required: bool = True
+
+
 class WorkflowStep(ContractModel):
     id: str
     capability: str
     depends_on: tuple[str, ...] = ()
     required: bool = True
+    input_bindings: dict[str, WorkflowInputBinding] = Field(default_factory=dict)
 
 
 class WorkflowDefinition(ContractModel):
@@ -343,6 +349,12 @@ class WorkflowDefinition(ContractModel):
                 raise ValueError(f"step {step.id} has unknown dependencies: {sorted(missing)}")
             if step.id in step.depends_on:
                 raise ValueError(f"step {step.id} cannot depend on itself")
+            for binding in step.input_bindings.values():
+                parts = binding.source.split(".")
+                if parts[0] == "steps" and parts[1] not in step.depends_on:
+                    raise ValueError(
+                        f"step {step.id} binding references undeclared dependency {parts[1]}"
+                    )
         return self
 
 

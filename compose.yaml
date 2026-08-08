@@ -36,6 +36,7 @@ services:
       TRADESENTINEL_REDIS_URL: redis://redis:6379/0
       TRADESENTINEL_PERSISTENCE_BACKEND: postgres
       TRADESENTINEL_EVENT_BACKEND: redis
+      TRADESENTINEL_CACHE_BACKEND: redis
     depends_on:
       postgres:
         condition: service_healthy
@@ -85,4 +86,3 @@ services:
 volumes:
   postgres-data:
   redis-data:
-

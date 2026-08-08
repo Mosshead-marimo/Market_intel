@@ -6,7 +6,7 @@ from enum import StrEnum
 from typing import Literal
 from uuid import UUID
 
-from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field
+from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, model_validator
 
 
 class ProviderContract(BaseModel):
@@ -92,7 +92,29 @@ class MarketQuote(ProviderContract):
     price: Decimal
     currency: str
     as_of: datetime
+    previous_close: Decimal | None = None
+    open: Decimal | None = None
+    high: Decimal | None = None
+    low: Decimal | None = None
+    volume: Decimal | None = None
+    market_status: str | None = None
     metadata: ProviderMetadata
+
+    @model_validator(mode="after")
+    def validate_quote(self) -> MarketQuote:
+        values = (
+            self.price,
+            self.previous_close,
+            self.open,
+            self.high,
+            self.low,
+            self.volume,
+        )
+        if any(value is not None and value < 0 for value in values):
+            raise ValueError("quote numeric values cannot be negative")
+        if self.high is not None and self.low is not None and self.high < self.low:
+            raise ValueError("quote high cannot be below low")
+        return self
 
 
 class PriceHistoryRequest(ProviderContract):
@@ -108,7 +130,18 @@ class PriceBar(ProviderContract):
     high: Decimal
     low: Decimal
     close: Decimal
+    adjusted_close: Decimal
     volume: Decimal | None = None
+
+    @model_validator(mode="after")
+    def validate_prices(self) -> PriceBar:
+        if min(self.open, self.high, self.low, self.close, self.adjusted_close) < 0:
+            raise ValueError("price values cannot be negative")
+        if self.high < max(self.open, self.close) or self.low > min(self.open, self.close):
+            raise ValueError("high and low must bound open and close")
+        if self.volume is not None and self.volume < 0:
+            raise ValueError("volume cannot be negative")
+        return self
 
 
 class PriceHistory(ProviderContract):
@@ -117,6 +150,22 @@ class PriceHistory(ProviderContract):
     currency: str
     bars: tuple[PriceBar, ...]
     metadata: ProviderMetadata
+
+    @model_validator(mode="after")
+    def validate_bars(self) -> PriceHistory:
+        timestamps = [bar.timestamp for bar in self.bars]
+        if timestamps != sorted(timestamps) or len(timestamps) != len(set(timestamps)):
+            raise ValueError("history bars must have unique ascending timestamps")
+        return self
+
+
+class CorporateActionType(StrEnum):
+    DIVIDEND = "dividend"
+    SPLIT = "split"
+    SPINOFF = "spinoff"
+    MERGER = "merger"
+    SYMBOL_CHANGE = "symbol_change"
+    OTHER = "other"
 
 
 class CorporateActionsRequest(ProviderContract):
@@ -127,11 +176,17 @@ class CorporateActionsRequest(ProviderContract):
 
 class CorporateAction(ProviderContract):
     instrument: InstrumentReference
-    action_type: str
+    action_type: CorporateActionType
     effective_at: datetime
     amount: Decimal | None = None
     currency: str | None = None
     ratio: Decimal | None = None
+    metadata: ProviderMetadata
+
+
+class CorporateActions(ProviderContract):
+    instrument: InstrumentReference
+    actions: tuple[CorporateAction, ...]
     metadata: ProviderMetadata
 
 

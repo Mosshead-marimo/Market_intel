@@ -146,6 +146,12 @@ Chat submission persists the session, user message, queued turn, and outbox reco
 
 Per-turn Redis Streams retain typed status, typing, progress, response-delta, component, warning, completion, and error events for 24 hours. SSE reconnects use `Last-Event-ID`; PostgreSQL remains authoritative after stream expiry. Anonymous browser UUID cookies isolate sessions until authentication is installed.
 
+## Structured Market Data
+
+`stock_market_data` depends only on normalized `MarketDataProvider`, the generic cache port, shared instrument contracts, and execution context. Provider calls are cache-aside; calculations always run in the module service over validated adjusted observations. Redis is the deployed cache adapter and memory is the deterministic test adapter. Provider failures never fall back to expired cache data.
+
+Command workflows resolve text through `instrument.resolve` using generic step input bindings. This preserves canonical cross-exchange identity without stock-aware branches in the platform or API composition root.
+
 ## Provider Runtime
 
 Financially shaped provider ports live in `tradesentinel.providers`, beside rather than inside the domain-agnostic platform package. Module manifests may declare adapter class entrypoints; the provider bootstrap validates and stages these declarations before the ordinary capability loader constructs any capability. The application composition root is outside `platform` and is the only layer that joins provider selection to platform dependency injection.

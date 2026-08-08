@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 from pydantic import BaseModel
+from support.fake_market_provider import market_test_settings
 from tradesentinel.container import build_container
 from tradesentinel.platform.capabilities import Capability, RegisteredCapability
 from tradesentinel.platform.commands import CommandParser
-from tradesentinel.platform.config import Settings
 from tradesentinel.platform.context import ExecutionContextManager
 from tradesentinel.platform.contracts import (
     CapabilityExecutionRequest,
@@ -334,9 +334,7 @@ def test_response_renderer_orders_text_components_and_deduplicates_sources() -> 
 
 
 async def test_pipeline_executes_all_request_variants() -> None:
-    container = build_container(
-        Settings(environment="test", persistence_backend="memory", event_backend="memory")
-    )
+    container = build_container(market_test_settings())
     try:
         requests = (
             CommandExecutionRequest(command="/ping"),

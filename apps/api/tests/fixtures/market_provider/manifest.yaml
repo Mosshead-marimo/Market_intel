@@ -1,0 +1,11 @@
+name: test_market_provider
+version: 1.0.0
+description: Deterministic test-only market provider
+providers:
+  - kind: market_data
+    name: test-market
+    class_path: support.fake_market_provider:DeterministicMarketDataProvider
+capabilities:
+  - name: test.market_provider
+    class_path: support.fake_market_provider:ProviderFixtureCapability
+    description: Makes the test-only provider manifest valid

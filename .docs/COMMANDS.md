@@ -54,17 +54,39 @@ Capabilities:
 
 Returns current quote, daily movement, volume, market status, and timestamp.
 
+```text
+/quote TCS --exchange NSE
+```
+
 ### `/history`
 
 Returns adjusted OHLCV history and chart-ready series.
 
+```text
+/history TCS 2025-01-01T00:00:00Z 2026-01-01T00:00:00Z --exchange NSE
+```
+
 ### `/performance`
 
-Returns returns across multiple periods, CAGR, drawdown, volatility, and benchmark comparison.
+Returns total return, CAGR, maximum drawdown, annualized volatility, and a rebased series for one explicit period.
+
+Market-data performance uses adjusted closes only. Benchmark comparison remains an explicit operation.
 
 ### `/compare`
 
-Compares multiple stocks across performance, fundamentals, sentiment, valuation, and risk.
+Compares adjusted performance for two resolved instruments.
+
+### `/corporate-actions`
+
+Returns normalized actions over an explicit time range.
+
+### `/five-year-performance`
+
+Calculates adjusted performance beginning five calendar years before `as_of`.
+
+### `/benchmark-compare`
+
+Compares an instrument with an explicitly named benchmark; no index is inferred.
 
 ### `/research`
 

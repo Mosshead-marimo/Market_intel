@@ -4,2044 +4,2714 @@
  */
 
 export interface paths {
-  "/api/v1/capabilities": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/capabilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Capabilities */
+        get: operations["list_capabilities_api_v1_capabilities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** List Capabilities */
-    get: operations["list_capabilities_api_v1_capabilities_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/chat": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/chat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Chat */
+        post: operations["chat_api_v1_chat_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Chat */
-    post: operations["chat_api_v1_chat_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/chat/sessions": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/chat/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chat Sessions */
+        get: operations["chat_sessions_api_v1_chat_sessions_get"];
+        put?: never;
+        /** Create Chat Session */
+        post: operations["create_chat_session_api_v1_chat_sessions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Chat Sessions */
-    get: operations["chat_sessions_api_v1_chat_sessions_get"];
-    put?: never;
-    /** Create Chat Session */
-    post: operations["create_chat_session_api_v1_chat_sessions_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/chat/sessions/{session_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/chat/sessions/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chat Session */
+        get: operations["chat_session_api_v1_chat_sessions__session_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Chat Session */
+        patch: operations["update_chat_session_api_v1_chat_sessions__session_id__patch"];
+        trace?: never;
     };
-    /** Chat Session */
-    get: operations["chat_session_api_v1_chat_sessions__session_id__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Update Chat Session */
-    patch: operations["update_chat_session_api_v1_chat_sessions__session_id__patch"];
-    trace?: never;
-  };
-  "/api/v1/chat/turns/{turn_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/chat/turns/{turn_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Chat Turn */
+        get: operations["get_chat_turn_api_v1_chat_turns__turn_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Chat Turn */
-    get: operations["get_chat_turn_api_v1_chat_turns__turn_id__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/chat/turns/{turn_id}/events": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/chat/turns/{turn_id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chat Turn Events */
+        get: operations["chat_turn_events_api_v1_chat_turns__turn_id__events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Chat Turn Events */
-    get: operations["chat_turn_events_api_v1_chat_turns__turn_id__events_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/commands": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/commands": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Commands */
+        get: operations["list_commands_api_v1_commands_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** List Commands */
-    get: operations["list_commands_api_v1_commands_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/commands/execute": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/commands/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Execute Command */
+        post: operations["execute_command_api_v1_commands_execute_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Execute Command */
-    post: operations["execute_command_api_v1_commands_execute_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/events/stream": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/events/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Event Stream */
+        get: operations["event_stream_api_v1_events_stream_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Event Stream */
-    get: operations["event_stream_api_v1_events_stream_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/instruments/autocomplete": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/instruments/autocomplete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Autocomplete Instruments */
+        get: operations["autocomplete_instruments_api_v1_instruments_autocomplete_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Autocomplete Instruments */
-    get: operations["autocomplete_instruments_api_v1_instruments_autocomplete_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/instruments/resolve": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/instruments/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Resolve Instrument */
+        get: operations["resolve_instrument_api_v1_instruments_resolve_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Resolve Instrument */
-    get: operations["resolve_instrument_api_v1_instruments_resolve_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/instruments/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/instruments/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search Instruments */
+        get: operations["search_instruments_api_v1_instruments_search_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Search Instruments */
-    get: operations["search_instruments_api_v1_instruments_search_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/instruments/{symbol}/history": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/instruments/{symbol}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** History By Symbol */
+        get: operations["history_by_symbol_api_v1_instruments__symbol__history_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Instrument History */
-    get: operations["instrument_history_api_v1_instruments__symbol__history_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/instruments/{symbol}/quote": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/instruments/{symbol}/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Quote By Symbol */
+        get: operations["quote_by_symbol_api_v1_instruments__symbol__quote_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Instrument Quote */
-    get: operations["instrument_quote_api_v1_instruments__symbol__quote_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/predictions": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/market-data/benchmark-comparison": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Benchmark Comparison */
+        post: operations["benchmark_comparison_api_v1_market_data_benchmark_comparison_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Create Prediction */
-    post: operations["create_prediction_api_v1_predictions_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/predictions/{prediction_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/market-data/comparison": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Comparison */
+        post: operations["comparison_api_v1_market_data_comparison_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Prediction */
-    get: operations["get_prediction_api_v1_predictions__prediction_id__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/predictions/{prediction_id}/evaluation": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/market-data/corporate-actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Corporate Actions */
+        post: operations["corporate_actions_api_v1_market_data_corporate_actions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Prediction Evaluation */
-    get: operations["get_prediction_evaluation_api_v1_predictions__prediction_id__evaluation_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/runs/{run_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/market-data/five-year-performance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Five Year Performance */
+        post: operations["five_year_performance_api_v1_market_data_five_year_performance_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Run */
-    get: operations["get_run_api_v1_runs__run_id__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/runs/{run_id}/sources": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/market-data/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** History */
+        post: operations["history_api_v1_market_data_history_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Run Sources */
-    get: operations["get_run_sources_api_v1_runs__run_id__sources_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/workflows/{workflow_name}/execute": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/market-data/performance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Performance */
+        post: operations["performance_api_v1_market_data_performance_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Execute Workflow */
-    post: operations["execute_workflow_api_v1_workflows__workflow_name__execute_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/health/live": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/market-data/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Quote */
+        post: operations["quote_api_v1_market_data_quote_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Liveness */
-    get: operations["liveness_health_live_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/health/ready": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/predictions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Prediction */
+        post: operations["create_prediction_api_v1_predictions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Readiness */
-    get: operations["readiness_health_ready_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/api/v1/predictions/{prediction_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Prediction */
+        get: operations["get_prediction_api_v1_predictions__prediction_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/predictions/{prediction_id}/evaluation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Prediction Evaluation */
+        get: operations["get_prediction_evaluation_api_v1_predictions__prediction_id__evaluation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runs/{run_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Run */
+        get: operations["get_run_api_v1_runs__run_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runs/{run_id}/sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Run Sources */
+        get: operations["get_run_sources_api_v1_runs__run_id__sources_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workflows/{workflow_name}/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Execute Workflow */
+        post: operations["execute_workflow_api_v1_workflows__workflow_name__execute_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/health/live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liveness */
+        get: operations["liveness_health_live_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/health/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Readiness */
+        get: operations["readiness_health_ready_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /** ApiErrorDetail */
-    ApiErrorDetail: {
-      /** Code */
-      code: string;
-      /** Details */
-      details?: {
-        [key: string]: components["schemas"]["JsonValue"];
-      };
-      /** Message */
-      message: string;
-      /**
-       * Retryable
-       * @default false
-       */
-      retryable: boolean;
+    schemas: {
+        /** AdjustedPriceBar */
+        AdjustedPriceBar: {
+            /** Adjusted Close */
+            adjusted_close: string;
+            /** Close */
+            close: string;
+            /** High */
+            high: string;
+            /** Low */
+            low: string;
+            /** Open */
+            open: string;
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+            /** Volume */
+            volume?: string | null;
+        };
+        /** ApiErrorDetail */
+        ApiErrorDetail: {
+            /** Code */
+            code: string;
+            /** Details */
+            details?: {
+                [key: string]: components["schemas"]["JsonValue"];
+            };
+            /** Message */
+            message: string;
+            /**
+             * Retryable
+             * @default false
+             */
+            retryable: boolean;
+        };
+        /**
+         * AssetType
+         * @enum {string}
+         */
+        AssetType: "equity" | "etf" | "index" | "fund" | "currency" | "commodity" | "crypto" | "other";
+        /** BenchmarkComparisonInput */
+        BenchmarkComparisonInput: {
+            benchmark: components["schemas"]["InstrumentRef"];
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            /** @default 1d */
+            interval: components["schemas"]["MarketInterval"];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+        };
+        /** BenchmarkComparisonOutput */
+        BenchmarkComparisonOutput: {
+            benchmark: components["schemas"]["StockComparisonItem"];
+            /** Excess Cagr */
+            excess_cagr: string;
+            /** Excess Total Return */
+            excess_total_return: string;
+            instrument: components["schemas"]["StockComparisonItem"];
+            /** Overlapping Observations */
+            overlapping_observations: number;
+        };
+        /**
+         * CacheDisposition
+         * @enum {string}
+         */
+        CacheDisposition: "hit" | "miss";
+        /** CacheMetadata */
+        CacheMetadata: {
+            /**
+             * Cached At
+             * Format: date-time
+             */
+            cached_at: string;
+            disposition: components["schemas"]["CacheDisposition"];
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
+        /** CapabilityDescriptor */
+        CapabilityDescriptor: {
+            /**
+             * Dependencies
+             * @default []
+             */
+            dependencies: string[];
+            /** Description */
+            description: string;
+            /**
+             * Idempotent
+             * @default false
+             */
+            idempotent: boolean;
+            /** Name */
+            name: string;
+            /**
+             * Permissions
+             * @default []
+             */
+            permissions: string[];
+            /**
+             * Provides
+             * @default []
+             */
+            provides: string[];
+            /** Version */
+            version: string;
+        };
+        /** CapabilityResult */
+        CapabilityResult: {
+            /** Capability */
+            capability: string;
+            /**
+             * Components
+             * @default []
+             */
+            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"])[];
+            /** Data */
+            data?: {
+                [key: string]: components["schemas"]["JsonValue"];
+            };
+            metadata: components["schemas"]["RunMetadata"];
+            /**
+             * Sources
+             * @default []
+             */
+            sources: components["schemas"]["EvidenceSource"][];
+            status: components["schemas"]["RunStatus"];
+            /** Summary */
+            summary?: string | null;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: components["schemas"]["CapabilityWarning"][];
+        };
+        /** CapabilityWarning */
+        CapabilityWarning: {
+            /** Code */
+            code: string;
+            /** Details */
+            details?: {
+                [key: string]: components["schemas"]["JsonValue"];
+            };
+            /** Message */
+            message: string;
+            /**
+             * Retryable
+             * @default false
+             */
+            retryable: boolean;
+        };
+        /** ChartPoint */
+        ChartPoint: {
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+            /** Value */
+            value: number;
+        };
+        /** ChartSeries */
+        ChartSeries: {
+            /** Name */
+            name: string;
+            /** Points */
+            points: components["schemas"]["ChartPoint"][];
+        };
+        /** ChatMessage */
+        ChatMessage: {
+            /** Completed At */
+            completed_at?: string | null;
+            /** Content */
+            content: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            error?: components["schemas"]["ApiErrorDetail"] | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            response?: components["schemas"]["RenderedResponse"] | null;
+            role: components["schemas"]["ChatRole"];
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            status: components["schemas"]["ChatMessageStatus"];
+            /**
+             * Turn Id
+             * Format: uuid
+             */
+            turn_id: string;
+        };
+        /**
+         * ChatMessageStatus
+         * @enum {string}
+         */
+        ChatMessageStatus: "accepted" | "streaming" | "completed" | "partial" | "failed";
+        /** ChatRequest */
+        ChatRequest: {
+            /**
+             * Client Message Id
+             * Format: uuid
+             */
+            client_message_id: string;
+            /** Message */
+            message: string;
+            /** Session Id */
+            session_id?: string | null;
+        };
+        /**
+         * ChatRole
+         * @enum {string}
+         */
+        ChatRole: "user" | "assistant";
+        /** ChatSession */
+        ChatSession: {
+            /** Archived At */
+            archived_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            status: components["schemas"]["ChatSessionStatus"];
+            /** Title */
+            title: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** ChatSessionCreateRequest */
+        ChatSessionCreateRequest: {
+            /**
+             * Title
+             * @default New chat
+             */
+            title: string;
+        };
+        /** ChatSessionDetail */
+        ChatSessionDetail: {
+            active_turn?: components["schemas"]["ChatTurn"] | null;
+            /**
+             * Messages
+             * @default []
+             */
+            messages: components["schemas"]["ChatMessage"][];
+            session: components["schemas"]["ChatSession"];
+        };
+        /** ChatSessionPage */
+        ChatSessionPage: {
+            /**
+             * Items
+             * @default []
+             */
+            items: components["schemas"]["ChatSession"][];
+            /** Next Cursor */
+            next_cursor?: string | null;
+        };
+        /**
+         * ChatSessionStatus
+         * @enum {string}
+         */
+        ChatSessionStatus: "active" | "archived";
+        /** ChatSessionUpdateRequest */
+        ChatSessionUpdateRequest: {
+            /** Archived */
+            archived?: boolean | null;
+            /** Title */
+            title?: string | null;
+        };
+        /** ChatTurn */
+        ChatTurn: {
+            /** Assistant Message Id */
+            assistant_message_id?: string | null;
+            /**
+             * Attempt
+             * @default 0
+             */
+            attempt: number;
+            /**
+             * Client Message Id
+             * Format: uuid
+             */
+            client_message_id: string;
+            /** Completed At */
+            completed_at?: string | null;
+            /**
+             * Correlation Id
+             * Format: uuid
+             */
+            correlation_id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            error?: components["schemas"]["ApiErrorDetail"] | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Lease Expires At */
+            lease_expires_at?: string | null;
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+            /** Run Id */
+            run_id?: string | null;
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            /** Started At */
+            started_at?: string | null;
+            status: components["schemas"]["ChatTurnStatus"];
+            /**
+             * User Message Id
+             * Format: uuid
+             */
+            user_message_id: string;
+        };
+        /** ChatTurnAccepted */
+        ChatTurnAccepted: {
+            /**
+             * Session Id
+             * Format: uuid
+             */
+            session_id: string;
+            status: components["schemas"]["ChatTurnStatus"];
+            /** Stream Url */
+            stream_url: string;
+            /**
+             * Turn Id
+             * Format: uuid
+             */
+            turn_id: string;
+            /**
+             * User Message Id
+             * Format: uuid
+             */
+            user_message_id: string;
+        };
+        /**
+         * ChatTurnStatus
+         * @enum {string}
+         */
+        ChatTurnStatus: "queued" | "planning" | "executing" | "rendering" | "completed" | "partial" | "failed";
+        /** CommandRequest */
+        CommandRequest: {
+            /** Command */
+            command: string;
+            /** Session Id */
+            session_id?: string | null;
+        };
+        /** CommandResponse */
+        CommandResponse: {
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+            response: components["schemas"]["RenderedResponse"];
+            /** Result */
+            result: components["schemas"]["CapabilityResult"] | components["schemas"]["WorkflowResult"];
+        };
+        /** ComparisonTable */
+        ComparisonTable: {
+            /** Columns */
+            columns: string[];
+            /** Id */
+            id: string;
+            /** Rows */
+            rows: components["schemas"]["TableRow"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "comparison_table";
+        };
+        /**
+         * ComponentStatus
+         * @enum {string}
+         */
+        ComponentStatus: "ready" | "partial" | "empty" | "stale" | "error";
+        /**
+         * CorporateActionType
+         * @enum {string}
+         */
+        CorporateActionType: "dividend" | "split" | "spinoff" | "merger" | "symbol_change" | "other";
+        /** DependencyHealth */
+        DependencyHealth: {
+            /** Detail */
+            detail?: string | null;
+            /** Latency Ms */
+            latency_ms?: number | null;
+            /** Name */
+            name: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "healthy" | "unhealthy" | "disabled";
+        };
+        /** EvidenceSource */
+        EvidenceSource: {
+            /** Provider */
+            provider: string;
+            /** Published At */
+            published_at?: string | null;
+            /** Reliability Weight */
+            reliability_weight?: number | null;
+            /**
+             * Retrieved At
+             * Format: date-time
+             */
+            retrieved_at: string;
+            /** Source Id */
+            source_id: string;
+            /** Source Type */
+            source_type: string;
+            /** Title */
+            title: string;
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+        };
+        /** FiveYearPerformanceInput */
+        FiveYearPerformanceInput: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of?: string;
+            instrument: components["schemas"]["InstrumentRef"];
+        };
+        /** FiveYearPerformanceOutput */
+        FiveYearPerformanceOutput: {
+            /**
+             * Effective Start
+             * Format: date-time
+             */
+            effective_start: string;
+            performance: components["schemas"]["StockPerformanceOutput"];
+            /**
+             * Requested As Of
+             * Format: date-time
+             */
+            requested_as_of: string;
+        };
+        /**
+         * FreshnessStatus
+         * @enum {string}
+         */
+        FreshnessStatus: "fresh" | "stale" | "unknown";
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HealthResult */
+        HealthResult: {
+            /**
+             * Checked At
+             * Format: date-time
+             */
+            checked_at: string;
+            /**
+             * Dependencies
+             * @default []
+             */
+            dependencies: components["schemas"]["DependencyHealth"][];
+            /**
+             * Service
+             * @default tradesentinel-api
+             */
+            service: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "healthy" | "degraded" | "unhealthy";
+            /** Version */
+            version: string;
+        };
+        /** InstrumentAutocompleteOutput */
+        InstrumentAutocompleteOutput: {
+            /** Matches */
+            matches: components["schemas"]["InstrumentMatch"][];
+            /** Query */
+            query: string;
+        };
+        /** InstrumentMatch */
+        InstrumentMatch: {
+            /** Confidence */
+            confidence: number;
+            instrument: components["schemas"]["InstrumentRef"];
+            /**
+             * Matched On
+             * @enum {string}
+             */
+            matched_on: "ticker" | "name" | "alias";
+            /** Matched Value */
+            matched_value: string;
+        };
+        /** InstrumentRef */
+        InstrumentRef: {
+            /**
+             * Aliases
+             * @default []
+             */
+            aliases: string[];
+            asset_type: components["schemas"]["AssetType"];
+            /** Currency */
+            currency: string;
+            /** Exchange */
+            exchange: string;
+            /**
+             * Instrument Id
+             * Format: uuid
+             */
+            instrument_id: string;
+            /** Name */
+            name: string;
+            /** Symbol */
+            symbol: string;
+        };
+        /** InstrumentResolveOutput */
+        InstrumentResolveOutput: {
+            /**
+             * Candidates
+             * @default []
+             */
+            candidates: components["schemas"]["InstrumentMatch"][];
+            match?: components["schemas"]["InstrumentMatch"] | null;
+            /** Query */
+            query: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "resolved" | "ambiguous" | "not_found";
+        };
+        /** InstrumentSearchOutput */
+        InstrumentSearchOutput: {
+            /** Matches */
+            matches: components["schemas"]["InstrumentMatch"][];
+            /** Query */
+            query: string;
+        };
+        JsonValue: unknown;
+        /**
+         * LicenseClassification
+         * @enum {string}
+         */
+        LicenseClassification: "internal" | "redistributable" | "restricted" | "unknown";
+        /**
+         * MarketInterval
+         * @enum {string}
+         */
+        MarketInterval: "1d" | "1wk" | "1mo";
+        /** MetricGrid */
+        MetricGrid: {
+            /** Id */
+            id: string;
+            /** Metrics */
+            metrics: components["schemas"]["MetricItem"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "metric_grid";
+        };
+        /** MetricItem */
+        MetricItem: {
+            /** Detail */
+            detail?: string | null;
+            /** Label */
+            label: string;
+            /** Value */
+            value: string;
+        };
+        /** NewsTimeline */
+        NewsTimeline: {
+            /** Id */
+            id: string;
+            /** Items */
+            items: components["schemas"]["TimelineItem"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "news_timeline";
+        };
+        /** PerformanceMetrics */
+        PerformanceMetrics: {
+            /** Annualized Volatility */
+            annualized_volatility: string;
+            /** Cagr */
+            cagr: string;
+            /**
+             * End At
+             * Format: date-time
+             */
+            end_at: string;
+            /** End Value */
+            end_value: string;
+            /** Maximum Drawdown */
+            maximum_drawdown: string;
+            /** Observations */
+            observations: number;
+            /**
+             * Start At
+             * Format: date-time
+             */
+            start_at: string;
+            /** Start Value */
+            start_value: string;
+            /** Total Return */
+            total_return: string;
+        };
+        /** PredictionCard */
+        PredictionCard: {
+            /** Confidence */
+            confidence: number;
+            /**
+             * Data Cutoff
+             * Format: date-time
+             */
+            data_cutoff: string;
+            /**
+             * Direction
+             * @enum {string}
+             */
+            direction: "rise" | "sideways" | "decline" | "uncertain";
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /** Horizon */
+            horizon: string;
+            /** Id */
+            id: string;
+            /** Model Version */
+            model_version: string;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "prediction_card";
+        };
+        /** PriceChart */
+        PriceChart: {
+            /** Id */
+            id: string;
+            /** Series */
+            series: components["schemas"]["ChartSeries"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "price_chart";
+        };
+        /** ProviderMetadata */
+        ProviderMetadata: {
+            /** @default unknown */
+            freshness: components["schemas"]["FreshnessStatus"];
+            /** @default unknown */
+            license: components["schemas"]["LicenseClassification"];
+            /** Observed At */
+            observed_at?: string | null;
+            /** Provider */
+            provider: string;
+            /**
+             * Retrieved At
+             * Format: date-time
+             */
+            retrieved_at: string;
+            /** Source Id */
+            source_id: string;
+            /** Timezone */
+            timezone?: string | null;
+        };
+        /** RebasedPoint */
+        RebasedPoint: {
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+            /** Value */
+            value: string;
+        };
+        /** RenderedResponse */
+        RenderedResponse: {
+            /**
+             * Components
+             * @default []
+             */
+            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"])[];
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /** Run Id */
+            run_id?: string | null;
+            /**
+             * Sources
+             * @default []
+             */
+            sources: components["schemas"]["EvidenceSource"][];
+            status: components["schemas"]["RunStatus"];
+            /** Text */
+            text: string;
+            /**
+             * Trace
+             * @default []
+             */
+            trace: string[];
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: components["schemas"]["CapabilityWarning"][];
+        };
+        /** RiskCard */
+        RiskCard: {
+            /** Id */
+            id: string;
+            /** Risks */
+            risks: components["schemas"]["RiskItem"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "risk_card";
+        };
+        /** RiskItem */
+        RiskItem: {
+            /** Description */
+            description: string;
+            /** Label */
+            label: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "low" | "medium" | "high" | "unknown";
+        };
+        /** RunMetadata */
+        RunMetadata: {
+            /**
+             * Attempts
+             * @default 1
+             */
+            attempts: number;
+            /** Completed At */
+            completed_at?: string | null;
+            /** Data Cutoff */
+            data_cutoff?: string | null;
+            /** Duration Ms */
+            duration_ms?: number | null;
+            /**
+             * Freshness
+             * @default unknown
+             * @enum {string}
+             */
+            freshness: "fresh" | "stale" | "unknown";
+            /** Run Id */
+            run_id?: string | null;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+        };
+        /** RunSourcesResponse */
+        RunSourcesResponse: {
+            /**
+             * Run Id
+             * Format: uuid
+             */
+            run_id: string;
+            /**
+             * Sources
+             * @default []
+             */
+            sources: unknown[];
+        };
+        /**
+         * RunStatus
+         * @enum {string}
+         */
+        RunStatus: "pending" | "running" | "completed" | "partial" | "failed" | "skipped";
+        /** ScenarioTable */
+        ScenarioTable: {
+            /** Columns */
+            columns: string[];
+            /** Id */
+            id: string;
+            /** Rows */
+            rows: components["schemas"]["TableRow"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "scenario_table";
+        };
+        /** SentimentChart */
+        SentimentChart: {
+            /** Id */
+            id: string;
+            /** Series */
+            series: components["schemas"]["ChartSeries"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "sentiment_chart";
+        };
+        /** SourceList */
+        SourceList: {
+            /** Id */
+            id: string;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** Sources */
+            sources: components["schemas"]["EvidenceSource"][];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "source_list";
+        };
+        /** StockComparisonInput */
+        StockComparisonInput: {
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Instruments */
+            instruments: components["schemas"]["InstrumentRef"][];
+            /** @default 1d */
+            interval: components["schemas"]["MarketInterval"];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+        };
+        /** StockComparisonItem */
+        StockComparisonItem: {
+            cache: components["schemas"]["CacheMetadata"];
+            /** Currency */
+            currency: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            metrics: components["schemas"]["PerformanceMetrics"];
+            provider: components["schemas"]["ProviderMetadata"];
+            /** Series */
+            series: components["schemas"]["RebasedPoint"][];
+        };
+        /** StockComparisonOutput */
+        StockComparisonOutput: {
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            interval: components["schemas"]["MarketInterval"];
+            /** Items */
+            items: components["schemas"]["StockComparisonItem"][];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+        };
+        /** StockCorporateAction */
+        StockCorporateAction: {
+            action_type: components["schemas"]["CorporateActionType"];
+            /** Amount */
+            amount?: string | null;
+            /** Currency */
+            currency?: string | null;
+            /**
+             * Effective At
+             * Format: date-time
+             */
+            effective_at: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            provider: components["schemas"]["ProviderMetadata"];
+            /** Ratio */
+            ratio?: string | null;
+        };
+        /** StockCorporateActionsInput */
+        StockCorporateActionsInput: {
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+        };
+        /** StockCorporateActionsOutput */
+        StockCorporateActionsOutput: {
+            /** Actions */
+            actions: components["schemas"]["StockCorporateAction"][];
+            cache: components["schemas"]["CacheMetadata"];
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            provider: components["schemas"]["ProviderMetadata"];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+        };
+        /** StockHistoryInput */
+        StockHistoryInput: {
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            /** @default 1d */
+            interval: components["schemas"]["MarketInterval"];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+        };
+        /** StockHistoryOutput */
+        StockHistoryOutput: {
+            /** Bars */
+            bars: components["schemas"]["AdjustedPriceBar"][];
+            cache: components["schemas"]["CacheMetadata"];
+            /** Currency */
+            currency: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            /**
+             * Price Basis
+             * @default adjusted
+             * @constant
+             */
+            price_basis: "adjusted";
+            provider: components["schemas"]["ProviderMetadata"];
+        };
+        /** StockPerformanceInput */
+        StockPerformanceInput: {
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            /** @default 1d */
+            interval: components["schemas"]["MarketInterval"];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+        };
+        /** StockPerformanceOutput */
+        StockPerformanceOutput: {
+            cache: components["schemas"]["CacheMetadata"];
+            /** Currency */
+            currency: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            metrics: components["schemas"]["PerformanceMetrics"];
+            provider: components["schemas"]["ProviderMetadata"];
+            /** Series */
+            series: components["schemas"]["RebasedPoint"][];
+        };
+        /** StockQuoteInput */
+        StockQuoteInput: {
+            instrument: components["schemas"]["InstrumentRef"];
+        };
+        /** StockQuoteOutput */
+        StockQuoteOutput: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            cache: components["schemas"]["CacheMetadata"];
+            /** Change */
+            change?: string | null;
+            /** Change Percent */
+            change_percent?: string | null;
+            /** Currency */
+            currency: string;
+            /** High */
+            high?: string | null;
+            instrument: components["schemas"]["InstrumentRef"];
+            /** Low */
+            low?: string | null;
+            /** Market Status */
+            market_status?: string | null;
+            /** Open */
+            open?: string | null;
+            /** Previous Close */
+            previous_close?: string | null;
+            /** Price */
+            price: string;
+            provider: components["schemas"]["ProviderMetadata"];
+            /** Volume */
+            volume?: string | null;
+        };
+        /** SummaryCard */
+        SummaryCard: {
+            /** Body */
+            body: string;
+            /** Heading */
+            heading: string;
+            /** Id */
+            id: string;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "summary_card";
+        };
+        /** TableRow */
+        TableRow: {
+            /** Cells */
+            cells: string[];
+        };
+        /** TimelineItem */
+        TimelineItem: {
+            /** Description */
+            description?: string | null;
+            /** Headline */
+            headline: string;
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+            /** Source Id */
+            source_id?: string | null;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Context */
+            ctx?: Record<string, never>;
+            /** Input */
+            input?: unknown;
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+        };
+        /** WarningBanner */
+        WarningBanner: {
+            /** Code */
+            code: string;
+            /** Id */
+            id: string;
+            /** Message */
+            message: string;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "warning_banner";
+        };
+        /** WorkflowRequest */
+        WorkflowRequest: {
+            /** Input */
+            input?: {
+                [key: string]: components["schemas"]["JsonValue"];
+            };
+            /** Session Id */
+            session_id?: string | null;
+        };
+        /** WorkflowResponse */
+        WorkflowResponse: {
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+            response: components["schemas"]["RenderedResponse"];
+            result: components["schemas"]["WorkflowResult"];
+        };
+        /** WorkflowResult */
+        WorkflowResult: {
+            /**
+             * Completed At
+             * Format: date-time
+             */
+            completed_at: string;
+            /**
+             * Run Id
+             * Format: uuid
+             */
+            run_id: string;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            status: components["schemas"]["RunStatus"];
+            /** Steps */
+            steps: {
+                [key: string]: components["schemas"]["CapabilityResult"];
+            };
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: components["schemas"]["CapabilityWarning"][];
+            /** Workflow */
+            workflow: string;
+        };
     };
-    /**
-     * AssetType
-     * @enum {string}
-     */
-    AssetType:
-      | "equity"
-      | "etf"
-      | "index"
-      | "fund"
-      | "currency"
-      | "commodity"
-      | "crypto"
-      | "other";
-    /** CapabilityDescriptor */
-    CapabilityDescriptor: {
-      /**
-       * Dependencies
-       * @default []
-       */
-      dependencies: string[];
-      /** Description */
-      description: string;
-      /**
-       * Idempotent
-       * @default false
-       */
-      idempotent: boolean;
-      /** Name */
-      name: string;
-      /**
-       * Permissions
-       * @default []
-       */
-      permissions: string[];
-      /**
-       * Provides
-       * @default []
-       */
-      provides: string[];
-      /** Version */
-      version: string;
-    };
-    /** CapabilityResult */
-    CapabilityResult: {
-      /** Capability */
-      capability: string;
-      /**
-       * Components
-       * @default []
-       */
-      components: (
-        | components["schemas"]["SummaryCard"]
-        | components["schemas"]["MetricGrid"]
-        | components["schemas"]["PriceChart"]
-        | components["schemas"]["SentimentChart"]
-        | components["schemas"]["NewsTimeline"]
-        | components["schemas"]["PredictionCard"]
-        | components["schemas"]["ScenarioTable"]
-        | components["schemas"]["ComparisonTable"]
-        | components["schemas"]["RiskCard"]
-        | components["schemas"]["SourceList"]
-        | components["schemas"]["WarningBanner"]
-      )[];
-      /** Data */
-      data?: {
-        [key: string]: components["schemas"]["JsonValue"];
-      };
-      metadata: components["schemas"]["RunMetadata"];
-      /**
-       * Sources
-       * @default []
-       */
-      sources: components["schemas"]["EvidenceSource"][];
-      status: components["schemas"]["RunStatus"];
-      /** Summary */
-      summary?: string | null;
-      /**
-       * Warnings
-       * @default []
-       */
-      warnings: components["schemas"]["CapabilityWarning"][];
-    };
-    /** CapabilityWarning */
-    CapabilityWarning: {
-      /** Code */
-      code: string;
-      /** Details */
-      details?: {
-        [key: string]: components["schemas"]["JsonValue"];
-      };
-      /** Message */
-      message: string;
-      /**
-       * Retryable
-       * @default false
-       */
-      retryable: boolean;
-    };
-    /** ChartPoint */
-    ChartPoint: {
-      /**
-       * Timestamp
-       * Format: date-time
-       */
-      timestamp: string;
-      /** Value */
-      value: number;
-    };
-    /** ChartSeries */
-    ChartSeries: {
-      /** Name */
-      name: string;
-      /** Points */
-      points: components["schemas"]["ChartPoint"][];
-    };
-    /** ChatMessage */
-    ChatMessage: {
-      /** Completed At */
-      completed_at?: string | null;
-      /** Content */
-      content: string;
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      error?: components["schemas"]["ApiErrorDetail"] | null;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      response?: components["schemas"]["RenderedResponse"] | null;
-      role: components["schemas"]["ChatRole"];
-      /**
-       * Session Id
-       * Format: uuid
-       */
-      session_id: string;
-      status: components["schemas"]["ChatMessageStatus"];
-      /**
-       * Turn Id
-       * Format: uuid
-       */
-      turn_id: string;
-    };
-    /**
-     * ChatMessageStatus
-     * @enum {string}
-     */
-    ChatMessageStatus:
-      "accepted" | "streaming" | "completed" | "partial" | "failed";
-    /** ChatRequest */
-    ChatRequest: {
-      /**
-       * Client Message Id
-       * Format: uuid
-       */
-      client_message_id: string;
-      /** Message */
-      message: string;
-      /** Session Id */
-      session_id?: string | null;
-    };
-    /**
-     * ChatRole
-     * @enum {string}
-     */
-    ChatRole: "user" | "assistant";
-    /** ChatSession */
-    ChatSession: {
-      /** Archived At */
-      archived_at?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      status: components["schemas"]["ChatSessionStatus"];
-      /** Title */
-      title: string;
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      updated_at: string;
-    };
-    /** ChatSessionCreateRequest */
-    ChatSessionCreateRequest: {
-      /**
-       * Title
-       * @default New chat
-       */
-      title: string;
-    };
-    /** ChatSessionDetail */
-    ChatSessionDetail: {
-      active_turn?: components["schemas"]["ChatTurn"] | null;
-      /**
-       * Messages
-       * @default []
-       */
-      messages: components["schemas"]["ChatMessage"][];
-      session: components["schemas"]["ChatSession"];
-    };
-    /** ChatSessionPage */
-    ChatSessionPage: {
-      /**
-       * Items
-       * @default []
-       */
-      items: components["schemas"]["ChatSession"][];
-      /** Next Cursor */
-      next_cursor?: string | null;
-    };
-    /**
-     * ChatSessionStatus
-     * @enum {string}
-     */
-    ChatSessionStatus: "active" | "archived";
-    /** ChatSessionUpdateRequest */
-    ChatSessionUpdateRequest: {
-      /** Archived */
-      archived?: boolean | null;
-      /** Title */
-      title?: string | null;
-    };
-    /** ChatTurn */
-    ChatTurn: {
-      /** Assistant Message Id */
-      assistant_message_id?: string | null;
-      /**
-       * Attempt
-       * @default 0
-       */
-      attempt: number;
-      /**
-       * Client Message Id
-       * Format: uuid
-       */
-      client_message_id: string;
-      /** Completed At */
-      completed_at?: string | null;
-      /**
-       * Correlation Id
-       * Format: uuid
-       */
-      correlation_id: string;
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      error?: components["schemas"]["ApiErrorDetail"] | null;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Lease Expires At */
-      lease_expires_at?: string | null;
-      /**
-       * Request Id
-       * Format: uuid
-       */
-      request_id: string;
-      /** Run Id */
-      run_id?: string | null;
-      /**
-       * Session Id
-       * Format: uuid
-       */
-      session_id: string;
-      /** Started At */
-      started_at?: string | null;
-      status: components["schemas"]["ChatTurnStatus"];
-      /**
-       * User Message Id
-       * Format: uuid
-       */
-      user_message_id: string;
-    };
-    /** ChatTurnAccepted */
-    ChatTurnAccepted: {
-      /**
-       * Session Id
-       * Format: uuid
-       */
-      session_id: string;
-      status: components["schemas"]["ChatTurnStatus"];
-      /** Stream Url */
-      stream_url: string;
-      /**
-       * Turn Id
-       * Format: uuid
-       */
-      turn_id: string;
-      /**
-       * User Message Id
-       * Format: uuid
-       */
-      user_message_id: string;
-    };
-    /**
-     * ChatTurnStatus
-     * @enum {string}
-     */
-    ChatTurnStatus:
-      | "queued"
-      | "planning"
-      | "executing"
-      | "rendering"
-      | "completed"
-      | "partial"
-      | "failed";
-    /** CommandRequest */
-    CommandRequest: {
-      /** Command */
-      command: string;
-      /** Session Id */
-      session_id?: string | null;
-    };
-    /** CommandResponse */
-    CommandResponse: {
-      /**
-       * Request Id
-       * Format: uuid
-       */
-      request_id: string;
-      response: components["schemas"]["RenderedResponse"];
-      /** Result */
-      result:
-        | components["schemas"]["CapabilityResult"]
-        | components["schemas"]["WorkflowResult"];
-    };
-    /** ComparisonTable */
-    ComparisonTable: {
-      /** Columns */
-      columns: string[];
-      /** Id */
-      id: string;
-      /** Rows */
-      rows: components["schemas"]["TableRow"][];
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "comparison_table";
-    };
-    /**
-     * ComponentStatus
-     * @enum {string}
-     */
-    ComponentStatus: "ready" | "partial" | "empty" | "stale" | "error";
-    /** DependencyHealth */
-    DependencyHealth: {
-      /** Detail */
-      detail?: string | null;
-      /** Latency Ms */
-      latency_ms?: number | null;
-      /** Name */
-      name: string;
-      /**
-       * Status
-       * @enum {string}
-       */
-      status: "healthy" | "unhealthy" | "disabled";
-    };
-    /** EvidenceSource */
-    EvidenceSource: {
-      /** Provider */
-      provider: string;
-      /** Published At */
-      published_at?: string | null;
-      /** Reliability Weight */
-      reliability_weight?: number | null;
-      /**
-       * Retrieved At
-       * Format: date-time
-       */
-      retrieved_at: string;
-      /** Source Id */
-      source_id: string;
-      /** Source Type */
-      source_type: string;
-      /** Title */
-      title: string;
-      /**
-       * Url
-       * Format: uri
-       */
-      url: string;
-    };
-    /** HTTPValidationError */
-    HTTPValidationError: {
-      /** Detail */
-      detail?: components["schemas"]["ValidationError"][];
-    };
-    /** HealthResult */
-    HealthResult: {
-      /**
-       * Checked At
-       * Format: date-time
-       */
-      checked_at: string;
-      /**
-       * Dependencies
-       * @default []
-       */
-      dependencies: components["schemas"]["DependencyHealth"][];
-      /**
-       * Service
-       * @default tradesentinel-api
-       */
-      service: string;
-      /**
-       * Status
-       * @enum {string}
-       */
-      status: "healthy" | "degraded" | "unhealthy";
-      /** Version */
-      version: string;
-    };
-    /** InstrumentAutocompleteOutput */
-    InstrumentAutocompleteOutput: {
-      /** Matches */
-      matches: components["schemas"]["InstrumentMatch"][];
-      /** Query */
-      query: string;
-    };
-    /** InstrumentMatch */
-    InstrumentMatch: {
-      /** Confidence */
-      confidence: number;
-      instrument: components["schemas"]["InstrumentRef"];
-      /**
-       * Matched On
-       * @enum {string}
-       */
-      matched_on: "ticker" | "name" | "alias";
-      /** Matched Value */
-      matched_value: string;
-    };
-    /** InstrumentRef */
-    InstrumentRef: {
-      /**
-       * Aliases
-       * @default []
-       */
-      aliases: string[];
-      asset_type: components["schemas"]["AssetType"];
-      /** Currency */
-      currency: string;
-      /** Exchange */
-      exchange: string;
-      /**
-       * Instrument Id
-       * Format: uuid
-       */
-      instrument_id: string;
-      /** Name */
-      name: string;
-      /** Symbol */
-      symbol: string;
-    };
-    /** InstrumentResolveOutput */
-    InstrumentResolveOutput: {
-      /**
-       * Candidates
-       * @default []
-       */
-      candidates: components["schemas"]["InstrumentMatch"][];
-      match?: components["schemas"]["InstrumentMatch"] | null;
-      /** Query */
-      query: string;
-      /**
-       * Status
-       * @enum {string}
-       */
-      status: "resolved" | "ambiguous" | "not_found";
-    };
-    /** InstrumentSearchOutput */
-    InstrumentSearchOutput: {
-      /** Matches */
-      matches: components["schemas"]["InstrumentMatch"][];
-      /** Query */
-      query: string;
-    };
-    JsonValue: unknown;
-    /** MetricGrid */
-    MetricGrid: {
-      /** Id */
-      id: string;
-      /** Metrics */
-      metrics: components["schemas"]["MetricItem"][];
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "metric_grid";
-    };
-    /** MetricItem */
-    MetricItem: {
-      /** Detail */
-      detail?: string | null;
-      /** Label */
-      label: string;
-      /** Value */
-      value: string;
-    };
-    /** NewsTimeline */
-    NewsTimeline: {
-      /** Id */
-      id: string;
-      /** Items */
-      items: components["schemas"]["TimelineItem"][];
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "news_timeline";
-    };
-    /** PredictionCard */
-    PredictionCard: {
-      /** Confidence */
-      confidence: number;
-      /**
-       * Data Cutoff
-       * Format: date-time
-       */
-      data_cutoff: string;
-      /**
-       * Direction
-       * @enum {string}
-       */
-      direction: "rise" | "sideways" | "decline" | "uncertain";
-      /**
-       * Generated At
-       * Format: date-time
-       */
-      generated_at: string;
-      /** Horizon */
-      horizon: string;
-      /** Id */
-      id: string;
-      /** Model Version */
-      model_version: string;
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "prediction_card";
-    };
-    /** PriceChart */
-    PriceChart: {
-      /** Id */
-      id: string;
-      /** Series */
-      series: components["schemas"]["ChartSeries"][];
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "price_chart";
-    };
-    /** RenderedResponse */
-    RenderedResponse: {
-      /**
-       * Components
-       * @default []
-       */
-      components: (
-        | components["schemas"]["SummaryCard"]
-        | components["schemas"]["MetricGrid"]
-        | components["schemas"]["PriceChart"]
-        | components["schemas"]["SentimentChart"]
-        | components["schemas"]["NewsTimeline"]
-        | components["schemas"]["PredictionCard"]
-        | components["schemas"]["ScenarioTable"]
-        | components["schemas"]["ComparisonTable"]
-        | components["schemas"]["RiskCard"]
-        | components["schemas"]["SourceList"]
-        | components["schemas"]["WarningBanner"]
-      )[];
-      /**
-       * Generated At
-       * Format: date-time
-       */
-      generated_at: string;
-      /** Run Id */
-      run_id?: string | null;
-      /**
-       * Sources
-       * @default []
-       */
-      sources: components["schemas"]["EvidenceSource"][];
-      status: components["schemas"]["RunStatus"];
-      /** Text */
-      text: string;
-      /**
-       * Trace
-       * @default []
-       */
-      trace: string[];
-      /**
-       * Warnings
-       * @default []
-       */
-      warnings: components["schemas"]["CapabilityWarning"][];
-    };
-    /** RiskCard */
-    RiskCard: {
-      /** Id */
-      id: string;
-      /** Risks */
-      risks: components["schemas"]["RiskItem"][];
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "risk_card";
-    };
-    /** RiskItem */
-    RiskItem: {
-      /** Description */
-      description: string;
-      /** Label */
-      label: string;
-      /**
-       * Severity
-       * @enum {string}
-       */
-      severity: "low" | "medium" | "high" | "unknown";
-    };
-    /** RunMetadata */
-    RunMetadata: {
-      /**
-       * Attempts
-       * @default 1
-       */
-      attempts: number;
-      /** Completed At */
-      completed_at?: string | null;
-      /** Data Cutoff */
-      data_cutoff?: string | null;
-      /** Duration Ms */
-      duration_ms?: number | null;
-      /**
-       * Freshness
-       * @default unknown
-       * @enum {string}
-       */
-      freshness: "fresh" | "stale" | "unknown";
-      /** Run Id */
-      run_id?: string | null;
-      /**
-       * Started At
-       * Format: date-time
-       */
-      started_at: string;
-    };
-    /** RunSourcesResponse */
-    RunSourcesResponse: {
-      /**
-       * Run Id
-       * Format: uuid
-       */
-      run_id: string;
-      /**
-       * Sources
-       * @default []
-       */
-      sources: unknown[];
-    };
-    /**
-     * RunStatus
-     * @enum {string}
-     */
-    RunStatus:
-      "pending" | "running" | "completed" | "partial" | "failed" | "skipped";
-    /** ScenarioTable */
-    ScenarioTable: {
-      /** Columns */
-      columns: string[];
-      /** Id */
-      id: string;
-      /** Rows */
-      rows: components["schemas"]["TableRow"][];
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "scenario_table";
-    };
-    /** SentimentChart */
-    SentimentChart: {
-      /** Id */
-      id: string;
-      /** Series */
-      series: components["schemas"]["ChartSeries"][];
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "sentiment_chart";
-    };
-    /** SourceList */
-    SourceList: {
-      /** Id */
-      id: string;
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** Sources */
-      sources: components["schemas"]["EvidenceSource"][];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "source_list";
-    };
-    /** SummaryCard */
-    SummaryCard: {
-      /** Body */
-      body: string;
-      /** Heading */
-      heading: string;
-      /** Id */
-      id: string;
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "summary_card";
-    };
-    /** TableRow */
-    TableRow: {
-      /** Cells */
-      cells: string[];
-    };
-    /** TimelineItem */
-    TimelineItem: {
-      /** Description */
-      description?: string | null;
-      /** Headline */
-      headline: string;
-      /**
-       * Occurred At
-       * Format: date-time
-       */
-      occurred_at: string;
-      /** Source Id */
-      source_id?: string | null;
-    };
-    /** ValidationError */
-    ValidationError: {
-      /** Context */
-      ctx?: Record<string, never>;
-      /** Input */
-      input?: unknown;
-      /** Location */
-      loc: (string | number)[];
-      /** Message */
-      msg: string;
-      /** Error Type */
-      type: string;
-    };
-    /** WarningBanner */
-    WarningBanner: {
-      /** Code */
-      code: string;
-      /** Id */
-      id: string;
-      /** Message */
-      message: string;
-      /**
-       * Source Ids
-       * @default []
-       */
-      source_ids: string[];
-      /** @default ready */
-      status: components["schemas"]["ComponentStatus"];
-      /** Title */
-      title?: string | null;
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "warning_banner";
-    };
-    /** WorkflowRequest */
-    WorkflowRequest: {
-      /** Input */
-      input?: {
-        [key: string]: components["schemas"]["JsonValue"];
-      };
-      /** Session Id */
-      session_id?: string | null;
-    };
-    /** WorkflowResponse */
-    WorkflowResponse: {
-      /**
-       * Request Id
-       * Format: uuid
-       */
-      request_id: string;
-      response: components["schemas"]["RenderedResponse"];
-      result: components["schemas"]["WorkflowResult"];
-    };
-    /** WorkflowResult */
-    WorkflowResult: {
-      /**
-       * Completed At
-       * Format: date-time
-       */
-      completed_at: string;
-      /**
-       * Run Id
-       * Format: uuid
-       */
-      run_id: string;
-      /**
-       * Started At
-       * Format: date-time
-       */
-      started_at: string;
-      status: components["schemas"]["RunStatus"];
-      /** Steps */
-      steps: {
-        [key: string]: components["schemas"]["CapabilityResult"];
-      };
-      /**
-       * Warnings
-       * @default []
-       */
-      warnings: components["schemas"]["CapabilityWarning"][];
-      /** Workflow */
-      workflow: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  list_capabilities_api_v1_capabilities_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    list_capabilities_api_v1_capabilities_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CapabilityDescriptor"][];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    chat_api_v1_chat_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["CapabilityDescriptor"][];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChatRequest"];
+            };
         };
-      };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatTurnAccepted"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-  };
-  chat_api_v1_chat_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    chat_sessions_api_v1_chat_sessions_get: {
+        parameters: {
+            query?: {
+                archived?: boolean;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatSessionPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ChatRequest"];
-      };
+    create_chat_session_api_v1_chat_sessions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChatSessionCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      202: {
-        headers: {
-          [name: string]: unknown;
+    chat_session_api_v1_chat_sessions__session_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ChatTurnAccepted"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatSessionDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  chat_sessions_api_v1_chat_sessions_get: {
-    parameters: {
-      query?: {
-        archived?: boolean;
-        cursor?: string | null;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    update_chat_session_api_v1_chat_sessions__session_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChatSessionUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    get_chat_turn_api_v1_chat_turns__turn_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                turn_id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ChatSessionPage"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatTurn"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  create_chat_session_api_v1_chat_sessions_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    chat_turn_events_api_v1_chat_turns__turn_id__events_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                turn_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ChatSessionCreateRequest"];
-      };
+    list_commands_api_v1_commands_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: components["schemas"]["JsonValue"];
+                    }[];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    execute_command_api_v1_commands_execute_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ChatSession"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommandRequest"];
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommandResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  chat_session_api_v1_chat_sessions__session_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        session_id: string;
-      };
-      cookie?: never;
+    event_stream_api_v1_events_stream_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    autocomplete_instruments_api_v1_instruments_autocomplete_get: {
+        parameters: {
+            query: {
+                q: string;
+                exchange?: string | null;
+                asset_type?: components["schemas"]["AssetType"] | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ChatSessionDetail"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InstrumentAutocompleteOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  update_chat_session_api_v1_chat_sessions__session_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        session_id: string;
-      };
-      cookie?: never;
+    resolve_instrument_api_v1_instruments_resolve_get: {
+        parameters: {
+            query: {
+                q: string;
+                exchange?: string | null;
+                asset_type?: components["schemas"]["AssetType"] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InstrumentResolveOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ChatSessionUpdateRequest"];
-      };
+    search_instruments_api_v1_instruments_search_get: {
+        parameters: {
+            query: {
+                q: string;
+                exchange?: string | null;
+                asset_type?: components["schemas"]["AssetType"] | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InstrumentSearchOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    history_by_symbol_api_v1_instruments__symbol__history_get: {
+        parameters: {
+            query: {
+                start: string;
+                end: string;
+                exchange?: string | null;
+                interval?: components["schemas"]["MarketInterval"];
+            };
+            header?: never;
+            path: {
+                symbol: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ChatSession"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockHistoryOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  get_chat_turn_api_v1_chat_turns__turn_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        turn_id: string;
-      };
-      cookie?: never;
+    quote_by_symbol_api_v1_instruments__symbol__quote_get: {
+        parameters: {
+            query?: {
+                exchange?: string | null;
+            };
+            header?: never;
+            path: {
+                symbol: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockQuoteOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    benchmark_comparison_api_v1_market_data_benchmark_comparison_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ChatTurn"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BenchmarkComparisonInput"];
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarkComparisonOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  chat_turn_events_api_v1_chat_turns__turn_id__events_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        turn_id: string;
-      };
-      cookie?: never;
+    comparison_api_v1_market_data_comparison_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockComparisonInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockComparisonOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    corporate_actions_api_v1_market_data_corporate_actions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockCorporateActionsInput"];
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockCorporateActionsOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  list_commands_api_v1_commands_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    five_year_performance_api_v1_market_data_five_year_performance_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FiveYearPerformanceInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FiveYearPerformanceOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    history_api_v1_market_data_history_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            [key: string]: components["schemas"]["JsonValue"];
-          }[];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockHistoryInput"];
+            };
         };
-      };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockHistoryOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-  };
-  execute_command_api_v1_commands_execute_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    performance_api_v1_market_data_performance_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockPerformanceInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockPerformanceOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CommandRequest"];
-      };
+    quote_api_v1_market_data_quote_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockQuoteInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockQuoteOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    create_prediction_api_v1_predictions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["CommandResponse"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  event_stream_api_v1_events_stream_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_prediction_api_v1_predictions__prediction_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                prediction_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    get_prediction_evaluation_api_v1_predictions__prediction_id__evaluation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                prediction_id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": unknown;
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
     };
-  };
-  autocomplete_instruments_api_v1_instruments_autocomplete_get: {
-    parameters: {
-      query: {
-        q: string;
-        exchange?: string | null;
-        asset_type?: components["schemas"]["AssetType"] | null;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_run_api_v1_runs__run_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    get_run_sources_api_v1_runs__run_id__sources_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["InstrumentAutocompleteOutput"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RunSourcesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  resolve_instrument_api_v1_instruments_resolve_get: {
-    parameters: {
-      query: {
-        q: string;
-        exchange?: string | null;
-        asset_type?: components["schemas"]["AssetType"] | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    execute_workflow_api_v1_workflows__workflow_name__execute_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflow_name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkflowRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    liveness_health_live_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["InstrumentResolveOutput"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthResult"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  search_instruments_api_v1_instruments_search_get: {
-    parameters: {
-      query: {
-        q: string;
-        exchange?: string | null;
-        asset_type?: components["schemas"]["AssetType"] | null;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    readiness_health_ready_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthResult"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["InstrumentSearchOutput"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  instrument_history_api_v1_instruments__symbol__history_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        symbol: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  instrument_quote_api_v1_instruments__symbol__quote_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        symbol: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  create_prediction_api_v1_predictions_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  get_prediction_api_v1_predictions__prediction_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        prediction_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  get_prediction_evaluation_api_v1_predictions__prediction_id__evaluation_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        prediction_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  get_run_api_v1_runs__run_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        run_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  get_run_sources_api_v1_runs__run_id__sources_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        run_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["RunSourcesResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  execute_workflow_api_v1_workflows__workflow_name__execute_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        workflow_name: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["WorkflowRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WorkflowResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  liveness_health_live_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HealthResult"];
-        };
-      };
-    };
-  };
-  readiness_health_ready_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HealthResult"];
-        };
-      };
-    };
-  };
 }

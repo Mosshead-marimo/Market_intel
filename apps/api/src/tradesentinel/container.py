@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from tradesentinel.platform.cache import CacheStore, InMemoryCacheStore, RedisCacheStore
 from tradesentinel.platform.chat import BackgroundTaskRunner, ChatOrchestrator
 from tradesentinel.platform.chat_persistence import (
     ChatRepository,
@@ -56,6 +57,7 @@ class Container:
     settings: Settings
     engine: AsyncEngine
     redis: Redis
+    cache: CacheStore
     events: EventBus
     runs: RunRepository
     rate_limiter: RateLimiter
@@ -94,6 +96,9 @@ def build_container(settings: Settings) -> Container:
     rate_limiter: RateLimiter = (
         RedisRateLimiter(redis) if settings.event_backend == "redis" else InMemoryRateLimiter()
     )
+    cache: CacheStore = (
+        RedisCacheStore(redis) if settings.cache_backend == "redis" else InMemoryCacheStore()
+    )
     capabilities = CapabilityRegistry()
     commands = CommandRegistry()
     intents = IntentRegistry()
@@ -102,6 +107,7 @@ def build_container(settings: Settings) -> Container:
     dependency_resolver.register_instance(Settings, settings)
     dependency_resolver.register_instance(EventBus, events)
     dependency_resolver.register_instance(RateLimiter, rate_limiter)
+    dependency_resolver.register_instance(CacheStore, cache)
     dependency_resolver.register_instance(
         PersistenceResources,
         PersistenceResources(backend=settings.persistence_backend, sessions=session_factory),
@@ -157,6 +163,7 @@ def build_container(settings: Settings) -> Container:
         settings=settings,
         engine=engine,
         redis=redis,
+        cache=cache,
         events=events,
         runs=runs,
         rate_limiter=rate_limiter,

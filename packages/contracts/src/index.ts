@@ -420,6 +420,141 @@ export const instrumentResolveOutputSchema = z
     }
   });
 
+const decimalSchema = z
+  .string()
+  .regex(/^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$/, "Expected a decimal string");
+
+export const providerMetadataSchema = z.object({
+  provider: z.string().min(1),
+  source_id: z.string().min(1),
+  observed_at: z.string().nullable().optional(),
+  retrieved_at: z.string(),
+  timezone: z.string().nullable().optional(),
+  license: z.enum(["internal", "redistributable", "restricted", "unknown"]),
+  freshness: z.enum(["fresh", "stale", "unknown"]),
+});
+
+export const cacheMetadataSchema = z.object({
+  disposition: z.enum(["hit", "miss"]),
+  cached_at: z.string(),
+  expires_at: z.string(),
+});
+
+export const stockQuoteOutputSchema = z.object({
+  instrument: instrumentRefSchema,
+  price: decimalSchema,
+  currency: z.string(),
+  as_of: z.string(),
+  previous_close: decimalSchema.nullable().optional(),
+  change: decimalSchema.nullable().optional(),
+  change_percent: decimalSchema.nullable().optional(),
+  open: decimalSchema.nullable().optional(),
+  high: decimalSchema.nullable().optional(),
+  low: decimalSchema.nullable().optional(),
+  volume: decimalSchema.nullable().optional(),
+  market_status: z.string().nullable().optional(),
+  provider: providerMetadataSchema,
+  cache: cacheMetadataSchema,
+});
+
+const adjustedPriceBarSchema = z.object({
+  timestamp: z.string(),
+  open: decimalSchema,
+  high: decimalSchema,
+  low: decimalSchema,
+  close: decimalSchema,
+  adjusted_close: decimalSchema,
+  volume: decimalSchema.nullable().optional(),
+});
+
+export const stockHistoryOutputSchema = z.object({
+  instrument: instrumentRefSchema,
+  interval: z.enum(["1d", "1wk", "1mo"]),
+  price_basis: z.literal("adjusted"),
+  currency: z.string(),
+  bars: z.array(adjustedPriceBarSchema),
+  provider: providerMetadataSchema,
+  cache: cacheMetadataSchema,
+});
+
+const performanceMetricsSchema = z.object({
+  start_at: z.string(),
+  end_at: z.string(),
+  start_value: decimalSchema,
+  end_value: decimalSchema,
+  observations: z.number().int().min(2),
+  total_return: decimalSchema,
+  cagr: decimalSchema,
+  annualized_volatility: decimalSchema,
+  maximum_drawdown: decimalSchema,
+});
+
+const rebasedPointSchema = z.object({
+  timestamp: z.string(),
+  value: decimalSchema,
+});
+
+export const stockPerformanceOutputSchema = z.object({
+  instrument: instrumentRefSchema,
+  interval: z.enum(["1d", "1wk", "1mo"]),
+  currency: z.string(),
+  metrics: performanceMetricsSchema,
+  series: z.array(rebasedPointSchema),
+  provider: providerMetadataSchema,
+  cache: cacheMetadataSchema,
+});
+
+const stockComparisonItemSchema = stockPerformanceOutputSchema.omit({
+  interval: true,
+});
+
+export const stockComparisonOutputSchema = z.object({
+  start: z.string(),
+  end: z.string(),
+  interval: z.enum(["1d", "1wk", "1mo"]),
+  items: z.array(stockComparisonItemSchema).min(2).max(10),
+});
+
+const stockCorporateActionSchema = z.object({
+  instrument: instrumentRefSchema,
+  action_type: z.enum([
+    "dividend",
+    "split",
+    "spinoff",
+    "merger",
+    "symbol_change",
+    "other",
+  ]),
+  effective_at: z.string(),
+  amount: decimalSchema.nullable().optional(),
+  currency: z.string().nullable().optional(),
+  ratio: decimalSchema.nullable().optional(),
+  provider: providerMetadataSchema,
+});
+
+export const stockCorporateActionsOutputSchema = z.object({
+  instrument: instrumentRefSchema,
+  start: z.string(),
+  end: z.string(),
+  actions: z.array(stockCorporateActionSchema),
+  provider: providerMetadataSchema,
+  cache: cacheMetadataSchema,
+});
+
+export const fiveYearPerformanceOutputSchema = z.object({
+  requested_as_of: z.string(),
+  effective_start: z.string(),
+  performance: stockPerformanceOutputSchema,
+});
+
+export const benchmarkComparisonOutputSchema = z.object({
+  instrument: stockComparisonItemSchema,
+  benchmark: stockComparisonItemSchema,
+  overlapping_observations: z.number().int().min(2),
+  excess_total_return: decimalSchema,
+  excess_cagr: decimalSchema,
+});
+
 export type ResponseComponent = z.infer<typeof responseComponentSchema>;
 export type CapabilityDescriptor = z.infer<typeof capabilityDescriptorSchema>;
 export type CommandDescriptor = z.infer<typeof commandDescriptorSchema>;
@@ -443,4 +578,19 @@ export type InstrumentAutocompleteOutput = z.infer<
 >;
 export type InstrumentResolveOutput = z.infer<
   typeof instrumentResolveOutputSchema
+>;
+export type StockQuoteOutput = z.infer<typeof stockQuoteOutputSchema>;
+export type StockHistoryOutput = z.infer<typeof stockHistoryOutputSchema>;
+export type StockPerformanceOutput = z.infer<
+  typeof stockPerformanceOutputSchema
+>;
+export type StockComparisonOutput = z.infer<typeof stockComparisonOutputSchema>;
+export type StockCorporateActionsOutput = z.infer<
+  typeof stockCorporateActionsOutputSchema
+>;
+export type FiveYearPerformanceOutput = z.infer<
+  typeof fiveYearPerformanceOutputSchema
+>;
+export type BenchmarkComparisonOutput = z.infer<
+  typeof benchmarkComparisonOutputSchema
 >;

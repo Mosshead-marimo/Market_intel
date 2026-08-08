@@ -151,6 +151,8 @@ The class must implement the interface associated with its declared kind. Provid
 
 Modules may declare `api_router: package.module:router`. The API adapter validates that the entrypoint exposes a FastAPI `APIRouter` and includes routers in deterministic manifest order. Routes remain thin and execute their own registered capabilities through the shared pipeline; the platform loader never imports FastAPI or feature routers.
 
+`stock_market_data` demonstrates a required provider port: discovery is automatic, but atomic startup fails if `MarketDataProvider` has no configured manifest adapter. Commands target declarative resolution workflows and the module router exposes structured capability inputs without central API conditionals.
+
 The manifest owns registration metadata. A capability class owns only its input model and async execution method. Annotated constructor dependencies are resolved from registered platform ports or recursively constructed module-private concrete services; unresolved, untyped, abstract, or cyclic dependencies fail startup.
 
 Discovery order is deterministic and registration is atomic. Commands, intents, workflows, and event consumers are generated from manifests after the complete capability graph validates. `platform.system` is the executable reference and contains no market logic.
