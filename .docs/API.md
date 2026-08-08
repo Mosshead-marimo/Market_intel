@@ -93,3 +93,5 @@ Command and workflow routes delegate to the shared execution pipeline. Their res
 Instrument endpoints accept `q`, optional `exchange` and `asset_type`, and bounded `limit` where applicable. Resolve returns HTTP 200 with `resolved`, `ambiguous`, or `not_found`; ambiguity is data rather than a transport error.
 
 Symbol quote/history routes resolve the instrument through manifest workflows. `/market-data` POST routes accept canonical references and return typed contracts. Comparison accepts two to ten instruments; benchmark comparison always requires an explicit benchmark.
+
+When no market-data adapter is configured, discovery and readiness remain available. Market-data execution returns HTTP 503 with `PROVIDER_NOT_CONFIGURED` and `details.kind: market_data`; no synthetic or stale value is substituted.

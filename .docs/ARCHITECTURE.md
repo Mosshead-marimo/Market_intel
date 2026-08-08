@@ -150,6 +150,8 @@ Per-turn Redis Streams retain typed status, typing, progress, response-delta, co
 
 `stock_market_data` depends only on normalized `MarketDataProvider`, the generic cache port, shared instrument contracts, and execution context. Provider calls are cache-aside; calculations always run in the module service over validated adjusted observations. Redis is the deployed cache adapter and memory is the deterministic test adapter. Provider failures never fall back to expired cache data.
 
+The provider factory registers a category-specific unavailable facade for every empty provider chain. This keeps module loading atomic and capabilities discoverable while moving missing-provider failure to the invocation boundary as a typed HTTP 503 error. Explicitly configured but unknown provider names remain startup errors.
+
 Command workflows resolve text through `instrument.resolve` using generic step input bindings. This preserves canonical cross-exchange identity without stock-aware branches in the platform or API composition root.
 
 ## Provider Runtime

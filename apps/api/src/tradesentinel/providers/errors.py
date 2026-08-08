@@ -54,7 +54,7 @@ class ProviderNotConfiguredError(ProviderError):
             "PROVIDER_NOT_CONFIGURED",
             "No provider is configured for the required category.",
             kind=kind,
-            status_code=500,
+            status_code=503,
         )
 
 

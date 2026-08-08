@@ -62,4 +62,4 @@ Provider coverage validates all five interface mappings, strict normalized contr
 
 Instrument coverage validates Unicode normalization, exact/prefix/fuzzy score tiers, aliases, partial names, typo tolerance, stable ordering, exchange and asset filters, typed ambiguity, not-found results, memory/PostgreSQL seed parity, commands, automatic router discovery, HTTP contracts, and reversible migration behavior.
 
-Stock market-data coverage uses a deterministic test-only provider. Tests cover adjusted-history validation, Decimal calculations, cache adapters and TTLs, comparison order, benchmark overlap, leap-day five-year windows, required provider injection, all seven commands, structured endpoints, and architecture boundaries. Production code contains no synthetic adapter.
+Stock market-data coverage uses a deterministic test-only provider. Tests cover adjusted-history validation, Decimal calculations, cache adapters and TTLs, comparison order, benchmark overlap, leap-day five-year windows, lazy missing-provider behavior, all seven commands, structured endpoints, and architecture boundaries. Production code contains no synthetic adapter.

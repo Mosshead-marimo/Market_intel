@@ -51,6 +51,7 @@ from tradesentinel.providers.discovery import ProviderBootstrap
 from tradesentinel.providers.errors import (
     ProviderAuthenticationError,
     ProviderChainExhaustedError,
+    ProviderNotConfiguredError,
     ProviderOutputError,
     ProviderRegistryError,
     ProviderUnavailableError,
@@ -423,16 +424,22 @@ def test_manifest_provider_becomes_constructor_dependency_without_core_registrat
     assert registry.get(ProviderKind.MARKET_DATA, "secondary").adapter_class is SecondaryMarket
 
 
-def test_missing_selection_fails_only_when_a_capability_requires_the_port(
+async def test_missing_selection_registers_typed_unavailable_facade(
     tmp_path: Path,
 ) -> None:
     _write_manifest(tmp_path / "module", "test_providers:InjectedCapability")
     resolver = DependencyResolver()
-    loader, _ = _loader(resolver)
-    with pytest.raises(DependencyResolutionError):
-        ProviderBootstrap(ProviderRegistry(), resolver, InMemoryRateLimiter(), {}).load(
-            loader, (tmp_path,)
-        )
+    loader, capabilities = _loader(resolver)
+    factory = ProviderBootstrap(ProviderRegistry(), resolver, InMemoryRateLimiter(), {}).load(
+        loader, (tmp_path,)
+    )
+    assert capabilities.get("test.provider_capability")
+    assert factory.selected() == ()
+    provider = resolver.resolve(MarketDataProvider)
+    with pytest.raises(ProviderNotConfiguredError) as caught:
+        await provider.get_quote(_context(), _request())
+    assert caught.value.status_code == 503
+    assert caught.value.details == {"kind": "market_data"}
 
 
 def test_provider_and_dependency_registration_roll_back_atomically(tmp_path: Path) -> None:

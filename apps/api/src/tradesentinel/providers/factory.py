@@ -81,6 +81,8 @@ class _ProviderChain:
         request: object,
         output: TypeAdapter[OutputT],
     ) -> OutputT:
+        if not self._providers:
+            raise ProviderNotConfiguredError(self._kind)
         attempted: list[str] = []
         for descriptor, adapter in self._providers:
             attempted.append(descriptor.name)
@@ -261,6 +263,8 @@ class ProviderFactory:
         for kind in ProviderKind:
             names = selections.get(kind, ())
             if not names:
+                unavailable = CHAIN_BY_KIND[kind](kind, (), self.rate_limiter)
+                self.resolver.register_instance(INTERFACE_BY_KIND[kind], unavailable)
                 continue
             if len(names) != len(set(names)):
                 raise ProviderRegistryError(
