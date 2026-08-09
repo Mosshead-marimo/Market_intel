@@ -46,3 +46,4 @@
 - Logs contain provider identity, operation, duration, error code, and correlation IDs, never request payloads, raw responses, credentials, or tokens.
 - Authentication, configuration, licensing, and invalid-output failures are permanent and cannot silently fall through to another vendor.
 - Research rules inspect untrusted text as data only. They never execute retrieved instructions, render raw HTML, log bodies, or forward content to an LLM. Persisted excerpts are bounded by configuration.
+Public discussions are untrusted input. The sentiment module never executes or renders embedded instructions, never logs discussion text or author identifiers in lifecycle events, hashes author identifiers before persistence, bounds stored excerpts, and rejects unrestricted provider payload storage. URLs remain typed optional evidence metadata.

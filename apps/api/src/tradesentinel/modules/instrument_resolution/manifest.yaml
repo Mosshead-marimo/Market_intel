@@ -21,6 +21,11 @@ capabilities:
     provides:
       - instrument_suggestions
     idempotent: true
+  - name: instrument.catalog
+    class_path: tradesentinel.modules.instrument_resolution.capability:CatalogCapability
+    description: Returns the complete active canonical instrument catalog
+    provides: [instrument_catalog]
+    idempotent: true
 commands:
   - name: /search
     description: Search the canonical instrument catalog

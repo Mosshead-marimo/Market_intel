@@ -5,6 +5,8 @@ from datetime import UTC, datetime
 from tradesentinel.domain.instruments import (
     InstrumentAutocompleteInput,
     InstrumentAutocompleteOutput,
+    InstrumentCatalogInput,
+    InstrumentCatalogOutput,
     InstrumentMatch,
     InstrumentResolveInput,
     InstrumentResolveOutput,
@@ -154,3 +156,30 @@ class AutocompleteCapability(Capability[InstrumentAutocompleteInput]):
         del context
         started = datetime.now(UTC)
         return _result(await self._service.autocomplete(payload), started)
+
+
+class CatalogCapability(Capability[InstrumentCatalogInput]):
+    input_model = InstrumentCatalogInput
+
+    def __init__(self, service: InstrumentResolutionService) -> None:
+        self._service = service
+
+    async def execute(
+        self, context: ExecutionContext, payload: InstrumentCatalogInput
+    ) -> CapabilityResult:
+        del context, payload
+        started = datetime.now(UTC)
+        output: InstrumentCatalogOutput = await self._service.catalog()
+        completed = datetime.now(UTC)
+        return CapabilityResult(
+            capability="",
+            status=RunStatus.COMPLETED,
+            data=output.model_dump(mode="json"),
+            summary=f"Loaded {len(output.instruments)} active catalog instruments.",
+            metadata=RunMetadata(
+                started_at=started,
+                completed_at=completed,
+                duration_ms=max(0, int((completed - started).total_seconds() * 1_000)),
+                freshness="unknown",
+            ),
+        )

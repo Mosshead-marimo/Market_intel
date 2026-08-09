@@ -664,6 +664,128 @@ export const researchReportOutputSchema = z.object({
   warnings: z.array(z.string()),
 });
 
+export const sentimentLabelSchema = z.enum([
+  "positive",
+  "neutral",
+  "negative",
+  "unknown",
+]);
+
+const sentimentEvidenceSchema = z.object({
+  source_id: z.string(),
+  provider: z.string(),
+  source_type: z.string(),
+  observed_at: z.string(),
+  retrieved_at: z.string(),
+  url: z.string().url().nullable().optional(),
+  untrusted: z.literal(true),
+});
+
+const sentimentSignalSchema = z.object({
+  label: sentimentLabelSchema,
+  score: decimalSchema.nullable().optional(),
+  confidence: decimalSchema.nullable().optional(),
+  method: z.enum(["provider", "lexicon", "none"]),
+  version: z.string(),
+  positive_hits: z.number().int().nonnegative(),
+  negative_hits: z.number().int().nonnegative(),
+});
+
+export const discussionSchema = z.object({
+  discussion_id: z.string().uuid(),
+  provider_source_id: z.string(),
+  text_excerpt: z.string(),
+  content_hash: z.string().regex(/^[0-9a-f]{64}$/),
+  occurred_at: z.string(),
+  author_hash: z
+    .string()
+    .regex(/^[0-9a-f]{64}$/)
+    .nullable()
+    .optional(),
+  language: z.string(),
+  engagement_count: z.number().int().nonnegative(),
+  provider_spam: z.boolean(),
+  evidence: sentimentEvidenceSchema,
+  signal: sentimentSignalSchema,
+});
+
+const windowMetricsSchema = z.object({
+  start: z.string(),
+  end: z.string(),
+  mention_count: z.number().int().nonnegative(),
+  usable_count: z.number().int().nonnegative(),
+  positive_share: decimalSchema.nullable().optional(),
+  neutral_share: decimalSchema.nullable().optional(),
+  negative_share: decimalSchema.nullable().optional(),
+  mean_score: decimalSchema.nullable().optional(),
+  agreement: decimalSchema.nullable().optional(),
+  mean_signal_confidence: decimalSchema.nullable().optional(),
+});
+
+export const sentimentSnapshotSchema = z.object({
+  snapshot_id: z.string().uuid(),
+  target: instrumentRefSchema,
+  status: z.enum(["completed", "partial", "empty", "insufficient"]),
+  as_of: z.string(),
+  current: windowMetricsSchema,
+  previous: windowMetricsSchema,
+  volume_change: decimalSchema.nullable().optional(),
+  confidence: decimalSchema.nullable().optional(),
+  co_mentions: z.array(instrumentRefSchema),
+  warnings: z.array(z.string()),
+  lexicon_version: z.string(),
+});
+
+export const sentimentNarrativeSchema = z.object({
+  narrative_id: z.string().uuid(),
+  topic: z.string(),
+  method: z.enum(["taxonomy", "ngram"]),
+  sentiment: sentimentLabelSchema,
+  weighted_share: decimalSchema,
+  mention_count: z.number().int().positive(),
+  confidence: decimalSchema,
+  discussion_ids: z.array(z.string().uuid()),
+  providers: z.array(z.string()),
+  observation_timestamps: z.array(z.string()),
+});
+
+export const sentimentTrendSchema = z.object({
+  target: instrumentRefSchema,
+  status: z.enum(["completed", "partial", "empty", "insufficient"]),
+  direction: z.enum(["improving", "stable", "deteriorating", "insufficient"]),
+  slope: decimalSchema.nullable().optional(),
+  acceleration: decimalSchema.nullable().optional(),
+  buckets: z.array(
+    z.object({
+      day: z.string(),
+      mention_count: z.number().int().nonnegative(),
+      mean_score: decimalSchema.nullable().optional(),
+    }),
+  ),
+});
+
+export const sentimentShiftSchema = z
+  .object({
+    target: instrumentRefSchema,
+    status: z.enum(["completed", "partial", "empty", "insufficient"]),
+    shift_score: decimalSchema.nullable().optional(),
+    sentiment_component: decimalSchema.nullable().optional(),
+    volume_component: decimalSchema.nullable().optional(),
+    description: z.string(),
+  })
+  .strict();
+
+export const publicSentimentAnalysisSchema = z.object({
+  snapshot: sentimentSnapshotSchema,
+  narratives: z.object({
+    target: instrumentRefSchema,
+    status: z.enum(["completed", "partial", "empty", "insufficient"]),
+    narratives: z.array(sentimentNarrativeSchema),
+  }),
+  trend: sentimentTrendSchema,
+  shift: sentimentShiftSchema,
+});
+
 export type ResponseComponent = z.infer<typeof responseComponentSchema>;
 export type CapabilityDescriptor = z.infer<typeof capabilityDescriptorSchema>;
 export type CommandDescriptor = z.infer<typeof commandDescriptorSchema>;
@@ -714,3 +836,11 @@ export type ResearchEvidenceOutput = z.infer<
   typeof researchEvidenceOutputSchema
 >;
 export type ResearchReportOutput = z.infer<typeof researchReportOutputSchema>;
+export type Discussion = z.infer<typeof discussionSchema>;
+export type SentimentSnapshot = z.infer<typeof sentimentSnapshotSchema>;
+export type SentimentNarrative = z.infer<typeof sentimentNarrativeSchema>;
+export type SentimentTrend = z.infer<typeof sentimentTrendSchema>;
+export type SentimentShift = z.infer<typeof sentimentShiftSchema>;
+export type PublicSentimentAnalysis = z.infer<
+  typeof publicSentimentAnalysisSchema
+>;

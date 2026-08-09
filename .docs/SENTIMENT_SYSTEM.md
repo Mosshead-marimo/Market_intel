@@ -48,3 +48,6 @@ Public sentiment is not verified financial truth.
 - Language detection
 - Timestamp normalization
 - Confidence reduction for sparse data
+## Implemented deterministic runtime
+
+The `public_sentiment` module implements collection, spam removal, whole-catalog company detection, source weighting, aggregation, narratives, trends, and descriptive shifts as separate capabilities. Provider signal triples take precedence over `lexicon-v1`; unmatched text is explicitly unknown and excluded. Engagement uses `1 + min(log1p(count) / 10, 0.5)`. The shift score is bounded and descriptive, with no price or direction prediction. See ADR 0018 for rationale and privacy boundaries.

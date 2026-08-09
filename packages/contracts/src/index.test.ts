@@ -6,6 +6,9 @@ import {
   researchClaimSchema,
   researchReportOutputSchema,
   responseComponentSchema,
+  sentimentLabelSchema,
+  sentimentShiftSchema,
+  sentimentSnapshotSchema,
   stockQuoteOutputSchema,
 } from "./index";
 
@@ -183,5 +186,62 @@ describe("research evidence contracts", () => {
         warnings: [],
       }).events[0]?.event_type,
     ).toBe("earnings");
+  });
+});
+
+describe("public sentiment contracts", () => {
+  const instrument = {
+    instrument_id: "00000000-0000-4000-8000-000000000001",
+    symbol: "MSFT",
+    name: "Microsoft Corporation",
+    exchange: "NASDAQ",
+    asset_type: "equity",
+    currency: "USD",
+    aliases: ["Microsoft"],
+  } as const;
+
+  it("preserves explicit empty metrics", () => {
+    const window = {
+      start: "2026-08-01T00:00:00Z",
+      end: "2026-08-08T00:00:00Z",
+      mention_count: 0,
+      usable_count: 0,
+      positive_share: null,
+      neutral_share: null,
+      negative_share: null,
+      mean_score: null,
+      agreement: null,
+      mean_signal_confidence: null,
+    };
+    expect(
+      sentimentSnapshotSchema.parse({
+        snapshot_id: "00000000-0000-4000-8000-000000000002",
+        target: instrument,
+        status: "empty",
+        as_of: window.end,
+        current: window,
+        previous: window,
+        volume_change: null,
+        confidence: null,
+        co_mentions: [],
+        warnings: ["No usable sentiment observations were available."],
+        lexicon_version: "lexicon-v1",
+      }).current.mean_score,
+    ).toBeNull();
+  });
+
+  it("rejects predictive shift labels by contract", () => {
+    expect(() =>
+      sentimentShiftSchema.parse({
+        target: instrument,
+        status: "completed",
+        shift_score: "0.25",
+        sentiment_component: "0.20",
+        volume_component: "0.40",
+        description: "Observed change only.",
+        prediction: "up",
+      }),
+    ).toThrow();
+    expect(sentimentLabelSchema.safeParse("bullish").success).toBe(false);
   });
 });

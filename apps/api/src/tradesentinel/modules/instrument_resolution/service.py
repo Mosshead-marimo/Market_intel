@@ -8,6 +8,7 @@ from typing import Literal
 from tradesentinel.domain.instruments import (
     InstrumentAutocompleteInput,
     InstrumentAutocompleteOutput,
+    InstrumentCatalogOutput,
     InstrumentMatch,
     InstrumentRef,
     InstrumentResolveInput,
@@ -93,6 +94,9 @@ class InstrumentResolutionService:
             ]
         )[: request.limit]
         return InstrumentSearchOutput(query=request.query.strip(), matches=matches)
+
+    async def catalog(self) -> InstrumentCatalogOutput:
+        return InstrumentCatalogOutput(instruments=await self._repository.list_active())
 
     async def autocomplete(
         self, request: InstrumentAutocompleteInput

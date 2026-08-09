@@ -48,6 +48,25 @@ class Settings(BaseSettings):
     research_evidence_excerpt_length: int = Field(default=280, ge=40, le=2_000)
     research_extraction_version: str = Field(default="rules-v1", min_length=1, max_length=64)
     research_default_search_limit: int = Field(default=20, ge=1, le=100)
+    sentiment_lexicon_version: str = Field(default="lexicon-v1", min_length=1, max_length=64)
+    sentiment_excerpt_length: int = Field(default=280, ge=40, le=2_000)
+    sentiment_minimum_mentions: int = Field(default=3, ge=1, le=1_000)
+    sentiment_spam_minimum_tokens: int = Field(default=3, ge=1, le=20)
+    sentiment_spam_max_urls: int = Field(default=3, ge=0, le=20)
+    sentiment_spam_max_tags: int = Field(default=8, ge=0, le=100)
+    sentiment_spam_repeated_ratio: float = Field(default=0.60, ge=0, le=1)
+    sentiment_spam_author_burst: int = Field(default=5, ge=1, le=100)
+    sentiment_narrative_limit: int = Field(default=10, ge=1, le=50)
+    sentiment_provider_weights: dict[str, float] = Field(default_factory=dict)
+    sentiment_source_type_weights: dict[str, float] = Field(default_factory=dict)
+    sentiment_trend_stability_threshold: float = Field(default=0.02, ge=0, le=1)
+
+    @model_validator(mode="after")
+    def validate_sentiment_weights(self) -> Settings:
+        for group in (self.sentiment_provider_weights, self.sentiment_source_type_weights):
+            if any(weight < 0 or weight > 10 for weight in group.values()):
+                raise ValueError("sentiment weights must be between 0 and 10")
+        return self
 
     @model_validator(mode="after")
     def production_requires_external_infrastructure(self) -> Settings:

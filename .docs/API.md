@@ -53,6 +53,16 @@ GET  /api/v1/research/news
 POST /api/v1/research/timeline
 POST /api/v1/research/reports
 GET  /api/v1/research/events/{event_id}/evidence
+
+POST /api/v1/sentiment/analyze
+POST /api/v1/sentiment/discussions/collect
+POST /api/v1/sentiment/spam/remove
+POST /api/v1/sentiment/companies/detect
+POST /api/v1/sentiment/sources/weight
+POST /api/v1/sentiment/aggregate
+POST /api/v1/sentiment/narratives
+POST /api/v1/sentiment/trend
+POST /api/v1/sentiment/shift
 ```
 
 ### Predictions
@@ -93,7 +103,7 @@ Example event types:
 
 ## Foundation Behavior
 
-`POST /api/v1/chat` returns HTTP 202 with a durable turn and per-turn stream URL. The stream replays after `Last-Event-ID`, sends heartbeats every 15 seconds, and closes on `complete` or `error`. Session operations are scoped to the anonymous browser principal. Instrument, market-data, and deterministic research routes are installed; prediction routes continue to return typed HTTP 501 `CAPABILITY_NOT_INSTALLED` responses.
+`POST /api/v1/chat` returns HTTP 202 with a durable turn and per-turn stream URL. The stream replays after `Last-Event-ID`, sends heartbeats every 15 seconds, and closes on `complete` or `error`. Session operations are scoped to the anonymous browser principal. Instrument, market-data, deterministic research, and public-sentiment routes are installed; prediction routes continue to return typed HTTP 501 `CAPABILITY_NOT_INSTALLED` responses. With no configured sentiment provider, public-sentiment invocation returns typed HTTP 503 `PROVIDER_NOT_CONFIGURED`.
 
 Every response includes `X-Request-ID`. Domain errors include the same UUID in the response body. The additional foundation endpoint `POST /api/v1/workflows/{workflow_name}/execute` executes a registered declarative workflow.
 

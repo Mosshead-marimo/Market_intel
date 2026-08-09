@@ -155,6 +155,8 @@ Modules may declare `api_router: package.module:router`. The API adapter validat
 
 `research` follows the same lazy news-provider boundary. Its manifest registers search, deduplication, extraction, timeline, report, and evidence capabilities plus two workflows and module-owned routes. The service applies versioned deterministic rules and writes only through its repository to the `research` schema; no platform or central API code names a research target.
 
+`public_sentiment` registers collection, spam removal, company detection, source weighting, aggregation, narrative extraction, trend detection, and shift detection. The workflow obtains the resolved target and complete catalog through public instrument capabilities. This preserves module privacy: sentiment code imports only shared instrument contracts and never instrument repository or service internals.
+
 The manifest owns registration metadata. A capability class owns only its input model and async execution method. Annotated constructor dependencies are resolved from registered platform ports or recursively constructed module-private concrete services; unresolved, untyped, abstract, or cyclic dependencies fail startup.
 
 Discovery order is deterministic and registration is atomic. Commands, intents, workflows, and event consumers are generated from manifests after the complete capability graph validates. `platform.system` is the executable reference and contains no market logic.

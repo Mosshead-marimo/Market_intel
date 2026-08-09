@@ -58,6 +58,63 @@
         "title": "AdjustedPriceBar",
         "type": "object"
       },
+      "AggregateSentimentInput": {
+        "additionalProperties": false,
+        "properties": {
+          "co_mentions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Co Mentions",
+            "type": "array"
+          },
+          "current_start": {
+            "format": "date-time",
+            "title": "Current Start",
+            "type": "string"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/WeightedObservation-Input"
+            },
+            "title": "Observations",
+            "type": "array"
+          },
+          "previous_start": {
+            "format": "date-time",
+            "title": "Previous Start",
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "observations",
+          "previous_start",
+          "current_start",
+          "end"
+        ],
+        "title": "AggregateSentimentInput",
+        "type": "object"
+      },
+      "AnalysisStatus": {
+        "enum": [
+          "completed",
+          "partial",
+          "empty",
+          "insufficient"
+        ],
+        "title": "AnalysisStatus",
+        "type": "string"
+      },
       "ApiErrorDetail": {
         "additionalProperties": false,
         "properties": {
@@ -913,6 +970,84 @@
         "title": "ChatTurnStatus",
         "type": "string"
       },
+      "CollectDiscussionsInput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "limit": {
+            "default": 500,
+            "maximum": 1000.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "window_days": {
+            "default": 7,
+            "maximum": 90.0,
+            "minimum": 1.0,
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "title": "CollectDiscussionsInput",
+        "type": "object"
+      },
+      "CollectedDiscussions": {
+        "additionalProperties": false,
+        "properties": {
+          "current_start": {
+            "format": "date-time",
+            "title": "Current Start",
+            "type": "string"
+          },
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/Discussion-Output"
+            },
+            "title": "Discussions",
+            "type": "array"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "previous_start": {
+            "format": "date-time",
+            "title": "Previous Start",
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "previous_start",
+          "current_start",
+          "end",
+          "discussions"
+        ],
+        "title": "CollectedDiscussions",
+        "type": "object"
+      },
       "CommandRequest": {
         "additionalProperties": false,
         "properties": {
@@ -970,6 +1105,151 @@
           "response"
         ],
         "title": "CommandResponse",
+        "type": "object"
+      },
+      "CompanyDetectionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "catalog": {
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Catalog",
+            "type": "array"
+          },
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/Discussion-Input"
+            },
+            "title": "Discussions",
+            "type": "array"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "catalog",
+          "discussions"
+        ],
+        "title": "CompanyDetectionInput",
+        "type": "object"
+      },
+      "CompanyDetectionOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "co_mentions": {
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Co Mentions",
+            "type": "array"
+          },
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/DetectedDiscussion-Output"
+            },
+            "title": "Discussions",
+            "type": "array"
+          },
+          "relevant": {
+            "items": {
+              "$ref": "#/components/schemas/DetectedDiscussion-Output"
+            },
+            "title": "Relevant",
+            "type": "array"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "discussions",
+          "relevant",
+          "co_mentions"
+        ],
+        "title": "CompanyDetectionOutput",
+        "type": "object"
+      },
+      "CompanyMention-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "matched_value": {
+            "title": "Matched Value",
+            "type": "string"
+          },
+          "method": {
+            "enum": [
+              "cashtag",
+              "symbol",
+              "name",
+              "alias"
+            ],
+            "title": "Method",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "matched_value",
+          "method",
+          "confidence"
+        ],
+        "title": "CompanyMention",
+        "type": "object"
+      },
+      "CompanyMention-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "matched_value": {
+            "title": "Matched Value",
+            "type": "string"
+          },
+          "method": {
+            "enum": [
+              "cashtag",
+              "symbol",
+              "name",
+              "alias"
+            ],
+            "title": "Method",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "matched_value",
+          "method",
+          "confidence"
+        ],
+        "title": "CompanyMention",
         "type": "object"
       },
       "ComparisonTable": {
@@ -1109,6 +1389,204 @@
           "status"
         ],
         "title": "DependencyHealth",
+        "type": "object"
+      },
+      "DetectedDiscussion-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion": {
+            "$ref": "#/components/schemas/Discussion-Input"
+          },
+          "mentions": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyMention-Input"
+            },
+            "title": "Mentions",
+            "type": "array"
+          },
+          "target_relevant": {
+            "title": "Target Relevant",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "discussion",
+          "mentions",
+          "target_relevant"
+        ],
+        "title": "DetectedDiscussion",
+        "type": "object"
+      },
+      "DetectedDiscussion-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion": {
+            "$ref": "#/components/schemas/Discussion-Output"
+          },
+          "mentions": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyMention-Output"
+            },
+            "title": "Mentions",
+            "type": "array"
+          },
+          "target_relevant": {
+            "title": "Target Relevant",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "discussion",
+          "mentions",
+          "target_relevant"
+        ],
+        "title": "DetectedDiscussion",
+        "type": "object"
+      },
+      "Discussion-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "author_hash": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Hash"
+          },
+          "content_hash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "discussion_id": {
+            "format": "uuid",
+            "title": "Discussion Id",
+            "type": "string"
+          },
+          "engagement_count": {
+            "minimum": 0.0,
+            "title": "Engagement Count",
+            "type": "integer"
+          },
+          "evidence": {
+            "$ref": "#/components/schemas/SentimentEvidence"
+          },
+          "language": {
+            "title": "Language",
+            "type": "string"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "provider_source_id": {
+            "title": "Provider Source Id",
+            "type": "string"
+          },
+          "provider_spam": {
+            "title": "Provider Spam",
+            "type": "boolean"
+          },
+          "signal": {
+            "$ref": "#/components/schemas/SentimentSignal-Input"
+          },
+          "text_excerpt": {
+            "title": "Text Excerpt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "discussion_id",
+          "provider_source_id",
+          "text_excerpt",
+          "content_hash",
+          "occurred_at",
+          "language",
+          "engagement_count",
+          "provider_spam",
+          "evidence",
+          "signal"
+        ],
+        "title": "Discussion",
+        "type": "object"
+      },
+      "Discussion-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "author_hash": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Hash"
+          },
+          "content_hash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "discussion_id": {
+            "format": "uuid",
+            "title": "Discussion Id",
+            "type": "string"
+          },
+          "engagement_count": {
+            "minimum": 0.0,
+            "title": "Engagement Count",
+            "type": "integer"
+          },
+          "evidence": {
+            "$ref": "#/components/schemas/SentimentEvidence"
+          },
+          "language": {
+            "title": "Language",
+            "type": "string"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "provider_source_id": {
+            "title": "Provider Source Id",
+            "type": "string"
+          },
+          "provider_spam": {
+            "title": "Provider Spam",
+            "type": "boolean"
+          },
+          "signal": {
+            "$ref": "#/components/schemas/SentimentSignal-Output"
+          },
+          "text_excerpt": {
+            "title": "Text Excerpt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "discussion_id",
+          "provider_source_id",
+          "text_excerpt",
+          "content_hash",
+          "occurred_at",
+          "language",
+          "engagement_count",
+          "provider_spam",
+          "evidence",
+          "signal"
+        ],
+        "title": "Discussion",
         "type": "object"
       },
       "DuplicateGroup": {
@@ -1592,6 +2070,141 @@
         "title": "MetricItem",
         "type": "object"
       },
+      "Narrative": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "discussion_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Discussion Ids",
+            "type": "array"
+          },
+          "mention_count": {
+            "minimum": 1.0,
+            "title": "Mention Count",
+            "type": "integer"
+          },
+          "method": {
+            "enum": [
+              "taxonomy",
+              "ngram"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "narrative_id": {
+            "format": "uuid",
+            "title": "Narrative Id",
+            "type": "string"
+          },
+          "observation_timestamps": {
+            "items": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "title": "Observation Timestamps",
+            "type": "array"
+          },
+          "providers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Providers",
+            "type": "array"
+          },
+          "sentiment": {
+            "$ref": "#/components/schemas/SentimentLabel"
+          },
+          "topic": {
+            "title": "Topic",
+            "type": "string"
+          },
+          "weighted_share": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Weighted Share",
+            "type": "string"
+          }
+        },
+        "required": [
+          "narrative_id",
+          "topic",
+          "method",
+          "sentiment",
+          "weighted_share",
+          "mention_count",
+          "confidence",
+          "discussion_ids",
+          "providers",
+          "observation_timestamps"
+        ],
+        "title": "Narrative",
+        "type": "object"
+      },
+      "NarrativeExtractionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "current_start": {
+            "format": "date-time",
+            "title": "Current Start",
+            "type": "string"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/WeightedObservation-Input"
+            },
+            "title": "Observations",
+            "type": "array"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "observations",
+          "current_start",
+          "end"
+        ],
+        "title": "NarrativeExtractionInput",
+        "type": "object"
+      },
+      "NarrativeList": {
+        "additionalProperties": false,
+        "properties": {
+          "narratives": {
+            "items": {
+              "$ref": "#/components/schemas/Narrative"
+            },
+            "title": "Narratives",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "status",
+          "narratives"
+        ],
+        "title": "NarrativeList",
+        "type": "object"
+      },
       "NewsSearchInput": {
         "additionalProperties": false,
         "properties": {
@@ -1971,6 +2584,31 @@
           "retrieved_at"
         ],
         "title": "ProviderMetadata",
+        "type": "object"
+      },
+      "PublicSentimentAnalysis": {
+        "additionalProperties": false,
+        "properties": {
+          "narratives": {
+            "$ref": "#/components/schemas/NarrativeList"
+          },
+          "shift": {
+            "$ref": "#/components/schemas/SentimentShift"
+          },
+          "snapshot": {
+            "$ref": "#/components/schemas/SentimentSnapshot-Output"
+          },
+          "trend": {
+            "$ref": "#/components/schemas/SentimentTrend"
+          }
+        },
+        "required": [
+          "snapshot",
+          "narratives",
+          "trend",
+          "shift"
+        ],
+        "title": "PublicSentimentAnalysis",
         "type": "object"
       },
       "RebasedPoint": {
@@ -2809,6 +3447,61 @@
         "title": "ScenarioTable",
         "type": "object"
       },
+      "SentimentAnalysisInput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "limit": {
+            "default": 500,
+            "maximum": 1000.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          },
+          "window_days": {
+            "default": 7,
+            "maximum": 90.0,
+            "minimum": 1.0,
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "SentimentAnalysisInput",
+        "type": "object"
+      },
       "SentimentChart": {
         "additionalProperties": false,
         "properties": {
@@ -2860,6 +3553,512 @@
         "title": "SentimentChart",
         "type": "object"
       },
+      "SentimentEvidence": {
+        "additionalProperties": false,
+        "properties": {
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "retrieved_at": {
+            "format": "date-time",
+            "title": "Retrieved At",
+            "type": "string"
+          },
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "source_type": {
+            "title": "Source Type",
+            "type": "string"
+          },
+          "untrusted": {
+            "const": true,
+            "default": true,
+            "title": "Untrusted",
+            "type": "boolean"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "source_id",
+          "provider",
+          "source_type",
+          "observed_at",
+          "retrieved_at"
+        ],
+        "title": "SentimentEvidence",
+        "type": "object"
+      },
+      "SentimentLabel": {
+        "enum": [
+          "positive",
+          "neutral",
+          "negative",
+          "unknown"
+        ],
+        "title": "SentimentLabel",
+        "type": "string"
+      },
+      "SentimentShift": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "sentiment_component": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentiment Component"
+          },
+          "shift_score": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shift Score"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "volume_component": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Volume Component"
+          }
+        },
+        "required": [
+          "target",
+          "status",
+          "description"
+        ],
+        "title": "SentimentShift",
+        "type": "object"
+      },
+      "SentimentSignal-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "label": {
+            "$ref": "#/components/schemas/SentimentLabel"
+          },
+          "method": {
+            "enum": [
+              "provider",
+              "lexicon",
+              "none"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "negative_hits": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Negative Hits",
+            "type": "integer"
+          },
+          "positive_hits": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Positive Hits",
+            "type": "integer"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": -1.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "method",
+          "version"
+        ],
+        "title": "SentimentSignal",
+        "type": "object"
+      },
+      "SentimentSignal-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "label": {
+            "$ref": "#/components/schemas/SentimentLabel"
+          },
+          "method": {
+            "enum": [
+              "provider",
+              "lexicon",
+              "none"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "negative_hits": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Negative Hits",
+            "type": "integer"
+          },
+          "positive_hits": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Positive Hits",
+            "type": "integer"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "method",
+          "version"
+        ],
+        "title": "SentimentSignal",
+        "type": "object"
+      },
+      "SentimentSnapshot-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "co_mentions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Co Mentions",
+            "type": "array"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "current": {
+            "$ref": "#/components/schemas/WindowMetrics-Input"
+          },
+          "lexicon_version": {
+            "title": "Lexicon Version",
+            "type": "string"
+          },
+          "previous": {
+            "$ref": "#/components/schemas/WindowMetrics-Input"
+          },
+          "snapshot_id": {
+            "format": "uuid",
+            "title": "Snapshot Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "volume_change": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Volume Change"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "snapshot_id",
+          "target",
+          "status",
+          "as_of",
+          "current",
+          "previous",
+          "lexicon_version"
+        ],
+        "title": "SentimentSnapshot",
+        "type": "object"
+      },
+      "SentimentSnapshot-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "co_mentions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Co Mentions",
+            "type": "array"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "current": {
+            "$ref": "#/components/schemas/WindowMetrics-Output"
+          },
+          "lexicon_version": {
+            "title": "Lexicon Version",
+            "type": "string"
+          },
+          "previous": {
+            "$ref": "#/components/schemas/WindowMetrics-Output"
+          },
+          "snapshot_id": {
+            "format": "uuid",
+            "title": "Snapshot Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "volume_change": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Volume Change"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "snapshot_id",
+          "target",
+          "status",
+          "as_of",
+          "current",
+          "previous",
+          "lexicon_version"
+        ],
+        "title": "SentimentSnapshot",
+        "type": "object"
+      },
+      "SentimentTrend": {
+        "additionalProperties": false,
+        "properties": {
+          "acceleration": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acceleration"
+          },
+          "buckets": {
+            "items": {
+              "$ref": "#/components/schemas/TrendBucket"
+            },
+            "title": "Buckets",
+            "type": "array"
+          },
+          "direction": {
+            "enum": [
+              "improving",
+              "stable",
+              "deteriorating",
+              "insufficient"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "slope": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slope"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "status",
+          "direction",
+          "buckets"
+        ],
+        "title": "SentimentTrend",
+        "type": "object"
+      },
+      "ShiftDetectionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "snapshot": {
+            "$ref": "#/components/schemas/SentimentSnapshot-Input"
+          }
+        },
+        "required": [
+          "snapshot"
+        ],
+        "title": "ShiftDetectionInput",
+        "type": "object"
+      },
       "SourceList": {
         "additionalProperties": false,
         "properties": {
@@ -2909,6 +4108,119 @@
           "sources"
         ],
         "title": "SourceList",
+        "type": "object"
+      },
+      "SourceWeightInput": {
+        "additionalProperties": false,
+        "properties": {
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/DetectedDiscussion-Input"
+            },
+            "title": "Discussions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "discussions"
+        ],
+        "title": "SourceWeightInput",
+        "type": "object"
+      },
+      "SourceWeightOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/WeightedObservation-Output"
+            },
+            "title": "Observations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "observations"
+        ],
+        "title": "SourceWeightOutput",
+        "type": "object"
+      },
+      "SpamDecision": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion_id": {
+            "format": "uuid",
+            "title": "Discussion Id",
+            "type": "string"
+          },
+          "reasons": {
+            "default": [],
+            "items": {
+              "enum": [
+                "provider_spam",
+                "too_short",
+                "too_many_urls",
+                "too_many_tags",
+                "repeated_tokens",
+                "duplicate",
+                "author_burst"
+              ],
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "spam": {
+            "title": "Spam",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "discussion_id",
+          "spam"
+        ],
+        "title": "SpamDecision",
+        "type": "object"
+      },
+      "SpamRemovalInput": {
+        "additionalProperties": false,
+        "properties": {
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/Discussion-Input"
+            },
+            "title": "Discussions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "discussions"
+        ],
+        "title": "SpamRemovalInput",
+        "type": "object"
+      },
+      "SpamRemovalOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/SpamDecision"
+            },
+            "title": "Decisions",
+            "type": "array"
+          },
+          "retained": {
+            "items": {
+              "$ref": "#/components/schemas/Discussion-Output"
+            },
+            "title": "Retained",
+            "type": "array"
+          }
+        },
+        "required": [
+          "retained",
+          "decisions"
+        ],
+        "title": "SpamRemovalOutput",
         "type": "object"
       },
       "StockComparisonInput": {
@@ -3555,6 +4867,72 @@
         "title": "TimestampBasis",
         "type": "string"
       },
+      "TrendBucket": {
+        "additionalProperties": false,
+        "properties": {
+          "day": {
+            "format": "date-time",
+            "title": "Day",
+            "type": "string"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          },
+          "mention_count": {
+            "minimum": 0.0,
+            "title": "Mention Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day",
+          "mention_count"
+        ],
+        "title": "TrendBucket",
+        "type": "object"
+      },
+      "TrendDetectionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/WeightedObservation-Input"
+            },
+            "title": "Observations",
+            "type": "array"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "observations",
+          "start",
+          "end"
+        ],
+        "title": "TrendDetectionInput",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -3646,6 +5024,369 @@
           "message"
         ],
         "title": "WarningBanner",
+        "type": "object"
+      },
+      "WeightedObservation-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion": {
+            "$ref": "#/components/schemas/Discussion-Input"
+          },
+          "engagement_multiplier": {
+            "anyOf": [
+              {
+                "maximum": 1.5,
+                "minimum": 1.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Engagement Multiplier"
+          },
+          "mentions": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyMention-Input"
+            },
+            "title": "Mentions",
+            "type": "array"
+          },
+          "provider_weight": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Provider Weight"
+          },
+          "source_type_weight": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Source Type Weight"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Weight"
+          }
+        },
+        "required": [
+          "discussion",
+          "mentions",
+          "provider_weight",
+          "source_type_weight",
+          "engagement_multiplier",
+          "weight"
+        ],
+        "title": "WeightedObservation",
+        "type": "object"
+      },
+      "WeightedObservation-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion": {
+            "$ref": "#/components/schemas/Discussion-Output"
+          },
+          "engagement_multiplier": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Engagement Multiplier",
+            "type": "string"
+          },
+          "mentions": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyMention-Output"
+            },
+            "title": "Mentions",
+            "type": "array"
+          },
+          "provider_weight": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Provider Weight",
+            "type": "string"
+          },
+          "source_type_weight": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Source Type Weight",
+            "type": "string"
+          },
+          "weight": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Weight",
+            "type": "string"
+          }
+        },
+        "required": [
+          "discussion",
+          "mentions",
+          "provider_weight",
+          "source_type_weight",
+          "engagement_multiplier",
+          "weight"
+        ],
+        "title": "WeightedObservation",
+        "type": "object"
+      },
+      "WindowMetrics-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "agreement": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agreement"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": -1.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          },
+          "mean_signal_confidence": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Signal Confidence"
+          },
+          "mention_count": {
+            "minimum": 0.0,
+            "title": "Mention Count",
+            "type": "integer"
+          },
+          "negative_share": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Negative Share"
+          },
+          "neutral_share": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Neutral Share"
+          },
+          "positive_share": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Positive Share"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          },
+          "usable_count": {
+            "minimum": 0.0,
+            "title": "Usable Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "mention_count",
+          "usable_count"
+        ],
+        "title": "WindowMetrics",
+        "type": "object"
+      },
+      "WindowMetrics-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "agreement": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agreement"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          },
+          "mean_signal_confidence": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Signal Confidence"
+          },
+          "mention_count": {
+            "minimum": 0.0,
+            "title": "Mention Count",
+            "type": "integer"
+          },
+          "negative_share": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Negative Share"
+          },
+          "neutral_share": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Neutral Share"
+          },
+          "positive_share": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Positive Share"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          },
+          "usable_count": {
+            "minimum": 0.0,
+            "title": "Usable Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "mention_count",
+          "usable_count"
+        ],
+        "title": "WindowMetrics",
         "type": "object"
       },
       "WorkflowRequest": {
@@ -5273,6 +7014,375 @@
         "summary": "Get Run Sources",
         "tags": [
           "runs"
+        ]
+      }
+    },
+    "/api/v1/sentiment/aggregate": {
+      "post": {
+        "operationId": "aggregate_api_v1_sentiment_aggregate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AggregateSentimentInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SentimentSnapshot-Output"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Aggregate",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/analyze": {
+      "post": {
+        "operationId": "analyze_api_v1_sentiment_analyze_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SentimentAnalysisInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicSentimentAnalysis"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Analyze",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/companies/detect": {
+      "post": {
+        "operationId": "detect_api_v1_sentiment_companies_detect_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompanyDetectionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyDetectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Detect",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/discussions/collect": {
+      "post": {
+        "operationId": "collect_api_v1_sentiment_discussions_collect_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectDiscussionsInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectedDiscussions"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Collect",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/narratives": {
+      "post": {
+        "operationId": "narratives_api_v1_sentiment_narratives_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NarrativeExtractionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NarrativeList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Narratives",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/shift": {
+      "post": {
+        "operationId": "shift_api_v1_sentiment_shift_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShiftDetectionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SentimentShift"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Shift",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/sources/weight": {
+      "post": {
+        "operationId": "weight_api_v1_sentiment_sources_weight_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SourceWeightInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourceWeightOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Weight",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/spam/remove": {
+      "post": {
+        "operationId": "remove_spam_api_v1_sentiment_spam_remove_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpamRemovalInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpamRemovalOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Spam",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/trend": {
+      "post": {
+        "operationId": "trend_api_v1_sentiment_trend_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrendDetectionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SentimentTrend"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Trend",
+        "tags": [
+          "public sentiment"
         ]
       }
     },

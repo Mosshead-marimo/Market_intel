@@ -1,6 +1,6 @@
 # TradeSentinel
 
-TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, structured stock market data, and deterministic evidence-first news research. It ships no live vendor adapter, credentials, LLM market analysis, recommendations, or prediction implementation.
+TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, structured stock market data, deterministic evidence-first news research, and deterministic public-sentiment analysis. It ships no live vendor adapter, credentials, LLM market analysis, recommendations, or prediction implementation.
 
 ## Foundation
 
@@ -38,7 +38,9 @@ The market-data manifest exposes `/quote`, `/history`, `/performance`, `/compare
 
 The research manifest exposes `/news`, `/research`, and `/sources`. It searches a configured `NewsProvider`, conservatively deduplicates articles, applies versioned phrase rules, stores normalized events and evidence, and returns timelines and evidence indexes. Confidence is extraction-rule strength rather than truth probability. Retrieved content remains untrusted and is never sent to an LLM.
 
-Run the stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start. Market-data and research execution remain unavailable until their external provider modules are selected, but the API, worker, web application, and provider-free capabilities start normally.
+The public-sentiment manifest exposes `/public-sentiment`, `/sentiment-trend`, `/narratives`, and `/sentiment-shift`. It resolves one canonical target, consumes the complete instrument catalog, filters spam, applies provider/source/engagement weights, and returns structured snapshots, narratives, trends, and descriptive shifts. Provider sentiment is preferred only when its label, score, and confidence are complete; otherwise the versioned lexicon is used. Unknown text is excluded rather than treated as neutral. No output is a forecast.
+
+Run the stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start. Market-data, research, and public-sentiment execution remain unavailable until their external provider modules are selected, but the API, worker, web application, and provider-free capabilities start normally.
 
 ## Quality checks
 

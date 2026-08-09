@@ -135,3 +135,6 @@ The committed `packages/contracts/openapi.json` and generated TypeScript declara
 `ChatSession`, `ChatMessage`, and `ChatTurn` are immutable records. Turns progress through `queued`, `planning`, `executing`, `rendering`, and a terminal `completed`, `partial`, or `failed` state. Assistant messages persist the complete `RenderedResponse`.
 
 `ChatStreamEvent` is a versioned discriminated union with request, session, turn, correlation, run, sequence, and event identifiers. Variants are `status`, `typing`, `progress`, `response`, `component`, `warning`, `complete`, and `error`.
+## Public sentiment contracts
+
+`SentimentObservation` treats provider content as untrusted and accepts a provider signal only when label, score, and confidence are supplied together and label-consistent. Shared immutable contracts cover bounded discussions, spam decisions, catalog company mentions, weighted observations, adjacent-window metrics, `SentimentSnapshot`, narratives, trends, shifts, and complete analysis responses. Decimal metrics serialize as strings. `unknown` is distinct from `neutral`, and missing metrics remain null.

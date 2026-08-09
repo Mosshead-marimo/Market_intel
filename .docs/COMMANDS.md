@@ -163,3 +163,11 @@ Displays sources used in the current or specified analysis.
 ### `/help`
 
 Displays registered commands and examples.
+## Public sentiment
+
+- `/public-sentiment <query>` executes the complete descriptive analysis.
+- `/sentiment-trend <query>` executes the same evidence pipeline and exposes trend output.
+- `/narratives <query>` executes the same evidence pipeline and exposes deterministic narratives.
+- `/sentiment-shift <query>` executes the same evidence pipeline and exposes adjacent-window shift.
+
+All accept `--exchange`, `--as-of`, `--window-days`, and `--limit`. The manifest owns parsing and workflow targets; command code contains no sentiment conditionals.

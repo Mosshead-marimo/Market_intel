@@ -65,3 +65,4 @@ Market-data cache logs record only operation and hit/miss/invalid outcome. Cache
 ## Research Evidence
 
 Research lifecycle events report source, duplicate, event, persistence, and report counts with request/run correlation. Provider calls retain the standard safe metadata. Article titles, summaries, documents, excerpts, URLs, and query payloads are excluded from structured logs.
+Public-sentiment lifecycle events contain versioned event envelopes, request/run correlation, stage outcome, and counts only. They deliberately omit discussion bodies and author identifiers. Capability runs retain the platform's normal duration, attempt, failure-code, and correlation metadata.

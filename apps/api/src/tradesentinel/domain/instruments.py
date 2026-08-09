@@ -84,3 +84,11 @@ class InstrumentResolveOutput(InstrumentContract):
         if self.status == "ambiguous" and len(self.candidates) < 2:
             raise ValueError("ambiguous output requires at least two candidates")
         return self
+
+
+class InstrumentCatalogInput(InstrumentContract):
+    active_only: Literal[True] = True
+
+
+class InstrumentCatalogOutput(InstrumentContract):
+    instruments: tuple[InstrumentRef, ...]

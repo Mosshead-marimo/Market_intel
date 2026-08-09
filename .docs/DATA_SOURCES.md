@@ -37,3 +37,6 @@ No production adapters or credentials are included. Installed market-data and re
 News document requests carry the provider that produced the search result. The facade routes the request only to that adapter, preventing provider-local source identifiers from being sent to another vendor. Research stores normalized metadata, hashes, and bounded evidence excerpts rather than unrestricted article bodies.
 
 Validated quote, history, and corporate-action responses are cached behind `CacheStore`. Default TTLs are 15 seconds, six hours, and 24 hours. Versioned cache keys include the normalized request and provider-chain fingerprint. Failures are never cached, invalid entries are evicted, and expired values are not served after provider failure.
+## Public discussions
+
+Public sentiment reads exclusively through `SentimentProvider`. Adapters normalize vendor observations; they do not aggregate, reinterpret, predict, or rank them. A complete provider-produced signal is retained with provider model metadata. Text-only or incomplete observations use the module's disclosed lexicon fallback. Provider/source weights are configuration, and chain failover retains the provider runtime's existing one-success semantics.
