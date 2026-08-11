@@ -1,5 +1,9 @@
 # Frontend Architecture
 
+## Evidence UI
+
+The component registry validates cited narratives, balanced thesis sections, and follow-up buttons. Citation badges resolve evidence metadata, and follow-ups submit their stored prompt through the normal chat client.
+
 ## Stack
 
 - Next.js

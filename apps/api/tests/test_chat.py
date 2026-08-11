@@ -26,17 +26,17 @@ async def _wait_for_terminal(client: AsyncClient, turn_id: str) -> dict[str, obj
     raise AssertionError("chat turn did not complete")
 
 
-async def test_natural_language_chat_streams_and_persists_history(client: AsyncClient) -> None:
+async def test_explicit_mock_command_streams_and_persists_history(client: AsyncClient) -> None:
     client_message_id = str(uuid4())
     accepted = await client.post(
         "/api/v1/chat",
-        json={"message": "Hello from chat", "client_message_id": client_message_id},
+        json={"message": '/echo "Hello from chat"', "client_message_id": client_message_id},
     )
     assert accepted.status_code == 202
     turn_id = accepted.json()["turn_id"]
     session_id = accepted.json()["session_id"]
     turn = await _wait_for_terminal(client, turn_id)
-    assert turn["status"] == "completed"
+    assert turn["status"] == "completed", turn
 
     stream = await client.get(f"/api/v1/chat/turns/{turn_id}/events")
     assert stream.status_code == 200
@@ -58,7 +58,7 @@ async def test_natural_language_chat_streams_and_persists_history(client: AsyncC
 
     duplicate = await client.post(
         "/api/v1/chat",
-        json={"message": "Hello from chat", "client_message_id": client_message_id},
+        json={"message": '/echo "Hello from chat"', "client_message_id": client_message_id},
     )
     assert duplicate.json()["turn_id"] == turn_id
 

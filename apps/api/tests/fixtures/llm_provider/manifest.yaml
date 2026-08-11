@@ -1,0 +1,12 @@
+name: test.llm_provider
+version: 1.0.0
+description: Deterministic language model provider used only by tests
+capabilities:
+  - name: test.llm_provider.anchor
+    class_path: tradesentinel.modules.system.capability:SystemPingCapability
+    description: Test language model provider module anchor
+providers:
+  - kind: language_model
+    name: fake_llm
+    class_path: support.fake_llm_provider:FakeLanguageModelProvider
+    timeout_ms: 1000

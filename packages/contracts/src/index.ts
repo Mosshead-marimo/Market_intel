@@ -112,6 +112,59 @@ const warningBannerSchema = componentBase.extend({
   message: z.string(),
 });
 
+export const evidenceRecordSchema = z.object({
+  evidence_id: z.string().regex(/^ev_[a-f0-9]{16}$/),
+  kind: z.enum([
+    "provider_observation",
+    "calculated_metric",
+    "research_claim",
+    "methodology",
+    "command_catalog",
+    "user_assertion",
+  ]),
+  title: z.string(),
+  value: z.string(),
+  producer: z.string(),
+  timestamp: z.string(),
+  provider: z.string().nullable().optional(),
+  source_ids: z.array(z.string()),
+  run_id: z.string().uuid().nullable().optional(),
+  capability: z.string().nullable().optional(),
+  json_path: z.string().nullable().optional(),
+  data_cutoff: z.string().nullable().optional(),
+  freshness: z.enum(["fresh", "stale", "unknown"]),
+  untrusted: z.boolean(),
+});
+
+export const groundedClaimSchema = z.object({
+  claim_id: z.string().regex(/^claim_[a-z0-9_-]+$/),
+  text: z.string(),
+  evidence_ids: z.array(z.string()).min(1),
+});
+
+export const followUpQuestionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  prompt: z.string(),
+});
+
+export const citedNarrativeSchema = componentBase.extend({
+  type: z.literal("cited_narrative"),
+  claims: z.array(groundedClaimSchema),
+});
+
+export const marketThesisSchema = componentBase.extend({
+  type: z.literal("market_thesis"),
+  supportive: z.array(groundedClaimSchema),
+  contradictory: z.array(groundedClaimSchema),
+  uncertainties: z.array(groundedClaimSchema),
+});
+
+export const followUpQuestionsSchema = componentBase.extend({
+  type: z.literal("follow_up_questions"),
+  questions: z.array(followUpQuestionSchema).max(3),
+});
+
 export const leafResponseComponentSchema = z.discriminatedUnion("type", [
   summaryCardSchema,
   metricGridSchema,
@@ -125,6 +178,9 @@ export const leafResponseComponentSchema = z.discriminatedUnion("type", [
   riskCardSchema,
   sourceListSchema,
   warningBannerSchema,
+  citedNarrativeSchema,
+  marketThesisSchema,
+  followUpQuestionsSchema,
 ]);
 
 export const responseSectionSchema = componentBase.extend({
@@ -164,6 +220,8 @@ export const commandDescriptorSchema = z.object({
     }),
   ),
   examples: z.array(z.string()),
+  planner_enabled: z.boolean(),
+  side_effect: z.enum(["read", "write"]),
 });
 
 export const healthSchema = z.object({
@@ -194,6 +252,7 @@ export const capabilityResultSchema = z.object({
   data: z.record(z.unknown()),
   summary: z.string().nullable().optional(),
   sources: z.array(z.record(z.unknown())),
+  evidence: z.array(evidenceRecordSchema),
   warnings: z.array(
     z.object({
       code: z.string(),
@@ -257,6 +316,7 @@ export const renderedResponseSchema = z.object({
   text: z.string(),
   components: z.array(responseComponentSchema),
   sources: z.array(z.record(z.unknown())),
+  evidence: z.array(evidenceRecordSchema),
   warnings: z.array(
     z.object({
       code: z.string(),
@@ -1145,6 +1205,7 @@ export const fundamentalPeerComparisonSchema = z
   .strict();
 
 export type ResponseComponent = z.infer<typeof responseComponentSchema>;
+export type EvidenceRecord = z.infer<typeof evidenceRecordSchema>;
 export type CapabilityDescriptor = z.infer<typeof capabilityDescriptorSchema>;
 export type CommandDescriptor = z.infer<typeof commandDescriptorSchema>;
 export type Health = z.infer<typeof healthSchema>;

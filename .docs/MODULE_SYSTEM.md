@@ -1,5 +1,9 @@
 # Module System
 
+## Planner visibility
+
+Command manifests may declare `planner_enabled` and `side_effect`. Planner-enabled commands must be read-only. The assistant receives this filtered registry view automatically; modules require no assistant-specific registration.
+
 ## Objective
 
 Adding a new feature should require creating one isolated module, registering it, and optionally adding it to a workflow.

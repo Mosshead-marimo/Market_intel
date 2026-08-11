@@ -1,0 +1,47 @@
+name: llm_assistant
+version: 1.0.0
+description: Evidence-grounded market-intelligence conversation and synthesis
+providers:
+  - kind: language_model
+    name: openai
+    class_path: tradesentinel.modules.llm_assistant.providers.adapters.openai:OpenAILanguageModelAdapter
+    timeout_ms: 45000
+    rate_limit: {requests: 60, window_seconds: 60}
+  - kind: language_model
+    name: anthropic
+    class_path: tradesentinel.modules.llm_assistant.providers.adapters.anthropic:AnthropicLanguageModelAdapter
+    timeout_ms: 45000
+    rate_limit: {requests: 60, window_seconds: 60}
+capabilities:
+  - name: assistant.conversation
+    class_path: tradesentinel.modules.llm_assistant.capability:ConversationCapability
+    description: Plan registered read-only commands and return an evidence-grounded conversation response
+    provides: [grounded_conversation]
+  - name: assistant.summarize
+    class_path: tradesentinel.modules.llm_assistant.capability:SummarizeCapability
+    description: Summarize supplied validated evidence without new calculations
+    provides: [grounded_summary]
+  - name: assistant.explain
+    class_path: tradesentinel.modules.llm_assistant.capability:ExplainCapability
+    description: Explain supplied validated evidence without new calculations
+    provides: [grounded_explanation]
+  - name: assistant.research_synthesize
+    class_path: tradesentinel.modules.llm_assistant.capability:ResearchSynthesisCapability
+    description: Synthesize supplied source-backed research evidence
+    provides: [grounded_research_synthesis]
+  - name: assistant.market_thesis
+    class_path: tradesentinel.modules.llm_assistant.capability:MarketThesisCapability
+    description: Produce balanced supportive contradictory and uncertainty evidence cases
+    provides: [grounded_market_thesis]
+  - name: assistant.followups
+    class_path: tradesentinel.modules.llm_assistant.capability:FollowUpsCapability
+    description: Generate market-scoped follow-up questions from supplied evidence
+    provides: [grounded_followups]
+intents:
+  - name: assistant.conversation_fallback
+    description: Route unmatched natural-language market questions through the grounded assistant
+    match: fallback
+    input_field: message
+    target: {kind: capability, name: assistant.conversation}
+events:
+  produces: [assistant.plan.completed, assistant.synthesis.completed, assistant.validation.failed]

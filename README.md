@@ -1,6 +1,6 @@
 # TradeSentinel
 
-TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, structured stock market data, deterministic evidence-first news research, public-sentiment analysis, technical analysis, fundamentals, and a YAML-composed stock overview. It ships no live vendor adapter, credentials, LLM market analysis, recommendations, or prediction implementation.
+TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, structured stock market data, deterministic evidence-first news research, public-sentiment analysis, technical analysis, fundamentals, a YAML-composed stock overview, and an evidence-grounded LLM explanation layer. It ships no credentials, recommendations, price targets, or prediction implementation.
 
 ## Foundation
 
@@ -30,7 +30,11 @@ pnpm dev
 
 The API is available at `http://localhost:8000`, its OpenAPI UI at `/docs`, and the ChatGPT-style conversation UI at `http://localhost:3000`. Local settings use memory storage by default; Docker uses PostgreSQL, Redis worker execution, resumable SSE, and Redis caching.
 
-Normal text uses the manifest-declared `conversation.mock` fallback workflow. `/echo "hello"` exercises command planning and `/ping` exercises the system capability. Replies are deterministic mocks; no LLM is installed.
+Normal text uses the manifest-declared `assistant.conversation` fallback. The assistant may plan at most four automatically discovered, planner-enabled, read-only slash commands, execute them through the standard pipeline, and synthesize only validated evidence. `/echo "hello"` remains an explicit deterministic test command and `/ping` exercises the system capability.
+
+LLM providers are disabled by default, so natural-language turns return typed `503 LLM_NOT_CONFIGURED` while slash commands continue to work. To enable OpenAI only, set `TRADESENTINEL_LLM_PROVIDERS=["openai"]` and `TRADESENTINEL_OPENAI_API_KEY`. To enable configured failover, use `["openai","anthropic"]` and set both keys. Vendor tools and raw token streaming are disabled; only schema-valid, evidence-checked claims reach chat.
+
+The assistant can summarize, explain, synthesize research, assemble balanced supportive/contradictory/uncertainty cases, and suggest follow-up questions. It cannot calculate indicators, returns, CAGR, RSI, probabilities, confidence scores, price targets, forecasts, or recommendations. Every approved factual or quantitative claim carries evidence IDs that resolve to source or deterministic capability metadata.
 
 `/search "Tata Consultancy"` searches the representative 16-listing catalog. `/resolve TCS` returns typed cross-exchange ambiguity, while `/resolve TCS --exchange NSE` returns one canonical `InstrumentRef`. Match confidence is a deterministic text score, not a probability.
 

@@ -47,6 +47,14 @@ class ResponseRenderer:
                     sources.append(source)
                     seen_sources.add(source.source_id)
 
+        seen_evidence: set[str] = set()
+        evidence = []
+        for item in capability_results:
+            for record in item.evidence:
+                if record.evidence_id not in seen_evidence:
+                    evidence.append(record)
+                    seen_evidence.add(record.evidence_id)
+
         run_id = result.metadata.run_id if isinstance(result, CapabilityResult) else result.run_id
         components = (
             self._sections(result)
@@ -58,6 +66,7 @@ class ResponseRenderer:
             text="\n".join(text_parts),
             components=components,
             sources=tuple(sources),
+            evidence=tuple(evidence),
             warnings=tuple(warnings),
             run_id=run_id,
             generated_at=datetime.now(UTC),

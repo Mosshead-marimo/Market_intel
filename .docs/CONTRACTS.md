@@ -1,5 +1,9 @@
 # Shared Contracts
 
+## Grounded generation
+
+`EvidenceRecord` identifies one bounded source or precomputed metric with producer, timestamp, provider, run, capability, JSON path, cutoff, and freshness metadata. `GroundedClaim` requires evidence IDs. Strict assistant plan/generation contracts and the `cited_narrative`, `market_thesis`, and `follow_up_questions` components carry approved output across transports.
+
 ## InstrumentRef
 
 ```json

@@ -161,6 +161,20 @@ class ChatOrchestrator:
             return
         await self._execute(principal_id, claimed)
 
+    async def handle_assistant_progress(self, event: EventEnvelope) -> None:
+        principal_id = str(event.payload["principal_id"])
+        turn = await self.repository.get_turn(principal_id, UUID(str(event.payload["turn_id"])))
+        run_id = event.payload.get("run_id")
+        await self._emit(
+            turn,
+            ChatProgressEvent,
+            stage=str(event.payload["stage"]),
+            label=str(event.payload["label"]),
+            current=int(str(event.payload["current"])),
+            total=int(str(event.payload["total"])),
+            run_id=UUID(str(run_id)) if run_id else turn.run_id,
+        )
+
     async def _emit(self, chat_turn: ChatTurn, event_type: type[Any], **values: Any) -> None:
         sequence = await self.streams.next_sequence(chat_turn.id)
         event = event_type(

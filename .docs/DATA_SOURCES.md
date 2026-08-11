@@ -1,5 +1,9 @@
 # Data Sources and Provider Ports
 
+## Language models
+
+OpenAI Responses API and Anthropic Messages API adapters implement `LanguageModelProvider`. They receive only bounded normalized evidence and strict output schemas. Vendor tools and provider-managed agent loops are disabled. Selection and failover are controlled by `TRADESENTINEL_LLM_PROVIDERS`; model output is not cached.
+
 The stock overview introduces no data source or provider adapter. It composes configured market-data, news, sentiment, and fundamentals facades through existing public capabilities. A provider-chain failure remains explicit in the affected section; data is never substituted across categories or synthesized by the overview.
 
 ## Boundaries

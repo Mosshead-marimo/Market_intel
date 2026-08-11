@@ -1,5 +1,9 @@
 # API Specification
 
+## Natural-language assistant
+
+Unmatched natural language routes to `assistant.conversation` through the existing durable chat API. With no configured LLM the turn finishes with typed `LLM_NOT_CONFIGURED`; slash commands remain usable. SSE emits stage progress but no response delta before evidence validation.
+
 ## Core Endpoints
 
 ### Chat

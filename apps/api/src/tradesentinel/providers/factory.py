@@ -25,6 +25,8 @@ from tradesentinel.providers.contracts import (
     FundamentalFactsRequest,
     InstrumentRecord,
     InstrumentSearchRequest,
+    LanguageModelRequest,
+    LanguageModelResponse,
     MarketQuote,
     NewsArticle,
     NewsDocument,
@@ -54,6 +56,7 @@ from tradesentinel.providers.errors import (
 from tradesentinel.providers.interfaces import (
     EconomicDataProvider,
     FundamentalsProvider,
+    LanguageModelProvider,
     MarketDataProvider,
     NewsProvider,
     SentimentProvider,
@@ -86,6 +89,9 @@ class _ProviderChain:
             raise ProviderNotConfiguredError(self._kind)
         requested_provider = getattr(request, "provider", None)
         providers = self._providers
+        excluded_providers = set(getattr(request, "excluded_providers", ()))
+        if excluded_providers:
+            providers = tuple(item for item in providers if item[0].name not in excluded_providers)
         if requested_provider is not None:
             providers = tuple(
                 item for item in self._providers if item[0].name == requested_provider
@@ -93,6 +99,7 @@ class _ProviderChain:
             if not providers:
                 raise ProviderNotFoundError(self._kind, requested_provider)
         attempted: list[str] = []
+        last_error: ProviderError | None = None
         for descriptor, adapter in providers:
             attempted.append(descriptor.name)
             started = perf_counter()
@@ -151,8 +158,14 @@ class _ProviderChain:
                 run_id=str(context.capability_run_id) if context.capability_run_id else None,
                 error_code=error.code,
             )
-            if not error.retryable:
+            last_error = error
+            llm_invalid_output = self._kind == ProviderKind.LANGUAGE_MODEL and isinstance(
+                error, ProviderOutputError
+            )
+            if not error.retryable and not llm_invalid_output:
                 raise error
+        if self._kind == ProviderKind.LANGUAGE_MODEL and last_error is not None:
+            raise last_error
         raise ProviderChainExhaustedError(self._kind, tuple(attempted))
 
 
@@ -246,12 +259,20 @@ class _FundamentalsChain(_ProviderChain, FundamentalsProvider):
         )
 
 
+class _LanguageModelChain(_ProviderChain, LanguageModelProvider):
+    async def generate(
+        self, context: ProviderContext, request: LanguageModelRequest
+    ) -> LanguageModelResponse:
+        return await self._invoke("generate", context, request, TypeAdapter(LanguageModelResponse))
+
+
 CHAIN_BY_KIND: dict[ProviderKind, type[_ProviderChain]] = {
     ProviderKind.MARKET_DATA: _MarketDataChain,
     ProviderKind.NEWS: _NewsChain,
     ProviderKind.SENTIMENT: _SentimentChain,
     ProviderKind.ECONOMIC_DATA: _EconomicDataChain,
     ProviderKind.FUNDAMENTALS: _FundamentalsChain,
+    ProviderKind.LANGUAGE_MODEL: _LanguageModelChain,
 }
 
 

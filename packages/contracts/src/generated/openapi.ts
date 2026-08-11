@@ -1321,11 +1321,16 @@ export interface components {
              * Components
              * @default []
              */
-            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["ResponseSection"])[];
+            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["CitedNarrative"] | components["schemas"]["MarketThesisComponent"] | components["schemas"]["FollowUpQuestions"] | components["schemas"]["ResponseSection"])[];
             /** Data */
             data?: {
                 [key: string]: components["schemas"]["JsonValue"];
             };
+            /**
+             * Evidence
+             * @default []
+             */
+            evidence: components["schemas"]["EvidenceRecord"][];
             metadata: components["schemas"]["RunMetadata"];
             /**
              * Sources
@@ -1571,6 +1576,27 @@ export interface components {
          * @enum {string}
          */
         ChatTurnStatus: "queued" | "planning" | "executing" | "rendering" | "completed" | "partial" | "failed";
+        /** CitedNarrative */
+        CitedNarrative: {
+            /** Claims */
+            claims: components["schemas"]["GroundedClaim"][];
+            /** Id */
+            id: string;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "cited_narrative";
+        };
         /** CollectDiscussionsInput */
         CollectDiscussionsInput: {
             /** As Of */
@@ -1869,6 +1895,54 @@ export interface components {
             /** Source Id */
             source_id?: string | null;
         };
+        /**
+         * EvidenceKind
+         * @enum {string}
+         */
+        EvidenceKind: "provider_observation" | "calculated_metric" | "research_claim" | "methodology" | "command_catalog" | "user_assertion";
+        /** EvidenceRecord */
+        EvidenceRecord: {
+            /** Capability */
+            capability?: string | null;
+            /** Data Cutoff */
+            data_cutoff?: string | null;
+            /** Evidence Id */
+            evidence_id: string;
+            /**
+             * Freshness
+             * @default unknown
+             * @enum {string}
+             */
+            freshness: "fresh" | "stale" | "unknown";
+            /** Json Path */
+            json_path?: string | null;
+            kind: components["schemas"]["EvidenceKind"];
+            /** Producer */
+            producer: string;
+            /** Provider */
+            provider?: string | null;
+            /** Run Id */
+            run_id?: string | null;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+            /** Title */
+            title: string;
+            /**
+             * Untrusted
+             * @default false
+             */
+            untrusted: boolean;
+            /** Value */
+            value: string;
+        };
         /** EvidenceSource */
         EvidenceSource: {
             /** Provider */
@@ -1921,6 +1995,36 @@ export interface components {
              * Format: date-time
              */
             requested_as_of: string;
+        };
+        /** FollowUpQuestion */
+        FollowUpQuestion: {
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Prompt */
+            prompt: string;
+        };
+        /** FollowUpQuestions */
+        FollowUpQuestions: {
+            /** Id */
+            id: string;
+            /** Questions */
+            questions: components["schemas"]["FollowUpQuestion"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "follow_up_questions";
         };
         /**
          * FreshnessStatus
@@ -2115,6 +2219,15 @@ export interface components {
              * @default []
              */
             warnings: string[];
+        };
+        /** GroundedClaim */
+        GroundedClaim: {
+            /** Claim Id */
+            claim_id: string;
+            /** Evidence Ids */
+            evidence_ids: string[];
+            /** Text */
+            text: string;
         };
         /** GrowthMetric */
         GrowthMetric: {
@@ -2334,6 +2447,40 @@ export interface components {
          * @enum {string}
          */
         MarketInterval: "1d" | "1wk" | "1mo";
+        /** MarketThesisComponent */
+        MarketThesisComponent: {
+            /**
+             * Contradictory
+             * @default []
+             */
+            contradictory: components["schemas"]["GroundedClaim"][];
+            /** Id */
+            id: string;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /**
+             * Supportive
+             * @default []
+             */
+            supportive: components["schemas"]["GroundedClaim"][];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "market_thesis";
+            /**
+             * Uncertainties
+             * @default []
+             */
+            uncertainties: components["schemas"]["GroundedClaim"][];
+        };
         /** MetricGrid */
         MetricGrid: {
             /** Id */
@@ -2646,7 +2793,12 @@ export interface components {
              * Components
              * @default []
              */
-            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["ResponseSection"])[];
+            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["CitedNarrative"] | components["schemas"]["MarketThesisComponent"] | components["schemas"]["FollowUpQuestions"] | components["schemas"]["ResponseSection"])[];
+            /**
+             * Evidence
+             * @default []
+             */
+            evidence: components["schemas"]["EvidenceRecord"][];
             /**
              * Generated At
              * Format: date-time
@@ -2854,7 +3006,7 @@ export interface components {
              * Items
              * @default []
              */
-            items: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"])[];
+            items: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["CitedNarrative"] | components["schemas"]["MarketThesisComponent"] | components["schemas"]["FollowUpQuestions"])[];
             /**
              * Source Ids
              * @default []

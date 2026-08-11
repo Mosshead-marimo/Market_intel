@@ -1,5 +1,9 @@
 # Database Design
 
+## Assistant schema
+
+Migration `0007_llm_audit` owns `assistant.generations`. It is a metadata ledger rather than a prompt archive. Chat messages remain the authoritative approved response.
+
 ## Primary Store
 
 PostgreSQL is the primary database. TimescaleDB may be used for time-series workloads and pgvector for semantic retrieval.

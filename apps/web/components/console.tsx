@@ -134,8 +134,8 @@ export function PlatformConsole() {
     }
   }
 
-  async function submit() {
-    const message = composer.trim();
+  async function submit(prompt?: string) {
+    const message = (prompt ?? composer).trim();
     if (!message || sending) return;
     setComposer("");
     setSending(true);
@@ -260,7 +260,7 @@ export function PlatformConsole() {
         </button>
         <div className="runtime-note">
           <span></span>
-          Mock runtime · no market features
+          Evidence-grounded capability runtime
         </div>
       </aside>
 
@@ -279,7 +279,7 @@ export function PlatformConsole() {
           </button>
           <div>
             <strong>{detail?.session.title ?? "TradeSentinel Chat"}</strong>
-            <small>Deterministic capability runtime</small>
+            <small>Evidence-grounded market intelligence</small>
           </div>
           {detail && (
             <div className="header-actions">
@@ -310,8 +310,9 @@ export function PlatformConsole() {
               </div>
               <h1>How can I help you test TradeSentinel?</h1>
               <p>
-                This chat uses deterministic mock capabilities. It does not
-                perform market research or call an LLM.
+                Ask a market-intelligence question or run a registered slash
+                command. Generated statements appear only after evidence
+                validation.
               </p>
               <div className="prompt-grid">
                 {["Explain this mock runtime", "/ping", "/echo hello"].map(
@@ -327,7 +328,11 @@ export function PlatformConsole() {
           ) : (
             <div className="message-list">
               {detail?.messages.map((message) => (
-                <Message key={message.id} message={message} />
+                <Message
+                  key={message.id}
+                  message={message}
+                  onFollowUp={(prompt) => void submit(prompt)}
+                />
               ))}
               {(sending || stream.text || stream.error) && (
                 <div className="message assistant-message">
@@ -381,6 +386,7 @@ export function PlatformConsole() {
                       <ResponseComponentView
                         key={component.id}
                         value={component}
+                        onFollowUp={(prompt) => void submit(prompt)}
                       />
                     ))}
                   </div>
@@ -440,7 +446,8 @@ export function PlatformConsole() {
             </button>
           </div>
           <small className="disclaimer">
-            Mock infrastructure only. No financial analysis is installed.
+            Generated explanations cite evidence and never replace deterministic
+            calculations.
           </small>
         </div>
       </section>
@@ -448,7 +455,13 @@ export function PlatformConsole() {
   );
 }
 
-function Message({ message }: { message: ChatMessage }) {
+function Message({
+  message,
+  onFollowUp,
+}: {
+  message: ChatMessage;
+  onFollowUp: (prompt: string) => void;
+}) {
   return (
     <article
       className={`message ${message.role === "user" ? "user-message" : "assistant-message"}`}
@@ -465,7 +478,12 @@ function Message({ message }: { message: ChatMessage }) {
           <p className="message-error">{message.error.message}</p>
         )}
         {message.response?.components.map((component) => (
-          <ResponseComponentView key={component.id} value={component} />
+          <ResponseComponentView
+            key={component.id}
+            value={component}
+            evidence={message.response?.evidence}
+            onFollowUp={onFollowUp}
+          />
         ))}
       </div>
     </article>

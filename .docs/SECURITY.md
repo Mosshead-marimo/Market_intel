@@ -1,5 +1,9 @@
 # Security
 
+## Generated-content boundary
+
+Retrieved excerpts remain untrusted. Models never receive credentials, raw histories, unrestricted articles, database rows, or full provider payloads. A deterministic gate rejects missing citations, unsupported numbers, calculations, probabilities, targets, forecasts, and recommendations. Raw prompts and rejected output are not retained.
+
 Overview composition does not log or emit provider payloads. Completion events contain identifiers, section status/counts, and cutoff metadata only. Research articles and public discussions retain their existing untrusted-content handling, and the response renderer consumes validated capability contracts rather than raw provider values.
 
 ## Authentication and Authorization

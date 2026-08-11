@@ -1,7 +1,41 @@
 import {
   responseComponentSchema,
+  type EvidenceRecord,
   type ResponseComponent,
 } from "@tradesentinel/contracts";
+
+type ComponentProps = {
+  evidence?: EvidenceRecord[];
+  onFollowUp?: (prompt: string) => void;
+};
+
+function GroundedClaimView({
+  claim,
+  evidence,
+}: {
+  claim: ComponentOf<"cited_narrative">["claims"][number];
+  evidence: EvidenceRecord[];
+}) {
+  return (
+    <>
+      {claim.text}{" "}
+      <span className="citation-list" aria-label="Evidence citations">
+        {claim.evidence_ids.map((id) => {
+          const record = evidence.find((item) => item.evidence_id === id);
+          return (
+            <abbr
+              key={id}
+              className="citation-badge"
+              title={record ? `${record.title}: ${record.value}` : id}
+            >
+              {record?.provider ?? id.slice(-4)}
+            </abbr>
+          );
+        })}
+      </span>
+    </>
+  );
+}
 
 type ComponentOf<Type extends ResponseComponent["type"]> = Extract<
   ResponseComponent,
@@ -171,9 +205,11 @@ function SourceListView({
 
 function LeafComponentView({
   component,
+  evidence = [],
+  onFollowUp,
 }: {
   component: Exclude<ResponseComponent, ComponentOf<"response_section">>;
-}) {
+} & ComponentProps) {
   if (component.type === "summary_card")
     return (
       <article className="response-card">
@@ -202,6 +238,66 @@ function LeafComponentView({
     );
   if (component.type === "source_list")
     return <SourceListView component={component} />;
+  if (component.type === "cited_narrative")
+    return (
+      <section
+        className="cited-narrative"
+        aria-label={component.title ?? "Evidence-grounded response"}
+      >
+        {component.claims.map((claim) => (
+          <p key={claim.claim_id}>
+            <GroundedClaimView claim={claim} evidence={evidence} />
+          </p>
+        ))}
+      </section>
+    );
+  if (component.type === "market_thesis")
+    return (
+      <section
+        className="market-thesis"
+        aria-label={component.title ?? "Balanced market thesis"}
+      >
+        {(
+          [
+            ["Supportive evidence", component.supportive],
+            ["Contradictory evidence", component.contradictory],
+            ["Uncertainties", component.uncertainties],
+          ] as const
+        ).map(([heading, claims]) => (
+          <div key={heading}>
+            <h4>{heading}</h4>
+            {claims.length ? (
+              <ul>
+                {claims.map((claim) => (
+                  <li key={claim.claim_id}>
+                    <GroundedClaimView claim={claim} evidence={evidence} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No supported claims available.</p>
+            )}
+          </div>
+        ))}
+      </section>
+    );
+  if (component.type === "follow_up_questions")
+    return (
+      <div
+        className="follow-up-questions"
+        aria-label={component.title ?? "Follow-up questions"}
+      >
+        {component.questions.map((question) => (
+          <button
+            key={question.id}
+            type="button"
+            onClick={() => onFollowUp?.(question.prompt)}
+          >
+            {question.label}
+          </button>
+        ))}
+      </div>
+    );
   if (component.type === "risk_card")
     return (
       <ul className="risk-list">
@@ -226,9 +322,11 @@ function LeafComponentView({
 
 function ValidatedComponentView({
   component,
+  evidence,
+  onFollowUp,
 }: {
   component: ResponseComponent;
-}) {
+} & ComponentProps) {
   if (component.type === "response_section")
     return (
       <section
@@ -246,15 +344,30 @@ function ValidatedComponentView({
         </header>
         <div className="response-section-content">
           {component.items.map((item) => (
-            <LeafComponentView key={item.id} component={item} />
+            <LeafComponentView
+              key={item.id}
+              component={item}
+              evidence={evidence}
+              onFollowUp={onFollowUp}
+            />
           ))}
         </div>
       </section>
     );
-  return <LeafComponentView component={component} />;
+  return (
+    <LeafComponentView
+      component={component}
+      evidence={evidence}
+      onFollowUp={onFollowUp}
+    />
+  );
 }
 
-export function ResponseComponentView({ value }: { value: unknown }) {
+export function ResponseComponentView({
+  value,
+  evidence,
+  onFollowUp,
+}: { value: unknown } & ComponentProps) {
   const parsed = responseComponentSchema.safeParse(value);
   if (!parsed.success)
     return (
@@ -262,5 +375,11 @@ export function ResponseComponentView({ value }: { value: unknown }) {
         Unsupported response data
       </div>
     );
-  return <ValidatedComponentView component={parsed.data} />;
+  return (
+    <ValidatedComponentView
+      component={parsed.data}
+      evidence={evidence}
+      onFollowUp={onFollowUp}
+    />
+  );
 }

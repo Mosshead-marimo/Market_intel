@@ -6,7 +6,7 @@ from enum import StrEnum
 from typing import Literal
 from uuid import UUID
 
-from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, model_validator
+from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, JsonValue, model_validator
 
 
 class ProviderContract(BaseModel):
@@ -19,6 +19,7 @@ class ProviderKind(StrEnum):
     SENTIMENT = "sentiment"
     ECONOMIC_DATA = "economic_data"
     FUNDAMENTALS = "fundamentals"
+    LANGUAGE_MODEL = "language_model"
 
 
 class LicenseClassification(StrEnum):
@@ -62,6 +63,31 @@ class ProviderDescriptor(ProviderContract):
     class_path: str
     timeout_ms: int = Field(default=10_000, ge=1, le=300_000)
     rate_limit: ProviderRateLimit = ProviderRateLimit()
+
+
+class LanguageModelRequest(ProviderContract):
+    task: str = Field(min_length=1, max_length=80)
+    system_prompt: str = Field(min_length=1, max_length=20_000)
+    input_payload: dict[str, JsonValue]
+    output_schema: dict[str, JsonValue]
+    max_output_tokens: int = Field(default=4_096, ge=128, le=32_768)
+    provider: str | None = None
+    excluded_providers: tuple[str, ...] = ()
+
+
+class LanguageModelUsage(ProviderContract):
+    input_tokens: int = Field(default=0, ge=0)
+    output_tokens: int = Field(default=0, ge=0)
+
+
+class LanguageModelResponse(ProviderContract):
+    output: dict[str, JsonValue]
+    provider: str = Field(min_length=1)
+    model: str = Field(min_length=1)
+    provider_request_id: str | None = None
+    finish_reason: str | None = None
+    usage: LanguageModelUsage = LanguageModelUsage()
+    created_at: datetime
 
 
 class InstrumentReference(ProviderContract):

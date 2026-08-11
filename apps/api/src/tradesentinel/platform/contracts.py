@@ -96,6 +96,44 @@ class EvidenceSource(ContractModel):
     reliability_weight: float | None = Field(default=None, ge=0, le=1)
 
 
+class EvidenceKind(StrEnum):
+    PROVIDER_OBSERVATION = "provider_observation"
+    CALCULATED_METRIC = "calculated_metric"
+    RESEARCH_CLAIM = "research_claim"
+    METHODOLOGY = "methodology"
+    COMMAND_CATALOG = "command_catalog"
+    USER_ASSERTION = "user_assertion"
+
+
+class EvidenceRecord(ContractModel):
+    evidence_id: str = Field(pattern=r"^ev_[a-f0-9]{16}$")
+    kind: EvidenceKind
+    title: str = Field(min_length=1, max_length=240)
+    value: str = Field(min_length=1, max_length=2_000)
+    producer: str = Field(min_length=1, max_length=160)
+    timestamp: datetime
+    provider: str | None = Field(default=None, max_length=160)
+    source_ids: tuple[str, ...] = ()
+    run_id: UUID | None = None
+    capability: str | None = None
+    json_path: str | None = None
+    data_cutoff: datetime | None = None
+    freshness: Literal["fresh", "stale", "unknown"] = "unknown"
+    untrusted: bool = False
+
+
+class GroundedClaim(ContractModel):
+    claim_id: str = Field(pattern=r"^claim_[a-z0-9_-]+$")
+    text: str = Field(min_length=1, max_length=1_200)
+    evidence_ids: tuple[str, ...] = Field(min_length=1)
+
+
+class FollowUpQuestion(ContractModel):
+    id: str = Field(pattern=r"^[a-z][a-z0-9_-]*$")
+    label: str = Field(min_length=1, max_length=160)
+    prompt: str = Field(min_length=1, max_length=500)
+
+
 class CapabilityWarning(ContractModel):
     code: str
     message: str
@@ -230,6 +268,23 @@ class WarningBanner(ComponentBase):
     message: str
 
 
+class CitedNarrative(ComponentBase):
+    type: Literal["cited_narrative"] = "cited_narrative"
+    claims: tuple[GroundedClaim, ...]
+
+
+class MarketThesisComponent(ComponentBase):
+    type: Literal["market_thesis"] = "market_thesis"
+    supportive: tuple[GroundedClaim, ...] = ()
+    contradictory: tuple[GroundedClaim, ...] = ()
+    uncertainties: tuple[GroundedClaim, ...] = ()
+
+
+class FollowUpQuestions(ComponentBase):
+    type: Literal["follow_up_questions"] = "follow_up_questions"
+    questions: tuple[FollowUpQuestion, ...] = Field(max_length=3)
+
+
 LeafResponseComponent = Annotated[
     SummaryCard
     | MetricGrid
@@ -242,7 +297,10 @@ LeafResponseComponent = Annotated[
     | ComparisonTable
     | RiskCard
     | SourceList
-    | WarningBanner,
+    | WarningBanner
+    | CitedNarrative
+    | MarketThesisComponent
+    | FollowUpQuestions,
     Field(discriminator="type"),
 ]
 
@@ -266,6 +324,9 @@ ResponseComponent = Annotated[
     | RiskCard
     | SourceList
     | WarningBanner
+    | CitedNarrative
+    | MarketThesisComponent
+    | FollowUpQuestions
     | ResponseSection,
     Field(discriminator="type"),
 ]
@@ -277,6 +338,7 @@ class CapabilityResult(ContractModel):
     data: dict[str, JsonValue] = Field(default_factory=dict)
     summary: str | None = None
     sources: tuple[EvidenceSource, ...] = ()
+    evidence: tuple[EvidenceRecord, ...] = ()
     warnings: tuple[CapabilityWarning, ...] = ()
     components: tuple[ResponseComponent, ...] = ()
     metadata: RunMetadata
@@ -329,6 +391,8 @@ class CommandDescriptor(ContractModel):
     arguments: tuple[CommandArgument, ...] = ()
     options: tuple[CommandOption, ...] = ()
     examples: tuple[str, ...] = ()
+    planner_enabled: bool = True
+    side_effect: Literal["read", "write"] = "read"
 
 
 class IntentDescriptor(ContractModel):
@@ -483,6 +547,7 @@ class RenderedResponse(ContractModel):
     text: str
     components: tuple[ResponseComponent, ...] = ()
     sources: tuple[EvidenceSource, ...] = ()
+    evidence: tuple[EvidenceRecord, ...] = ()
     warnings: tuple[CapabilityWarning, ...] = ()
     run_id: UUID | None = None
     generated_at: datetime

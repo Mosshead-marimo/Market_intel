@@ -415,8 +415,11 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "cited_narrative": "#/components/schemas/CitedNarrative",
                   "comparison_table": "#/components/schemas/ComparisonTable",
                   "event_timeline": "#/components/schemas/EventTimeline",
+                  "follow_up_questions": "#/components/schemas/FollowUpQuestions",
+                  "market_thesis": "#/components/schemas/MarketThesisComponent",
                   "metric_grid": "#/components/schemas/MetricGrid",
                   "news_timeline": "#/components/schemas/NewsTimeline",
                   "prediction_card": "#/components/schemas/PredictionCard",
@@ -469,6 +472,15 @@
                   "$ref": "#/components/schemas/WarningBanner"
                 },
                 {
+                  "$ref": "#/components/schemas/CitedNarrative"
+                },
+                {
+                  "$ref": "#/components/schemas/MarketThesisComponent"
+                },
+                {
+                  "$ref": "#/components/schemas/FollowUpQuestions"
+                },
+                {
                   "$ref": "#/components/schemas/ResponseSection"
                 }
               ]
@@ -482,6 +494,14 @@
             },
             "title": "Data",
             "type": "object"
+          },
+          "evidence": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/EvidenceRecord"
+            },
+            "title": "Evidence",
+            "type": "array"
           },
           "metadata": {
             "$ref": "#/components/schemas/RunMetadata"
@@ -1066,6 +1086,57 @@
         ],
         "title": "ChatTurnStatus",
         "type": "string"
+      },
+      "CitedNarrative": {
+        "additionalProperties": false,
+        "properties": {
+          "claims": {
+            "items": {
+              "$ref": "#/components/schemas/GroundedClaim"
+            },
+            "title": "Claims",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "cited_narrative",
+            "default": "cited_narrative",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "claims"
+        ],
+        "title": "CitedNarrative",
+        "type": "object"
       },
       "CollectDiscussionsInput": {
         "additionalProperties": false,
@@ -1911,6 +1982,145 @@
         "title": "EventTimelineItem",
         "type": "object"
       },
+      "EvidenceKind": {
+        "enum": [
+          "provider_observation",
+          "calculated_metric",
+          "research_claim",
+          "methodology",
+          "command_catalog",
+          "user_assertion"
+        ],
+        "title": "EvidenceKind",
+        "type": "string"
+      },
+      "EvidenceRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "capability": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capability"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "evidence_id": {
+            "pattern": "^ev_[a-f0-9]{16}$",
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "freshness": {
+            "default": "unknown",
+            "enum": [
+              "fresh",
+              "stale",
+              "unknown"
+            ],
+            "title": "Freshness",
+            "type": "string"
+          },
+          "json_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Json Path"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EvidenceKind"
+          },
+          "producer": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Producer",
+            "type": "string"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Id"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "untrusted": {
+            "default": false,
+            "title": "Untrusted",
+            "type": "boolean"
+          },
+          "value": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "kind",
+          "title",
+          "value",
+          "producer",
+          "timestamp"
+        ],
+        "title": "EvidenceRecord",
+        "type": "object"
+      },
       "EvidenceSource": {
         "additionalProperties": false,
         "properties": {
@@ -2027,6 +2237,87 @@
           "performance"
         ],
         "title": "FiveYearPerformanceOutput",
+        "type": "object"
+      },
+      "FollowUpQuestion": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[a-z][a-z0-9_-]*$",
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "prompt": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "prompt"
+        ],
+        "title": "FollowUpQuestion",
+        "type": "object"
+      },
+      "FollowUpQuestions": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/FollowUpQuestion"
+            },
+            "maxItems": 3,
+            "title": "Questions",
+            "type": "array"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "follow_up_questions",
+            "default": "follow_up_questions",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "questions"
+        ],
+        "title": "FollowUpQuestions",
         "type": "object"
       },
       "FreshnessStatus": {
@@ -2544,6 +2835,37 @@
           "metrics"
         ],
         "title": "FundamentalValuationOutput",
+        "type": "object"
+      },
+      "GroundedClaim": {
+        "additionalProperties": false,
+        "properties": {
+          "claim_id": {
+            "pattern": "^claim_[a-z0-9_-]+$",
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "text": {
+            "maxLength": 1200,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id",
+          "text",
+          "evidence_ids"
+        ],
+        "title": "GroundedClaim",
         "type": "object"
       },
       "GrowthMetric": {
@@ -3105,6 +3427,73 @@
         ],
         "title": "MarketInterval",
         "type": "string"
+      },
+      "MarketThesisComponent": {
+        "additionalProperties": false,
+        "properties": {
+          "contradictory": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GroundedClaim"
+            },
+            "title": "Contradictory",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "supportive": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GroundedClaim"
+            },
+            "title": "Supportive",
+            "type": "array"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "market_thesis",
+            "default": "market_thesis",
+            "title": "Type",
+            "type": "string"
+          },
+          "uncertainties": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GroundedClaim"
+            },
+            "title": "Uncertainties",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "MarketThesisComponent",
+        "type": "object"
       },
       "MetricGrid": {
         "additionalProperties": false,
@@ -3937,8 +4326,11 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "cited_narrative": "#/components/schemas/CitedNarrative",
                   "comparison_table": "#/components/schemas/ComparisonTable",
                   "event_timeline": "#/components/schemas/EventTimeline",
+                  "follow_up_questions": "#/components/schemas/FollowUpQuestions",
+                  "market_thesis": "#/components/schemas/MarketThesisComponent",
                   "metric_grid": "#/components/schemas/MetricGrid",
                   "news_timeline": "#/components/schemas/NewsTimeline",
                   "prediction_card": "#/components/schemas/PredictionCard",
@@ -3991,11 +4383,28 @@
                   "$ref": "#/components/schemas/WarningBanner"
                 },
                 {
+                  "$ref": "#/components/schemas/CitedNarrative"
+                },
+                {
+                  "$ref": "#/components/schemas/MarketThesisComponent"
+                },
+                {
+                  "$ref": "#/components/schemas/FollowUpQuestions"
+                },
+                {
                   "$ref": "#/components/schemas/ResponseSection"
                 }
               ]
             },
             "title": "Components",
+            "type": "array"
+          },
+          "evidence": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/EvidenceRecord"
+            },
+            "title": "Evidence",
             "type": "array"
           },
           "generated_at": {
@@ -4523,8 +4932,11 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "cited_narrative": "#/components/schemas/CitedNarrative",
                   "comparison_table": "#/components/schemas/ComparisonTable",
                   "event_timeline": "#/components/schemas/EventTimeline",
+                  "follow_up_questions": "#/components/schemas/FollowUpQuestions",
+                  "market_thesis": "#/components/schemas/MarketThesisComponent",
                   "metric_grid": "#/components/schemas/MetricGrid",
                   "news_timeline": "#/components/schemas/NewsTimeline",
                   "prediction_card": "#/components/schemas/PredictionCard",
@@ -4574,6 +4986,15 @@
                 },
                 {
                   "$ref": "#/components/schemas/WarningBanner"
+                },
+                {
+                  "$ref": "#/components/schemas/CitedNarrative"
+                },
+                {
+                  "$ref": "#/components/schemas/MarketThesisComponent"
+                },
+                {
+                  "$ref": "#/components/schemas/FollowUpQuestions"
                 }
               ]
             },

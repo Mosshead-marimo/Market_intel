@@ -1,5 +1,9 @@
 # Observability
 
+## LLM audit
+
+`assistant.generations` stores provider/model, stage, hashes, evidence and command identifiers, tokens, latency, validation attempts, finish status, and safe failure codes. Logs and progress events contain correlation metadata and counts, never prompts, evidence contents, or vendor output.
+
 ## Identifiers
 
 Every request should include:

@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { ResponseComponentView } from "./response-component";
 
 describe("ResponseComponentView", () => {
@@ -58,5 +58,54 @@ describe("ResponseComponentView", () => {
     expect(screen.getByText("100.00")).toBeInTheDocument();
     expect(screen.getByText("Dividend")).toBeInTheDocument();
     expect(screen.getByText("partial")).toBeInTheDocument();
+  });
+
+  it("renders evidence citations and submits stored follow-up prompts", () => {
+    const onFollowUp = vi.fn();
+    const evidence = [
+      {
+        evidence_id: "ev_0123456789abcdef",
+        kind: "calculated_metric" as const,
+        title: "RSI",
+        value: "54.2",
+        producer: "technical.rsi",
+        timestamp: "2026-08-08T00:00:00Z",
+        source_ids: [],
+        freshness: "fresh" as const,
+        untrusted: false,
+      },
+    ];
+    const { rerender } = render(
+      <ResponseComponentView
+        value={{
+          id: "answer",
+          type: "cited_narrative",
+          claims: [
+            {
+              claim_id: "claim_rsi",
+              text: "The reported RSI is 54.2.",
+              evidence_ids: ["ev_0123456789abcdef"],
+            },
+          ],
+        }}
+        evidence={evidence}
+        onFollowUp={onFollowUp}
+      />,
+    );
+    expect(screen.getByTitle("RSI: 54.2")).toBeInTheDocument();
+    rerender(
+      <ResponseComponentView
+        value={{
+          id: "questions",
+          type: "follow_up_questions",
+          questions: [
+            { id: "more", label: "Show more", prompt: "/technical TCS" },
+          ],
+        }}
+        onFollowUp={onFollowUp}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Show more" }));
+    expect(onFollowUp).toHaveBeenCalledWith("/technical TCS");
   });
 });

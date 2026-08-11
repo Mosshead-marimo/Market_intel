@@ -19,6 +19,7 @@ capabilities:
 commands:
   - name: /echo
     description: Send a message through the deterministic mock workflow
+    planner_enabled: false
     target:
       kind: workflow
       name: conversation.mock
@@ -26,14 +27,6 @@ commands:
       - name: message
     examples:
       - /echo "hello TradeSentinel"
-intents:
-  - name: conversation.mock_fallback
-    description: Route unmatched natural-language messages to the mock workflow
-    match: fallback
-    input_field: message
-    target:
-      kind: workflow
-      name: conversation.mock
 workflows:
   - name: conversation.mock
     version: 1.0.0

@@ -41,6 +41,17 @@ class Settings(BaseSettings):
     sentiment_providers: tuple[str, ...] = ()
     economic_data_providers: tuple[str, ...] = ()
     fundamentals_providers: tuple[str, ...] = ()
+    llm_providers: tuple[str, ...] = ()
+    openai_api_key: SecretStr | None = None
+    anthropic_api_key: SecretStr | None = None
+    openai_model: str = "gpt-5-mini"
+    anthropic_model: str = "claude-sonnet-5"
+    llm_timeout_ms: int = Field(default=45_000, ge=1_000, le=300_000)
+    llm_max_input_characters: int = Field(default=120_000, ge=1_000, le=1_000_000)
+    llm_max_output_tokens: int = Field(default=4_096, ge=128, le=32_768)
+    llm_max_evidence_records: int = Field(default=160, ge=1, le=1_000)
+    llm_max_planned_commands: int = Field(default=4, ge=1, le=4)
+    llm_repair_attempts: int = Field(default=1, ge=0, le=1)
     stock_quote_cache_ttl_seconds: int = Field(default=15, ge=1, le=3_600)
     stock_history_cache_ttl_seconds: int = Field(default=21_600, ge=1, le=604_800)
     stock_actions_cache_ttl_seconds: int = Field(default=86_400, ge=1, le=2_592_000)

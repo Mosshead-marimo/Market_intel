@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   benchmarkComparisonOutputSchema,
+  evidenceRecordSchema,
   fundamentalPeerComparisonSchema,
   fundamentalSectionSchema,
   instrumentResolveOutputSchema,
@@ -56,6 +57,34 @@ describe("response component contract", () => {
       ],
     });
     expect(component.type).toBe("response_section");
+  });
+
+  it("validates grounded assistant components and evidence", () => {
+    const evidence = evidenceRecordSchema.parse({
+      evidence_id: "ev_0123456789abcdef",
+      kind: "calculated_metric",
+      title: "RSI",
+      value: "54.2",
+      producer: "technical.rsi",
+      timestamp: "2026-08-08T00:00:00Z",
+      source_ids: [],
+      freshness: "fresh",
+      untrusted: false,
+    });
+    expect(evidence.value).toBe("54.2");
+    expect(
+      responseComponentSchema.parse({
+        id: "answer",
+        type: "cited_narrative",
+        claims: [
+          {
+            claim_id: "claim_rsi",
+            text: "The reported RSI is 54.2.",
+            evidence_ids: [evidence.evidence_id],
+          },
+        ],
+      }).type,
+    ).toBe("cited_narrative");
   });
 });
 

@@ -1,5 +1,9 @@
 # Architecture
 
+## Evidence-grounded assistant
+
+`llm_assistant` is a feature module, not part of the domain-neutral platform. Its manifest declares both vendor adapters, six assistant capabilities, and the natural-language fallback. A late-bound execution gateway exposes only registry-derived, planner-enabled read-only commands and routes validated calls through the normal pipeline. Vendor output is buffered until schema and evidence validation pass. See ADR 0022.
+
 ## Architecture Principle
 
 TradeSentinel uses a modular monolith with plugin-style capability registration.

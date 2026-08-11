@@ -1,5 +1,9 @@
 # Command Specification
 
+## Assistant planning
+
+The assistant selects at most four unique commands marked `planner_enabled: true` and `side_effect: read`. Every proposal is validated by the standard command parser. `/echo` is planner-disabled and remains an explicit deterministic test command.
+
 ## Command Format
 
 ```text
