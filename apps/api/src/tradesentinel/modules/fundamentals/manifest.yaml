@@ -1,0 +1,201 @@
+name: fundamentals
+version: 1.0.0
+description: Deterministic provider-backed accounting trends valuation and peer context
+api_router: tradesentinel.modules.fundamentals.api:router
+capabilities:
+  - {name: fundamental.data.collect, class_path: tradesentinel.modules.fundamentals.capability:CollectDataCapability, description: Collects cached normalized profiles statements and facts, provides: [fundamental_dataset], idempotent: true}
+  - {name: fundamental.data.collect_batch, class_path: tradesentinel.modules.fundamentals.capability:CollectBatchCapability, description: Collects normalized datasets for a canonical instrument batch, provides: [fundamental_datasets], idempotent: true}
+  - {name: fundamental.peers.select, class_path: tradesentinel.modules.fundamentals.capability:SelectPeersCapability, description: Selects explicit or deterministic industry and sector peers, provides: [fundamental_peers], idempotent: true}
+  - {name: fundamental.revenue, class_path: tradesentinel.modules.fundamentals.capability:RevenueCapability, description: Returns separate annual and quarterly revenue trends, provides: [fundamental_revenue], idempotent: true}
+  - {name: fundamental.profit, class_path: tradesentinel.modules.fundamentals.capability:ProfitCapability, description: Returns gross operating EBIT EBITDA net income and EPS trends, provides: [fundamental_profit], idempotent: true}
+  - {name: fundamental.cash_flow, class_path: tradesentinel.modules.fundamentals.capability:CashFlowCapability, description: Returns operating investing financing capex and free cash flow trends, provides: [fundamental_cash_flow], idempotent: true}
+  - {name: fundamental.debt, class_path: tradesentinel.modules.fundamentals.capability:DebtCapability, description: Returns debt cash net debt leverage and coverage metrics, provides: [fundamental_debt], idempotent: true}
+  - {name: fundamental.margins, class_path: tradesentinel.modules.fundamentals.capability:MarginsCapability, description: Returns gross operating net and free cash flow margins, provides: [fundamental_margins], idempotent: true}
+  - {name: fundamental.roe, class_path: tradesentinel.modules.fundamentals.capability:RoeCapability, description: Calculates return on average equity, provides: [fundamental_roe], idempotent: true}
+  - {name: fundamental.roce, class_path: tradesentinel.modules.fundamentals.capability:RoceCapability, description: Calculates EBIT over average equity plus net debt, provides: [fundamental_roce], idempotent: true}
+  - {name: fundamental.valuation, class_path: tradesentinel.modules.fundamentals.capability:ValuationCapability, description: Returns current calculated and historical reported valuation metrics, provides: [fundamental_valuation], idempotent: true}
+  - {name: fundamental.growth, class_path: tradesentinel.modules.fundamentals.capability:GrowthCapability, description: Calculates annual and quarterly descriptive growth trends, provides: [fundamental_growth], idempotent: true}
+  - {name: fundamental.peer_comparison, class_path: tradesentinel.modules.fundamentals.capability:PeerComparisonCapability, description: Returns metric medians and descriptive peer percentiles, provides: [fundamental_peer_comparison], idempotent: true}
+  - {name: fundamental.snapshot, class_path: tradesentinel.modules.fundamentals.capability:SnapshotCapability, description: Returns the complete structured fundamental snapshot, provides: [fundamental_snapshot], idempotent: true}
+commands:
+  - name: /fundamentals
+    description: Return the complete deterministic fundamental snapshot
+    target: {kind: workflow, name: fundamental.snapshot.request}
+    arguments: &query_argument [{name: query}]
+    options: &fundamental_options
+      - {name: exchange, destination: exchange}
+      - {name: as-of, destination: as_of}
+      - {name: annual-periods, destination: annual_periods}
+      - {name: quarterly-periods, destination: quarterly_periods}
+    examples: ['/fundamentals TCS --exchange NSE']
+  - {name: /revenue, description: Return revenue trends, target: {kind: workflow, name: fundamental.revenue.request}, arguments: *query_argument, options: *fundamental_options, examples: ['/revenue MSFT --exchange NASDAQ']}
+  - {name: /profit, description: Return profit trends, target: {kind: workflow, name: fundamental.profit.request}, arguments: *query_argument, options: *fundamental_options, examples: ['/profit MSFT']}
+  - {name: /cash-flow, description: Return cash flow trends, target: {kind: workflow, name: fundamental.cash_flow.request}, arguments: *query_argument, options: *fundamental_options, examples: ['/cash-flow MSFT']}
+  - {name: /debt, description: Return debt and coverage metrics, target: {kind: workflow, name: fundamental.debt.request}, arguments: *query_argument, options: *fundamental_options, examples: ['/debt MSFT']}
+  - {name: /margins, description: Return margin trends, target: {kind: workflow, name: fundamental.margins.request}, arguments: *query_argument, options: *fundamental_options, examples: ['/margins MSFT']}
+  - {name: /roe, description: Return return-on-equity trends, target: {kind: workflow, name: fundamental.roe.request}, arguments: *query_argument, options: *fundamental_options, examples: ['/roe MSFT']}
+  - {name: /roce, description: Return return-on-capital-employed trends, target: {kind: workflow, name: fundamental.roce.request}, arguments: *query_argument, options: *fundamental_options, examples: ['/roce MSFT']}
+  - {name: /valuation, description: Return calculated and reported valuation context, target: {kind: workflow, name: fundamental.valuation.request}, arguments: *query_argument, options: *fundamental_options, examples: ['/valuation MSFT']}
+  - {name: /growth, description: Return annual and quarterly growth trends, target: {kind: workflow, name: fundamental.growth.request}, arguments: *query_argument, options: *fundamental_options, examples: ['/growth MSFT']}
+  - name: /peer-compare
+    description: Compare a target with explicit or automatically selected peers
+    target: {kind: workflow, name: fundamental.peer_comparison.request}
+    arguments: *query_argument
+    options:
+      - {name: exchange, destination: exchange}
+      - {name: as-of, destination: as_of}
+      - {name: annual-periods, destination: annual_periods}
+      - {name: quarterly-periods, destination: quarterly_periods}
+      - {name: peers, destination: peers}
+    examples: ['/peer-compare TCS --exchange NSE --peers "INFY@NSE,RELIANCE@NSE"']
+workflows:
+  - &revenue_workflow
+    name: fundamental.revenue.request
+    version: 1.0.0
+    description: Resolve collect and calculate revenue trends
+    steps:
+      - &resolve_step
+        id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - &collect_step
+        id: collect
+        capability: fundamental.data.collect
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          as_of: {source: input.as_of, required: false}
+          annual_periods: {source: input.annual_periods, required: false}
+          quarterly_periods: {source: input.quarterly_periods, required: false}
+      - id: result
+        capability: fundamental.revenue
+        depends_on: [collect]
+        input_bindings: {dataset: {source: steps.collect.data}}
+  - name: fundamental.profit.request
+    version: 1.0.0
+    description: Resolve collect and calculate profit trends
+    steps: [*resolve_step, *collect_step, {id: result, capability: fundamental.profit, depends_on: [collect], input_bindings: {dataset: {source: steps.collect.data}}}]
+  - name: fundamental.cash_flow.request
+    version: 1.0.0
+    description: Resolve collect and calculate cash flow trends
+    steps: [*resolve_step, *collect_step, {id: result, capability: fundamental.cash_flow, depends_on: [collect], input_bindings: {dataset: {source: steps.collect.data}}}]
+  - name: fundamental.debt.request
+    version: 1.0.0
+    description: Resolve collect and calculate debt metrics
+    steps: [*resolve_step, *collect_step, {id: result, capability: fundamental.debt, depends_on: [collect], input_bindings: {dataset: {source: steps.collect.data}}}]
+  - name: fundamental.margins.request
+    version: 1.0.0
+    description: Resolve collect and calculate margins
+    steps: [*resolve_step, *collect_step, {id: result, capability: fundamental.margins, depends_on: [collect], input_bindings: {dataset: {source: steps.collect.data}}}]
+  - name: fundamental.roe.request
+    version: 1.0.0
+    description: Resolve collect and calculate ROE
+    steps: [*resolve_step, *collect_step, {id: result, capability: fundamental.roe, depends_on: [collect], input_bindings: {dataset: {source: steps.collect.data}}}]
+  - name: fundamental.roce.request
+    version: 1.0.0
+    description: Resolve collect and calculate ROCE
+    steps: [*resolve_step, *collect_step, {id: result, capability: fundamental.roce, depends_on: [collect], input_bindings: {dataset: {source: steps.collect.data}}}]
+  - name: fundamental.growth.request
+    version: 1.0.0
+    description: Resolve collect and calculate growth
+    steps: [*resolve_step, *collect_step, {id: result, capability: fundamental.growth, depends_on: [collect], input_bindings: {dataset: {source: steps.collect.data}}}]
+  - &valuation_workflow
+    name: fundamental.valuation.request
+    version: 1.0.0
+    description: Resolve collect quote and calculate valuation
+    steps:
+      - *resolve_step
+      - *collect_step
+      - &quotes_step
+        id: quotes
+        capability: stock.quote.batch
+        required: false
+        depends_on: [resolve]
+        input_bindings:
+          instruments.0: {source: steps.resolve.data.match.instrument}
+      - id: result
+        capability: fundamental.valuation
+        depends_on: [collect, quotes]
+        input_bindings:
+          dataset: {source: steps.collect.data}
+          quotes: {source: steps.quotes.data.items, required: false}
+  - name: fundamental.snapshot.request
+    version: 1.0.0
+    description: Resolve collect quote and calculate the complete snapshot
+    steps:
+      - *resolve_step
+      - *collect_step
+      - *quotes_step
+      - id: result
+        capability: fundamental.snapshot
+        depends_on: [collect, quotes]
+        input_bindings:
+          dataset: {source: steps.collect.data}
+          quotes: {source: steps.quotes.data.items, required: false}
+  - name: fundamental.peer_comparison.request
+    version: 1.0.0
+    description: Resolve select collect and compare explicit or automatic peers
+    steps:
+      - *resolve_step
+      - id: explicit
+        capability: instrument.resolve.batch
+        input_bindings:
+          queries: {source: input.peers, required: false}
+      - id: catalog
+        capability: instrument.catalog
+        input_bindings:
+          active_only: {source: input.active_only, required: false}
+      - id: target_data
+        capability: fundamental.data.collect
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          as_of: {source: input.as_of, required: false}
+          annual_periods: {source: input.annual_periods, required: false}
+          quarterly_periods: {source: input.quarterly_periods, required: false}
+      - id: select
+        capability: fundamental.peers.select
+        depends_on: [target_data, explicit, catalog]
+        input_bindings:
+          target: {source: steps.target_data.data}
+          explicit: {source: steps.explicit.data}
+          catalog: {source: steps.catalog.data}
+      - id: peer_data
+        capability: fundamental.data.collect_batch
+        depends_on: [select]
+        input_bindings:
+          instruments: {source: steps.select.data.peers}
+          as_of: {source: input.as_of, required: false}
+          annual_periods: {source: input.annual_periods, required: false}
+          quarterly_periods: {source: input.quarterly_periods, required: false}
+      - id: peer_quotes
+        capability: stock.quote.batch
+        required: false
+        depends_on: [select]
+        input_bindings:
+          instruments: {source: steps.select.data.instruments}
+      - id: result
+        capability: fundamental.peer_comparison
+        depends_on: [target_data, peer_data, peer_quotes]
+        input_bindings:
+          target: {source: steps.target_data.data}
+          peers: {source: steps.peer_data.data.datasets}
+          quotes: {source: steps.peer_quotes.data.items, required: false}
+events:
+  produces:
+    - fundamental.data.collected.completed
+    - fundamental.data.batch_collected.completed
+    - fundamental.peers.selected.completed
+    - fundamental.revenue.completed
+    - fundamental.profit.completed
+    - fundamental.cash_flow.completed
+    - fundamental.debt.completed
+    - fundamental.margins.completed
+    - fundamental.roe.completed
+    - fundamental.roce.completed
+    - fundamental.valuation.completed
+    - fundamental.growth.completed
+    - fundamental.peer_comparison.completed
+    - fundamental.snapshot.completed

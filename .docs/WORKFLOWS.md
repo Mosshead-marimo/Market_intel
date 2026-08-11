@@ -67,6 +67,10 @@ Steps:
 If public sentiment fails:
 
 - Continue with available market, news, technical, and fundamental data.
+
+## Technical workflows
+
+Each technical command is a manifest workflow with four stages: resolve the canonical instrument, resolve the explicit or one-calendar-year window, retrieve normalized cached history, and invoke one pure technical capability. Snapshot execution invokes the aggregate calculator in the final stage. The history step is the only market-data boundary; no technical calculator performs I/O. Direct indicator failure is typed, while snapshot execution keeps independent successes and returns `partial` or `empty` with warnings.
 - Skip sentiment-dependent model features.
 - Add a warning.
 - Never invent sentiment values.
@@ -82,3 +86,16 @@ The conversation planner maps slash-prefixed input to command requests and other
 Research manifests define `research.news.request` as search → deduplicate → extract → timeline and `research.report.request` as the same graph followed by report assembly. Full-document failures preserve source metadata, produce partial warnings, and never invent an event. Extraction persists normalized events before downstream timeline/report steps.
 
 Workflow steps may declare `input_bindings`. Sources use `input.<path>` or `steps.<declared-dependency>.data.<path>`; optional missing sources are omitted and required missing sources raise `WORKFLOW_INPUT_BINDING_FAILED`. Bound steps receive only declared fields. Steps without bindings retain the original input-plus-dependencies behavior. Market-data command workflows use bindings to resolve canonical instruments before execution.
+## Public sentiment workflow
+
+`sentiment.public.request` resolves the requested instrument and loads the full active catalog concurrently. It then collects equal current/previous windows, removes spam, detects companies, retains target-relevant discussions, applies source weights, and runs aggregation, narrative extraction, and trend detection before the final shift calculation. Every step receives only manifest-declared input bindings. An ambiguous resolution or unavailable provider fails required dependents without selecting a listing or inventing data.
+
+## Fundamentals workflow
+
+Section workflows resolve, collect cached normalized statements/facts, and calculate one section. Valuation and snapshot request an optional cached quote. Peer comparison resolves explicit peers or loads the public catalog, selects peers deterministically, batch-collects fundamentals and optional quotes, then produces descriptive comparisons. All cross-module data moves through explicit manifest bindings.
+
+## Stock overview workflow
+
+`stock.overview` resolves the instrument once and computes a five-calendar-year window. Quote, adjusted history, five-year performance, corporate actions, research search, sentiment collection, and fundamentals collection become ready from YAML dependencies rather than Python sequencing. Technical analysis waits for retrieved history; fundamentals assembly waits for its dataset and the shared quote.
+
+Resolution, market, and technical steps are required. Research, sentiment, and fundamentals steps are optional. Required failure fails the workflow; optional failure skips only its dependents, preserves other sections, and returns partial status with typed warnings. YAML presentation order is independent of completion order and is validated against the workflow step graph at startup.

@@ -1,5 +1,11 @@
 # Data Sources and Provider Ports
 
+## Language models
+
+OpenAI Responses API and Anthropic Messages API adapters implement `LanguageModelProvider`. They receive only bounded normalized evidence and strict output schemas. Vendor tools and provider-managed agent loops are disabled. Selection and failover are controlled by `TRADESENTINEL_LLM_PROVIDERS`; model output is not cached.
+
+The stock overview introduces no data source or provider adapter. It composes configured market-data, news, sentiment, and fundamentals facades through existing public capabilities. A provider-chain failure remains explicit in the affected section; data is never substituted across categories or synthesized by the overview.
+
 ## Boundaries
 
 - Capabilities and services call typed provider interfaces; they never call external APIs directly.
@@ -37,3 +43,13 @@ No production adapters or credentials are included. Installed market-data and re
 News document requests carry the provider that produced the search result. The facade routes the request only to that adapter, preventing provider-local source identifiers from being sent to another vendor. Research stores normalized metadata, hashes, and bounded evidence excerpts rather than unrestricted article bodies.
 
 Validated quote, history, and corporate-action responses are cached behind `CacheStore`. Default TTLs are 15 seconds, six hours, and 24 hours. Versioned cache keys include the normalized request and provider-chain fingerprint. Failures are never cached, invalid entries are evicted, and expired values are not served after provider failure.
+## Public discussions
+
+Public sentiment reads exclusively through `SentimentProvider`. Adapters normalize vendor observations; they do not aggregate, reinterpret, predict, or rank them. A complete provider-produced signal is retained with provider model metadata. Text-only or incomplete observations use the module's disclosed lexicon fallback. Provider/source weights are configuration, and chain failover retains the provider runtime's existing one-success semantics.
+## Technical-analysis provenance
+
+Technical calculations consume only the normalized output of `stock.history`. Provider identity, observation/retrieval timestamps, freshness, and cache hit/miss metadata propagate unchanged into `TechnicalSnapshot`. Raw OHLC is scaled by `adjusted_close / close`; invalid or missing adjustment data is rejected. The module never calls a provider or external API directly and never substitutes synthetic observations.
+
+## Fundamentals provenance
+
+`FundamentalsProvider` supplies normalized profiles, annual/quarterly statements, and dated facts. Adapters map vendor concepts to canonical identifiers and preserve unknown identifiers for disclosure. Profiles cache for 24 hours; statements/facts cache for 6 hours using provider-chain fingerprints. Current quotes remain a separate market-data capability. No production fundamentals adapter is bundled.

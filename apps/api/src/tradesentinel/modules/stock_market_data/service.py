@@ -34,6 +34,9 @@ from tradesentinel.domain.market_data import (
     StockHistoryOutput,
     StockPerformanceInput,
     StockPerformanceOutput,
+    StockQuoteBatchInput,
+    StockQuoteBatchOutput,
+    StockQuoteFailure,
     StockQuoteInput,
     StockQuoteOutput,
 )
@@ -46,6 +49,7 @@ from tradesentinel.modules.stock_market_data.errors import (
 from tradesentinel.platform.cache import CacheStore
 from tradesentinel.platform.config import Settings
 from tradesentinel.platform.contracts import ExecutionContext
+from tradesentinel.platform.errors import DomainError
 from tradesentinel.providers.contracts import (
     CorporateActions,
     CorporateActionsRequest,
@@ -106,6 +110,26 @@ class StockMarketDataService:
             market_status=quote.market_status,
             provider=quote.metadata,
             cache=cache,
+        )
+
+    async def quote_batch(
+        self, context: ExecutionContext, request: StockQuoteBatchInput
+    ) -> StockQuoteBatchOutput:
+        async def fetch(instrument: InstrumentRef) -> StockQuoteOutput | StockQuoteFailure:
+            try:
+                return await self.quote(context, StockQuoteInput(instrument=instrument))
+            except DomainError as exc:
+                return StockQuoteFailure(
+                    instrument=instrument,
+                    code=exc.code,
+                    message=exc.message,
+                    retryable=exc.retryable,
+                )
+
+        results = await asyncio.gather(*(fetch(item) for item in request.instruments))
+        return StockQuoteBatchOutput(
+            items=tuple(item for item in results if isinstance(item, StockQuoteOutput)),
+            failures=tuple(item for item in results if isinstance(item, StockQuoteFailure)),
         )
 
     async def history(

@@ -1,5 +1,11 @@
 # Testing Strategy
 
+## LLM assistant
+
+Tests use deterministic fake providers and never call vendors. Coverage includes planner constraints, command execution, failover, evidence extraction and policy enforcement, repair and partial behavior, audit privacy, provider-free failure, SSE ordering, citation rendering, and clickable follow-ups.
+
+Stock-overview tests verify leap-day five-year windows, strict YAML presentation references, duplicate-section rejection, deterministic DAG layers, branch concurrency, one-time resolution, input reuse, required/optional failure behavior, command/API execution, ordered reusable components, completion-event metadata, and provider-free typed errors. Architecture tests reject overview names/order in platform and central API code and prohibit external I/O, AI libraries, persistence, and private cross-module imports in the composition module.
+
 ## Test Layers
 
 - Unit tests
@@ -65,3 +71,8 @@ Instrument coverage validates Unicode normalization, exact/prefix/fuzzy score ti
 Stock market-data coverage uses a deterministic test-only provider. Tests cover adjusted-history validation, Decimal calculations, cache adapters and TTLs, comparison order, benchmark overlap, leap-day five-year windows, lazy missing-provider behavior, all seven commands, structured endpoints, and architecture boundaries. Production code contains no synthetic adapter.
 
 Research coverage uses a deterministic test-only news provider. Tests cover evidence invariants, URL/title deduplication, all confidence tiers, conditional provider-affine document retrieval, unmatched sources, partial failures, persistence/evidence lookup, automatic discovery, workflows, commands, HTTP contracts, and provider-free HTTP 503 behavior. Production contains no news adapter or LLM dependency.
+Public-sentiment unit tests exercise each deterministic stage, including provider/lexicon precedence, negation, explicit unknown values, every spam rule, privacy hashing, full-catalog detection, capped engagement weighting, empty and partial aggregation, taxonomy and n-gram narratives, trend regression, shift bounds, automatic discovery, and provider-free HTTP 503 behavior. PostgreSQL migration checks must upgrade and downgrade revision `0006_public_sentiment`.
+
+Technical-analysis tests use fixed rising, falling, flat, gapped, volatile, and adjustment-aware histories. They cover seeded EMA/MACD alignment, Wilder RSI/ATR/ADX, ROC, annualization, percentile regimes, rolling extrema, pivot clustering, warm-up failures, partial/empty snapshots, leap-day windows, manifest discovery, every route/command boundary, provider-free HTTP 503, OpenAPI drift, strict Zod validation, and architecture prohibitions on AI, external I/O, provider SDKs, databases, and private market-module imports.
+
+Fundamentals tests cover fiscal contracts, provider normalization, cache hits/validation, accounting formulas, TTM and annual fallback, partial/empty states, current/reported valuation separation, explicit and automatic peers, medians/percentiles, manifest discovery, routes, lazy 503 behavior, generated/Zod contracts, and architecture boundaries. Deterministic adapters remain test-only.

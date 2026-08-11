@@ -100,3 +100,130 @@ def test_research_transport_and_logic_respect_boundaries() -> None:
         assert "openai" not in source
         assert "anthropic" not in source
     assert "NewsProvider" in (module / "service.py").read_text(encoding="utf-8")
+
+
+def test_technical_analysis_is_pure_and_pipeline_bound() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/technical_analysis")
+    forbidden = (
+        "httpx",
+        "requests",
+        "aiohttp",
+        "openai",
+        "anthropic",
+        "langchain",
+        "sqlalchemy",
+        "pandas",
+        "numpy",
+        "talib",
+        "tradesentinel.modules.stock_market_data",
+    )
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8").casefold()
+        assert not any(name in source for name in forbidden), path
+    shared_api = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in Path("apps/api/src/tradesentinel/api").rglob("*.py")
+    )
+    assert "technical.snapshot" not in shared_api
+    assert "technical_analysis" not in shared_api
+
+
+def test_fundamentals_is_provider_bound_and_transport_neutral() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/fundamentals")
+    forbidden = (
+        "httpx",
+        "requests",
+        "aiohttp",
+        "openai",
+        "anthropic",
+        "langchain",
+        "sqlalchemy",
+        "tradesentinel.modules.instrument_resolution",
+        "tradesentinel.modules.stock_market_data",
+    )
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8").casefold()
+        assert not any(name in source for name in forbidden), path
+    service = (module / "service.py").read_text(encoding="utf-8")
+    assert "FundamentalsProvider" in service
+    shared_api = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in Path("apps/api/src/tradesentinel/api").rglob("*.py")
+    )
+    assert "fundamental.snapshot" not in shared_api
+    assert "modules.fundamentals" not in shared_api
+
+
+def test_stock_overview_order_and_targets_are_not_hardcoded_in_core() -> None:
+    core_roots = (
+        Path("apps/api/src/tradesentinel/platform"),
+        Path("apps/api/src/tradesentinel/api"),
+    )
+    source = "\n".join(
+        path.read_text(encoding="utf-8") for root in core_roots for path in root.rglob("*.py")
+    )
+    assert "stock.overview" not in source
+    assert "stock_overview" not in source
+
+
+def test_stock_overview_is_pipeline_bound_and_has_no_external_io() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/stock_overview")
+    forbidden = (
+        "httpx",
+        "requests",
+        "aiohttp",
+        "openai",
+        "anthropic",
+        "langchain",
+        "sqlalchemy",
+        "tradesentinel.modules.instrument_resolution",
+        "tradesentinel.modules.stock_market_data",
+        "tradesentinel.modules.research",
+        "tradesentinel.modules.public_sentiment",
+        "tradesentinel.modules.technical_analysis",
+        "tradesentinel.modules.fundamentals",
+    )
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8").casefold()
+        assert not any(name in source for name in forbidden), path
+    assert "container.pipeline.execute" in (module / "api.py").read_text(encoding="utf-8")
+
+
+def test_llm_sdks_are_confined_to_assistant_provider_adapters() -> None:
+    source_root = Path("apps/api/src/tradesentinel")
+    for path in source_root.rglob("*.py"):
+        source = path.read_text(encoding="utf-8")
+        if "from openai" in source or "from anthropic" in source:
+            relative = path.relative_to(source_root).parts
+            assert relative[:4] == (
+                "modules",
+                "llm_assistant",
+                "providers",
+                "adapters",
+            ), path
+
+
+def test_llm_assistant_does_not_import_feature_modules_or_calculation_libraries() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/llm_assistant")
+    forbidden = (
+        "tradesentinel.modules.stock_market_data",
+        "tradesentinel.modules.research",
+        "tradesentinel.modules.public_sentiment",
+        "tradesentinel.modules.technical_analysis",
+        "tradesentinel.modules.fundamentals",
+        "pandas",
+        "numpy",
+        "talib",
+    )
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8").casefold()
+        assert not any(item in source for item in forbidden), path
+
+
+def test_shared_api_has_no_assistant_target_conditionals() -> None:
+    api = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in Path("apps/api/src/tradesentinel/api").rglob("*.py")
+    )
+    assert "assistant.conversation" not in api
+    assert "llm_assistant" not in api

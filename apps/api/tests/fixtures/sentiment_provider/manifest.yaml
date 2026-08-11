@@ -1,0 +1,12 @@
+name: test.sentiment_provider
+version: 1.0.0
+description: Deterministic sentiment provider used only by tests
+capabilities:
+  - name: test.sentiment.provider.anchor
+    class_path: tradesentinel.modules.system.capability:SystemPingCapability
+    description: Test provider module anchor
+providers:
+  - kind: sentiment
+    name: fake_sentiment
+    class_path: support.fake_sentiment_provider:FakeSentimentProvider
+    timeout_ms: 1000

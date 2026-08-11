@@ -58,6 +58,130 @@
         "title": "AdjustedPriceBar",
         "type": "object"
       },
+      "AdxOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "latest": {
+            "$ref": "#/components/schemas/AdxPoint"
+          },
+          "period": {
+            "title": "Period",
+            "type": "integer"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/AdxPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "period",
+          "latest",
+          "points"
+        ],
+        "title": "AdxOutput",
+        "type": "object"
+      },
+      "AdxPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "adx": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Adx",
+            "type": "string"
+          },
+          "negative_di": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Negative Di",
+            "type": "string"
+          },
+          "positive_di": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Positive Di",
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "adx",
+          "positive_di",
+          "negative_di"
+        ],
+        "title": "AdxPoint",
+        "type": "object"
+      },
+      "AggregateSentimentInput": {
+        "additionalProperties": false,
+        "properties": {
+          "co_mentions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Co Mentions",
+            "type": "array"
+          },
+          "current_start": {
+            "format": "date-time",
+            "title": "Current Start",
+            "type": "string"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/WeightedObservation-Input"
+            },
+            "title": "Observations",
+            "type": "array"
+          },
+          "previous_start": {
+            "format": "date-time",
+            "title": "Previous Start",
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "observations",
+          "previous_start",
+          "current_start",
+          "end"
+        ],
+        "title": "AggregateSentimentInput",
+        "type": "object"
+      },
+      "AnalysisStatus": {
+        "enum": [
+          "completed",
+          "partial",
+          "empty",
+          "insufficient"
+        ],
+        "title": "AnalysisStatus",
+        "type": "string"
+      },
       "ApiErrorDetail": {
         "additionalProperties": false,
         "properties": {
@@ -102,6 +226,28 @@
         ],
         "title": "AssetType",
         "type": "string"
+      },
+      "AtrOutput": {
+        "additionalProperties": false,
+        "description": "Average true-range output.",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "series": {
+            "$ref": "#/components/schemas/IndicatorSeries"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "series"
+        ],
+        "title": "AtrOutput",
+        "type": "object"
       },
       "BenchmarkComparisonInput": {
         "additionalProperties": false,
@@ -269,11 +415,16 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "cited_narrative": "#/components/schemas/CitedNarrative",
                   "comparison_table": "#/components/schemas/ComparisonTable",
+                  "event_timeline": "#/components/schemas/EventTimeline",
+                  "follow_up_questions": "#/components/schemas/FollowUpQuestions",
+                  "market_thesis": "#/components/schemas/MarketThesisComponent",
                   "metric_grid": "#/components/schemas/MetricGrid",
                   "news_timeline": "#/components/schemas/NewsTimeline",
                   "prediction_card": "#/components/schemas/PredictionCard",
                   "price_chart": "#/components/schemas/PriceChart",
+                  "response_section": "#/components/schemas/ResponseSection",
                   "risk_card": "#/components/schemas/RiskCard",
                   "scenario_table": "#/components/schemas/ScenarioTable",
                   "sentiment_chart": "#/components/schemas/SentimentChart",
@@ -300,6 +451,9 @@
                   "$ref": "#/components/schemas/NewsTimeline"
                 },
                 {
+                  "$ref": "#/components/schemas/EventTimeline"
+                },
+                {
                   "$ref": "#/components/schemas/PredictionCard"
                 },
                 {
@@ -316,6 +470,18 @@
                 },
                 {
                   "$ref": "#/components/schemas/WarningBanner"
+                },
+                {
+                  "$ref": "#/components/schemas/CitedNarrative"
+                },
+                {
+                  "$ref": "#/components/schemas/MarketThesisComponent"
+                },
+                {
+                  "$ref": "#/components/schemas/FollowUpQuestions"
+                },
+                {
+                  "$ref": "#/components/schemas/ResponseSection"
                 }
               ]
             },
@@ -328,6 +494,14 @@
             },
             "title": "Data",
             "type": "object"
+          },
+          "evidence": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/EvidenceRecord"
+            },
+            "title": "Evidence",
+            "type": "array"
           },
           "metadata": {
             "$ref": "#/components/schemas/RunMetadata"
@@ -913,6 +1087,135 @@
         "title": "ChatTurnStatus",
         "type": "string"
       },
+      "CitedNarrative": {
+        "additionalProperties": false,
+        "properties": {
+          "claims": {
+            "items": {
+              "$ref": "#/components/schemas/GroundedClaim"
+            },
+            "title": "Claims",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "cited_narrative",
+            "default": "cited_narrative",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "claims"
+        ],
+        "title": "CitedNarrative",
+        "type": "object"
+      },
+      "CollectDiscussionsInput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "limit": {
+            "default": 500,
+            "maximum": 1000.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "window_days": {
+            "default": 7,
+            "maximum": 90.0,
+            "minimum": 1.0,
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "title": "CollectDiscussionsInput",
+        "type": "object"
+      },
+      "CollectedDiscussions": {
+        "additionalProperties": false,
+        "properties": {
+          "current_start": {
+            "format": "date-time",
+            "title": "Current Start",
+            "type": "string"
+          },
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/Discussion-Output"
+            },
+            "title": "Discussions",
+            "type": "array"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "previous_start": {
+            "format": "date-time",
+            "title": "Previous Start",
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "previous_start",
+          "current_start",
+          "end",
+          "discussions"
+        ],
+        "title": "CollectedDiscussions",
+        "type": "object"
+      },
       "CommandRequest": {
         "additionalProperties": false,
         "properties": {
@@ -970,6 +1273,217 @@
           "response"
         ],
         "title": "CommandResponse",
+        "type": "object"
+      },
+      "CompanyDetectionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "catalog": {
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Catalog",
+            "type": "array"
+          },
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/Discussion-Input"
+            },
+            "title": "Discussions",
+            "type": "array"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "catalog",
+          "discussions"
+        ],
+        "title": "CompanyDetectionInput",
+        "type": "object"
+      },
+      "CompanyDetectionOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "co_mentions": {
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Co Mentions",
+            "type": "array"
+          },
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/DetectedDiscussion-Output"
+            },
+            "title": "Discussions",
+            "type": "array"
+          },
+          "relevant": {
+            "items": {
+              "$ref": "#/components/schemas/DetectedDiscussion-Output"
+            },
+            "title": "Relevant",
+            "type": "array"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "discussions",
+          "relevant",
+          "co_mentions"
+        ],
+        "title": "CompanyDetectionOutput",
+        "type": "object"
+      },
+      "CompanyMention-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "matched_value": {
+            "title": "Matched Value",
+            "type": "string"
+          },
+          "method": {
+            "enum": [
+              "cashtag",
+              "symbol",
+              "name",
+              "alias"
+            ],
+            "title": "Method",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "matched_value",
+          "method",
+          "confidence"
+        ],
+        "title": "CompanyMention",
+        "type": "object"
+      },
+      "CompanyMention-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "matched_value": {
+            "title": "Matched Value",
+            "type": "string"
+          },
+          "method": {
+            "enum": [
+              "cashtag",
+              "symbol",
+              "name",
+              "alias"
+            ],
+            "title": "Method",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "matched_value",
+          "method",
+          "confidence"
+        ],
+        "title": "CompanyMention",
+        "type": "object"
+      },
+      "CompanyProfile": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "industry": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Industry"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentReference"
+          },
+          "legal_name": {
+            "title": "Legal Name",
+            "type": "string"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "reporting_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reporting Currency"
+          },
+          "sector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector"
+          }
+        },
+        "required": [
+          "instrument",
+          "legal_name",
+          "metadata"
+        ],
+        "title": "CompanyProfile",
         "type": "object"
       },
       "ComparisonTable": {
@@ -1111,6 +1625,204 @@
         "title": "DependencyHealth",
         "type": "object"
       },
+      "DetectedDiscussion-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion": {
+            "$ref": "#/components/schemas/Discussion-Input"
+          },
+          "mentions": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyMention-Input"
+            },
+            "title": "Mentions",
+            "type": "array"
+          },
+          "target_relevant": {
+            "title": "Target Relevant",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "discussion",
+          "mentions",
+          "target_relevant"
+        ],
+        "title": "DetectedDiscussion",
+        "type": "object"
+      },
+      "DetectedDiscussion-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion": {
+            "$ref": "#/components/schemas/Discussion-Output"
+          },
+          "mentions": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyMention-Output"
+            },
+            "title": "Mentions",
+            "type": "array"
+          },
+          "target_relevant": {
+            "title": "Target Relevant",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "discussion",
+          "mentions",
+          "target_relevant"
+        ],
+        "title": "DetectedDiscussion",
+        "type": "object"
+      },
+      "Discussion-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "author_hash": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Hash"
+          },
+          "content_hash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "discussion_id": {
+            "format": "uuid",
+            "title": "Discussion Id",
+            "type": "string"
+          },
+          "engagement_count": {
+            "minimum": 0.0,
+            "title": "Engagement Count",
+            "type": "integer"
+          },
+          "evidence": {
+            "$ref": "#/components/schemas/SentimentEvidence"
+          },
+          "language": {
+            "title": "Language",
+            "type": "string"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "provider_source_id": {
+            "title": "Provider Source Id",
+            "type": "string"
+          },
+          "provider_spam": {
+            "title": "Provider Spam",
+            "type": "boolean"
+          },
+          "signal": {
+            "$ref": "#/components/schemas/SentimentSignal-Input"
+          },
+          "text_excerpt": {
+            "title": "Text Excerpt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "discussion_id",
+          "provider_source_id",
+          "text_excerpt",
+          "content_hash",
+          "occurred_at",
+          "language",
+          "engagement_count",
+          "provider_spam",
+          "evidence",
+          "signal"
+        ],
+        "title": "Discussion",
+        "type": "object"
+      },
+      "Discussion-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "author_hash": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Hash"
+          },
+          "content_hash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "discussion_id": {
+            "format": "uuid",
+            "title": "Discussion Id",
+            "type": "string"
+          },
+          "engagement_count": {
+            "minimum": 0.0,
+            "title": "Engagement Count",
+            "type": "integer"
+          },
+          "evidence": {
+            "$ref": "#/components/schemas/SentimentEvidence"
+          },
+          "language": {
+            "title": "Language",
+            "type": "string"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "provider_source_id": {
+            "title": "Provider Source Id",
+            "type": "string"
+          },
+          "provider_spam": {
+            "title": "Provider Spam",
+            "type": "boolean"
+          },
+          "signal": {
+            "$ref": "#/components/schemas/SentimentSignal-Output"
+          },
+          "text_excerpt": {
+            "title": "Text Excerpt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "discussion_id",
+          "provider_source_id",
+          "text_excerpt",
+          "content_hash",
+          "occurred_at",
+          "language",
+          "engagement_count",
+          "provider_spam",
+          "evidence",
+          "signal"
+        ],
+        "title": "Discussion",
+        "type": "object"
+      },
       "DuplicateGroup": {
         "additionalProperties": false,
         "properties": {
@@ -1142,6 +1854,271 @@
           "reason"
         ],
         "title": "DuplicateGroup",
+        "type": "object"
+      },
+      "EmaOutput": {
+        "additionalProperties": false,
+        "description": "Exponential moving-average output.",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "series": {
+            "$ref": "#/components/schemas/IndicatorSeries"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "series"
+        ],
+        "title": "EmaOutput",
+        "type": "object"
+      },
+      "EventTimeline": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/EventTimelineItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "event_timeline",
+            "default": "event_timeline",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "items"
+        ],
+        "title": "EventTimeline",
+        "type": "object"
+      },
+      "EventTimelineItem": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          }
+        },
+        "required": [
+          "occurred_at",
+          "label"
+        ],
+        "title": "EventTimelineItem",
+        "type": "object"
+      },
+      "EvidenceKind": {
+        "enum": [
+          "provider_observation",
+          "calculated_metric",
+          "research_claim",
+          "methodology",
+          "command_catalog",
+          "user_assertion"
+        ],
+        "title": "EvidenceKind",
+        "type": "string"
+      },
+      "EvidenceRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "capability": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capability"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "evidence_id": {
+            "pattern": "^ev_[a-f0-9]{16}$",
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "freshness": {
+            "default": "unknown",
+            "enum": [
+              "fresh",
+              "stale",
+              "unknown"
+            ],
+            "title": "Freshness",
+            "type": "string"
+          },
+          "json_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Json Path"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EvidenceKind"
+          },
+          "producer": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Producer",
+            "type": "string"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Id"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "untrusted": {
+            "default": false,
+            "title": "Untrusted",
+            "type": "boolean"
+          },
+          "value": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "kind",
+          "title",
+          "value",
+          "producer",
+          "timestamp"
+        ],
+        "title": "EvidenceRecord",
         "type": "object"
       },
       "EvidenceSource": {
@@ -1211,6 +2188,14 @@
         "title": "EvidenceSource",
         "type": "object"
       },
+      "FinancialPeriodType": {
+        "enum": [
+          "annual",
+          "quarterly"
+        ],
+        "title": "FinancialPeriodType",
+        "type": "string"
+      },
       "FiveYearPerformanceInput": {
         "additionalProperties": false,
         "properties": {
@@ -1254,6 +2239,87 @@
         "title": "FiveYearPerformanceOutput",
         "type": "object"
       },
+      "FollowUpQuestion": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[a-z][a-z0-9_-]*$",
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "prompt": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Prompt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "prompt"
+        ],
+        "title": "FollowUpQuestion",
+        "type": "object"
+      },
+      "FollowUpQuestions": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/FollowUpQuestion"
+            },
+            "maxItems": 3,
+            "title": "Questions",
+            "type": "array"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "follow_up_questions",
+            "default": "follow_up_questions",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "questions"
+        ],
+        "title": "FollowUpQuestions",
+        "type": "object"
+      },
       "FreshnessStatus": {
         "enum": [
           "fresh",
@@ -1262,6 +2328,649 @@
         ],
         "title": "FreshnessStatus",
         "type": "string"
+      },
+      "FundamentalAnalysisRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "annual_periods": {
+            "default": 5,
+            "maximum": 20.0,
+            "minimum": 2.0,
+            "title": "Annual Periods",
+            "type": "integer"
+          },
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "peers": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 9,
+            "title": "Peers",
+            "type": "array"
+          },
+          "quarterly_periods": {
+            "default": 8,
+            "maximum": 40.0,
+            "minimum": 4.0,
+            "title": "Quarterly Periods",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "FundamentalAnalysisRequest",
+        "type": "object"
+      },
+      "FundamentalGrowthOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/GrowthMetric"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "status",
+          "as_of",
+          "metrics"
+        ],
+        "title": "FundamentalGrowthOutput",
+        "type": "object"
+      },
+      "FundamentalMetric": {
+        "additionalProperties": false,
+        "properties": {
+          "annual": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FundamentalMetricPoint"
+            },
+            "title": "Annual",
+            "type": "array"
+          },
+          "concept": {
+            "title": "Concept",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "latest": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest"
+          },
+          "quarterly": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FundamentalMetricPoint"
+            },
+            "title": "Quarterly",
+            "type": "array"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "concept",
+          "label",
+          "unit"
+        ],
+        "title": "FundamentalMetric",
+        "type": "object"
+      },
+      "FundamentalMetricPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "filed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filed At"
+          },
+          "period_end": {
+            "format": "date-time",
+            "title": "Period End",
+            "type": "string"
+          },
+          "period_start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period Start"
+          },
+          "period_type": {
+            "$ref": "#/components/schemas/FinancialPeriodType"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "period_type",
+          "period_end",
+          "value",
+          "unit",
+          "provider"
+        ],
+        "title": "FundamentalMetricPoint",
+        "type": "object"
+      },
+      "FundamentalPeerComparisonOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "comparisons": {
+            "items": {
+              "$ref": "#/components/schemas/PeerMetricComparison"
+            },
+            "title": "Comparisons",
+            "type": "array"
+          },
+          "peers": {
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Peers",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "target",
+          "peers",
+          "status",
+          "as_of",
+          "comparisons"
+        ],
+        "title": "FundamentalPeerComparisonOutput",
+        "type": "object"
+      },
+      "FundamentalSectionOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/FundamentalMetric"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "section": {
+            "enum": [
+              "revenue",
+              "profit",
+              "cash_flow",
+              "debt",
+              "margins",
+              "roe",
+              "roce"
+            ],
+            "title": "Section",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "section",
+          "status",
+          "as_of",
+          "metrics"
+        ],
+        "title": "FundamentalSectionOutput",
+        "type": "object"
+      },
+      "FundamentalSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "calculation_version": {
+            "const": "fundamentals-v1",
+            "default": "fundamentals-v1",
+            "title": "Calculation Version",
+            "type": "string"
+          },
+          "cash_flow": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "debt": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "growth": {
+            "$ref": "#/components/schemas/FundamentalGrowthOutput"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "margins": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/CompanyProfile"
+          },
+          "profit": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "revenue": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "roce": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "roe": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "valuation": {
+            "$ref": "#/components/schemas/FundamentalValuationOutput"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "status",
+          "as_of",
+          "profile",
+          "revenue",
+          "profit",
+          "cash_flow",
+          "debt",
+          "margins",
+          "roe",
+          "roce",
+          "valuation",
+          "growth"
+        ],
+        "title": "FundamentalSnapshot",
+        "type": "object"
+      },
+      "FundamentalStatus": {
+        "enum": [
+          "completed",
+          "partial",
+          "empty"
+        ],
+        "title": "FundamentalStatus",
+        "type": "string"
+      },
+      "FundamentalValuationOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/ValuationMetric"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "status",
+          "as_of",
+          "metrics"
+        ],
+        "title": "FundamentalValuationOutput",
+        "type": "object"
+      },
+      "GroundedClaim": {
+        "additionalProperties": false,
+        "properties": {
+          "claim_id": {
+            "pattern": "^claim_[a-z0-9_-]+$",
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "text": {
+            "maxLength": 1200,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id",
+          "text",
+          "evidence_ids"
+        ],
+        "title": "GroundedClaim",
+        "type": "object"
+      },
+      "GrowthMetric": {
+        "additionalProperties": false,
+        "properties": {
+          "annual_cagr": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Annual Cagr"
+          },
+          "annual_yoy": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GrowthPoint"
+            },
+            "title": "Annual Yoy",
+            "type": "array"
+          },
+          "concept": {
+            "title": "Concept",
+            "type": "string"
+          },
+          "quarterly_qoq": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GrowthPoint"
+            },
+            "title": "Quarterly Qoq",
+            "type": "array"
+          },
+          "quarterly_yoy": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GrowthPoint"
+            },
+            "title": "Quarterly Yoy",
+            "type": "array"
+          }
+        },
+        "required": [
+          "concept"
+        ],
+        "title": "GrowthMetric",
+        "type": "object"
+      },
+      "GrowthPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "absolute_change": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Absolute Change"
+          },
+          "comparison": {
+            "enum": [
+              "yoy",
+              "qoq"
+            ],
+            "title": "Comparison",
+            "type": "string"
+          },
+          "percent_change": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percent Change"
+          },
+          "period_end": {
+            "format": "date-time",
+            "title": "Period End",
+            "type": "string"
+          },
+          "period_type": {
+            "$ref": "#/components/schemas/FinancialPeriodType"
+          }
+        },
+        "required": [
+          "period_type",
+          "period_end",
+          "comparison",
+          "absolute_change",
+          "percent_change"
+        ],
+        "title": "GrowthPoint",
+        "type": "object"
       },
       "HTTPValidationError": {
         "properties": {
@@ -1317,6 +3026,55 @@
           "checked_at"
         ],
         "title": "HealthResult",
+        "type": "object"
+      },
+      "IndicatorPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "value"
+        ],
+        "title": "IndicatorPoint",
+        "type": "object"
+      },
+      "IndicatorSeries": {
+        "additionalProperties": false,
+        "properties": {
+          "latest": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Latest",
+            "type": "string"
+          },
+          "period": {
+            "title": "Period",
+            "type": "integer"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/IndicatorPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          }
+        },
+        "required": [
+          "period",
+          "latest",
+          "points"
+        ],
+        "title": "IndicatorSeries",
         "type": "object"
       },
       "InstrumentAutocompleteOutput": {
@@ -1427,6 +3185,43 @@
         "title": "InstrumentRef",
         "type": "object"
       },
+      "InstrumentReference": {
+        "additionalProperties": false,
+        "properties": {
+          "exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "identifier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Identifier"
+          },
+          "symbol": {
+            "minLength": 1,
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "title": "InstrumentReference",
+        "type": "object"
+      },
       "InstrumentResolveOutput": {
         "additionalProperties": false,
         "properties": {
@@ -1492,6 +3287,51 @@
         "type": "object"
       },
       "JsonValue": {},
+      "LevelOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "current_price": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Current Price",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "levels": {
+            "items": {
+              "$ref": "#/components/schemas/PriceLevel"
+            },
+            "title": "Levels",
+            "type": "array"
+          },
+          "lookback": {
+            "title": "Lookback",
+            "type": "integer"
+          },
+          "side": {
+            "enum": [
+              "support",
+              "resistance"
+            ],
+            "title": "Side",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "side",
+          "current_price",
+          "lookback",
+          "levels"
+        ],
+        "title": "LevelOutput",
+        "type": "object"
+      },
       "LicenseClassification": {
         "enum": [
           "internal",
@@ -1502,6 +3342,83 @@
         "title": "LicenseClassification",
         "type": "string"
       },
+      "MacdOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "fast_period": {
+            "title": "Fast Period",
+            "type": "integer"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "latest": {
+            "$ref": "#/components/schemas/MacdPoint"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/MacdPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "signal_period": {
+            "title": "Signal Period",
+            "type": "integer"
+          },
+          "slow_period": {
+            "title": "Slow Period",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "fast_period",
+          "slow_period",
+          "signal_period",
+          "latest",
+          "points"
+        ],
+        "title": "MacdOutput",
+        "type": "object"
+      },
+      "MacdPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "histogram": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Histogram",
+            "type": "string"
+          },
+          "macd": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Macd",
+            "type": "string"
+          },
+          "signal": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Signal",
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "macd",
+          "signal",
+          "histogram"
+        ],
+        "title": "MacdPoint",
+        "type": "object"
+      },
       "MarketInterval": {
         "enum": [
           "1d",
@@ -1510,6 +3427,73 @@
         ],
         "title": "MarketInterval",
         "type": "string"
+      },
+      "MarketThesisComponent": {
+        "additionalProperties": false,
+        "properties": {
+          "contradictory": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GroundedClaim"
+            },
+            "title": "Contradictory",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "supportive": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GroundedClaim"
+            },
+            "title": "Supportive",
+            "type": "array"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "market_thesis",
+            "default": "market_thesis",
+            "title": "Type",
+            "type": "string"
+          },
+          "uncertainties": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GroundedClaim"
+            },
+            "title": "Uncertainties",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "MarketThesisComponent",
+        "type": "object"
       },
       "MetricGrid": {
         "additionalProperties": false,
@@ -1590,6 +3574,200 @@
           "value"
         ],
         "title": "MetricItem",
+        "type": "object"
+      },
+      "MomentumOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "direction": {
+            "enum": [
+              "positive",
+              "neutral",
+              "negative"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "macd_histogram": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Macd Histogram",
+            "type": "string"
+          },
+          "negative_votes": {
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Negative Votes",
+            "type": "integer"
+          },
+          "positive_votes": {
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Positive Votes",
+            "type": "integer"
+          },
+          "rate_of_change": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Rate Of Change",
+            "type": "string"
+          },
+          "rsi": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Rsi",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "direction",
+          "positive_votes",
+          "negative_votes",
+          "rsi",
+          "macd_histogram",
+          "rate_of_change"
+        ],
+        "title": "MomentumOutput",
+        "type": "object"
+      },
+      "Narrative": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "discussion_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Discussion Ids",
+            "type": "array"
+          },
+          "mention_count": {
+            "minimum": 1.0,
+            "title": "Mention Count",
+            "type": "integer"
+          },
+          "method": {
+            "enum": [
+              "taxonomy",
+              "ngram"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "narrative_id": {
+            "format": "uuid",
+            "title": "Narrative Id",
+            "type": "string"
+          },
+          "observation_timestamps": {
+            "items": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "title": "Observation Timestamps",
+            "type": "array"
+          },
+          "providers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Providers",
+            "type": "array"
+          },
+          "sentiment": {
+            "$ref": "#/components/schemas/SentimentLabel"
+          },
+          "topic": {
+            "title": "Topic",
+            "type": "string"
+          },
+          "weighted_share": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Weighted Share",
+            "type": "string"
+          }
+        },
+        "required": [
+          "narrative_id",
+          "topic",
+          "method",
+          "sentiment",
+          "weighted_share",
+          "mention_count",
+          "confidence",
+          "discussion_ids",
+          "providers",
+          "observation_timestamps"
+        ],
+        "title": "Narrative",
+        "type": "object"
+      },
+      "NarrativeExtractionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "current_start": {
+            "format": "date-time",
+            "title": "Current Start",
+            "type": "string"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/WeightedObservation-Input"
+            },
+            "title": "Observations",
+            "type": "array"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "observations",
+          "current_start",
+          "end"
+        ],
+        "title": "NarrativeExtractionInput",
+        "type": "object"
+      },
+      "NarrativeList": {
+        "additionalProperties": false,
+        "properties": {
+          "narratives": {
+            "items": {
+              "$ref": "#/components/schemas/Narrative"
+            },
+            "title": "Narratives",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "status",
+          "narratives"
+        ],
+        "title": "NarrativeList",
         "type": "object"
       },
       "NewsSearchInput": {
@@ -1716,6 +3894,79 @@
           "items"
         ],
         "title": "NewsTimeline",
+        "type": "object"
+      },
+      "PeerMetricComparison": {
+        "additionalProperties": false,
+        "properties": {
+          "concept": {
+            "title": "Concept",
+            "type": "string"
+          },
+          "median": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median"
+          },
+          "values": {
+            "items": {
+              "$ref": "#/components/schemas/PeerMetricValue"
+            },
+            "title": "Values",
+            "type": "array"
+          }
+        },
+        "required": [
+          "concept",
+          "median",
+          "values"
+        ],
+        "title": "PeerMetricComparison",
+        "type": "object"
+      },
+      "PeerMetricValue": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "percentile": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percentile"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "instrument",
+          "value"
+        ],
+        "title": "PeerMetricValue",
         "type": "object"
       },
       "PerformanceMetrics": {
@@ -1915,6 +4166,54 @@
         "title": "PriceChart",
         "type": "object"
       },
+      "PriceLevel": {
+        "additionalProperties": false,
+        "properties": {
+          "distance_percent": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Distance Percent",
+            "type": "string"
+          },
+          "first_tested_at": {
+            "format": "date-time",
+            "title": "First Tested At",
+            "type": "string"
+          },
+          "last_tested_at": {
+            "format": "date-time",
+            "title": "Last Tested At",
+            "type": "string"
+          },
+          "level": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Level",
+            "type": "string"
+          },
+          "method": {
+            "enum": [
+              "rolling_extreme",
+              "pivot_cluster"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "touches": {
+            "minimum": 1.0,
+            "title": "Touches",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "method",
+          "level",
+          "touches",
+          "first_tested_at",
+          "last_tested_at",
+          "distance_percent"
+        ],
+        "title": "PriceLevel",
+        "type": "object"
+      },
       "ProviderMetadata": {
         "additionalProperties": false,
         "properties": {
@@ -1973,6 +4272,31 @@
         "title": "ProviderMetadata",
         "type": "object"
       },
+      "PublicSentimentAnalysis": {
+        "additionalProperties": false,
+        "properties": {
+          "narratives": {
+            "$ref": "#/components/schemas/NarrativeList"
+          },
+          "shift": {
+            "$ref": "#/components/schemas/SentimentShift"
+          },
+          "snapshot": {
+            "$ref": "#/components/schemas/SentimentSnapshot-Output"
+          },
+          "trend": {
+            "$ref": "#/components/schemas/SentimentTrend"
+          }
+        },
+        "required": [
+          "snapshot",
+          "narratives",
+          "trend",
+          "shift"
+        ],
+        "title": "PublicSentimentAnalysis",
+        "type": "object"
+      },
       "RebasedPoint": {
         "additionalProperties": false,
         "properties": {
@@ -2002,11 +4326,16 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "cited_narrative": "#/components/schemas/CitedNarrative",
                   "comparison_table": "#/components/schemas/ComparisonTable",
+                  "event_timeline": "#/components/schemas/EventTimeline",
+                  "follow_up_questions": "#/components/schemas/FollowUpQuestions",
+                  "market_thesis": "#/components/schemas/MarketThesisComponent",
                   "metric_grid": "#/components/schemas/MetricGrid",
                   "news_timeline": "#/components/schemas/NewsTimeline",
                   "prediction_card": "#/components/schemas/PredictionCard",
                   "price_chart": "#/components/schemas/PriceChart",
+                  "response_section": "#/components/schemas/ResponseSection",
                   "risk_card": "#/components/schemas/RiskCard",
                   "scenario_table": "#/components/schemas/ScenarioTable",
                   "sentiment_chart": "#/components/schemas/SentimentChart",
@@ -2033,6 +4362,9 @@
                   "$ref": "#/components/schemas/NewsTimeline"
                 },
                 {
+                  "$ref": "#/components/schemas/EventTimeline"
+                },
+                {
                   "$ref": "#/components/schemas/PredictionCard"
                 },
                 {
@@ -2049,10 +4381,30 @@
                 },
                 {
                   "$ref": "#/components/schemas/WarningBanner"
+                },
+                {
+                  "$ref": "#/components/schemas/CitedNarrative"
+                },
+                {
+                  "$ref": "#/components/schemas/MarketThesisComponent"
+                },
+                {
+                  "$ref": "#/components/schemas/FollowUpQuestions"
+                },
+                {
+                  "$ref": "#/components/schemas/ResponseSection"
                 }
               ]
             },
             "title": "Components",
+            "type": "array"
+          },
+          "evidence": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/EvidenceRecord"
+            },
+            "title": "Evidence",
             "type": "array"
           },
           "generated_at": {
@@ -2557,6 +4909,134 @@
         "title": "ResearchTimelineOutput",
         "type": "object"
       },
+      "ResponseSection": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "default": [],
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "cited_narrative": "#/components/schemas/CitedNarrative",
+                  "comparison_table": "#/components/schemas/ComparisonTable",
+                  "event_timeline": "#/components/schemas/EventTimeline",
+                  "follow_up_questions": "#/components/schemas/FollowUpQuestions",
+                  "market_thesis": "#/components/schemas/MarketThesisComponent",
+                  "metric_grid": "#/components/schemas/MetricGrid",
+                  "news_timeline": "#/components/schemas/NewsTimeline",
+                  "prediction_card": "#/components/schemas/PredictionCard",
+                  "price_chart": "#/components/schemas/PriceChart",
+                  "risk_card": "#/components/schemas/RiskCard",
+                  "scenario_table": "#/components/schemas/ScenarioTable",
+                  "sentiment_chart": "#/components/schemas/SentimentChart",
+                  "source_list": "#/components/schemas/SourceList",
+                  "summary_card": "#/components/schemas/SummaryCard",
+                  "warning_banner": "#/components/schemas/WarningBanner"
+                },
+                "propertyName": "type"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/SummaryCard"
+                },
+                {
+                  "$ref": "#/components/schemas/MetricGrid"
+                },
+                {
+                  "$ref": "#/components/schemas/PriceChart"
+                },
+                {
+                  "$ref": "#/components/schemas/SentimentChart"
+                },
+                {
+                  "$ref": "#/components/schemas/NewsTimeline"
+                },
+                {
+                  "$ref": "#/components/schemas/EventTimeline"
+                },
+                {
+                  "$ref": "#/components/schemas/PredictionCard"
+                },
+                {
+                  "$ref": "#/components/schemas/ScenarioTable"
+                },
+                {
+                  "$ref": "#/components/schemas/ComparisonTable"
+                },
+                {
+                  "$ref": "#/components/schemas/RiskCard"
+                },
+                {
+                  "$ref": "#/components/schemas/SourceList"
+                },
+                {
+                  "$ref": "#/components/schemas/WarningBanner"
+                },
+                {
+                  "$ref": "#/components/schemas/CitedNarrative"
+                },
+                {
+                  "$ref": "#/components/schemas/MarketThesisComponent"
+                },
+                {
+                  "$ref": "#/components/schemas/FollowUpQuestions"
+                }
+              ]
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "response_section",
+            "default": "response_section",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "ResponseSection",
+        "type": "object"
+      },
       "RiskCard": {
         "additionalProperties": false,
         "properties": {
@@ -2636,6 +5116,27 @@
           "description"
         ],
         "title": "RiskItem",
+        "type": "object"
+      },
+      "RsiOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "series": {
+            "$ref": "#/components/schemas/IndicatorSeries"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "series"
+        ],
+        "title": "RsiOutput",
         "type": "object"
       },
       "RunMetadata": {
@@ -2809,6 +5310,61 @@
         "title": "ScenarioTable",
         "type": "object"
       },
+      "SentimentAnalysisInput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "limit": {
+            "default": 500,
+            "maximum": 1000.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          },
+          "window_days": {
+            "default": 7,
+            "maximum": 90.0,
+            "minimum": 1.0,
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "SentimentAnalysisInput",
+        "type": "object"
+      },
       "SentimentChart": {
         "additionalProperties": false,
         "properties": {
@@ -2860,6 +5416,534 @@
         "title": "SentimentChart",
         "type": "object"
       },
+      "SentimentEvidence": {
+        "additionalProperties": false,
+        "properties": {
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "retrieved_at": {
+            "format": "date-time",
+            "title": "Retrieved At",
+            "type": "string"
+          },
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "source_type": {
+            "title": "Source Type",
+            "type": "string"
+          },
+          "untrusted": {
+            "const": true,
+            "default": true,
+            "title": "Untrusted",
+            "type": "boolean"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": [
+          "source_id",
+          "provider",
+          "source_type",
+          "observed_at",
+          "retrieved_at"
+        ],
+        "title": "SentimentEvidence",
+        "type": "object"
+      },
+      "SentimentLabel": {
+        "enum": [
+          "positive",
+          "neutral",
+          "negative",
+          "unknown"
+        ],
+        "title": "SentimentLabel",
+        "type": "string"
+      },
+      "SentimentShift": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "sentiment_component": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentiment Component"
+          },
+          "shift_score": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shift Score"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "volume_component": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Volume Component"
+          }
+        },
+        "required": [
+          "target",
+          "status",
+          "description"
+        ],
+        "title": "SentimentShift",
+        "type": "object"
+      },
+      "SentimentSignal-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "label": {
+            "$ref": "#/components/schemas/SentimentLabel"
+          },
+          "method": {
+            "enum": [
+              "provider",
+              "lexicon",
+              "none"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "negative_hits": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Negative Hits",
+            "type": "integer"
+          },
+          "positive_hits": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Positive Hits",
+            "type": "integer"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": -1.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "method",
+          "version"
+        ],
+        "title": "SentimentSignal",
+        "type": "object"
+      },
+      "SentimentSignal-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "label": {
+            "$ref": "#/components/schemas/SentimentLabel"
+          },
+          "method": {
+            "enum": [
+              "provider",
+              "lexicon",
+              "none"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "negative_hits": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Negative Hits",
+            "type": "integer"
+          },
+          "positive_hits": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Positive Hits",
+            "type": "integer"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "method",
+          "version"
+        ],
+        "title": "SentimentSignal",
+        "type": "object"
+      },
+      "SentimentSnapshot-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "co_mentions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Co Mentions",
+            "type": "array"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "current": {
+            "$ref": "#/components/schemas/WindowMetrics-Input"
+          },
+          "lexicon_version": {
+            "title": "Lexicon Version",
+            "type": "string"
+          },
+          "previous": {
+            "$ref": "#/components/schemas/WindowMetrics-Input"
+          },
+          "snapshot_id": {
+            "format": "uuid",
+            "title": "Snapshot Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "volume_change": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Volume Change"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "snapshot_id",
+          "target",
+          "status",
+          "as_of",
+          "current",
+          "previous",
+          "lexicon_version"
+        ],
+        "title": "SentimentSnapshot",
+        "type": "object"
+      },
+      "SentimentSnapshot-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "co_mentions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Co Mentions",
+            "type": "array"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "current": {
+            "$ref": "#/components/schemas/WindowMetrics-Output"
+          },
+          "lexicon_version": {
+            "title": "Lexicon Version",
+            "type": "string"
+          },
+          "previous": {
+            "$ref": "#/components/schemas/WindowMetrics-Output"
+          },
+          "snapshot_id": {
+            "format": "uuid",
+            "title": "Snapshot Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "volume_change": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Volume Change"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "snapshot_id",
+          "target",
+          "status",
+          "as_of",
+          "current",
+          "previous",
+          "lexicon_version"
+        ],
+        "title": "SentimentSnapshot",
+        "type": "object"
+      },
+      "SentimentTrend": {
+        "additionalProperties": false,
+        "properties": {
+          "acceleration": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acceleration"
+          },
+          "buckets": {
+            "items": {
+              "$ref": "#/components/schemas/TrendBucket"
+            },
+            "title": "Buckets",
+            "type": "array"
+          },
+          "direction": {
+            "enum": [
+              "improving",
+              "stable",
+              "deteriorating",
+              "insufficient"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "slope": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slope"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "status",
+          "direction",
+          "buckets"
+        ],
+        "title": "SentimentTrend",
+        "type": "object"
+      },
+      "ShiftDetectionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "snapshot": {
+            "$ref": "#/components/schemas/SentimentSnapshot-Input"
+          }
+        },
+        "required": [
+          "snapshot"
+        ],
+        "title": "ShiftDetectionInput",
+        "type": "object"
+      },
+      "SmaOutput": {
+        "additionalProperties": false,
+        "description": "Simple moving-average output.",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "series": {
+            "$ref": "#/components/schemas/IndicatorSeries"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "series"
+        ],
+        "title": "SmaOutput",
+        "type": "object"
+      },
       "SourceList": {
         "additionalProperties": false,
         "properties": {
@@ -2909,6 +5993,119 @@
           "sources"
         ],
         "title": "SourceList",
+        "type": "object"
+      },
+      "SourceWeightInput": {
+        "additionalProperties": false,
+        "properties": {
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/DetectedDiscussion-Input"
+            },
+            "title": "Discussions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "discussions"
+        ],
+        "title": "SourceWeightInput",
+        "type": "object"
+      },
+      "SourceWeightOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/WeightedObservation-Output"
+            },
+            "title": "Observations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "observations"
+        ],
+        "title": "SourceWeightOutput",
+        "type": "object"
+      },
+      "SpamDecision": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion_id": {
+            "format": "uuid",
+            "title": "Discussion Id",
+            "type": "string"
+          },
+          "reasons": {
+            "default": [],
+            "items": {
+              "enum": [
+                "provider_spam",
+                "too_short",
+                "too_many_urls",
+                "too_many_tags",
+                "repeated_tokens",
+                "duplicate",
+                "author_burst"
+              ],
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "spam": {
+            "title": "Spam",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "discussion_id",
+          "spam"
+        ],
+        "title": "SpamDecision",
+        "type": "object"
+      },
+      "SpamRemovalInput": {
+        "additionalProperties": false,
+        "properties": {
+          "discussions": {
+            "items": {
+              "$ref": "#/components/schemas/Discussion-Input"
+            },
+            "title": "Discussions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "discussions"
+        ],
+        "title": "SpamRemovalInput",
+        "type": "object"
+      },
+      "SpamRemovalOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/SpamDecision"
+            },
+            "title": "Decisions",
+            "type": "array"
+          },
+          "retained": {
+            "items": {
+              "$ref": "#/components/schemas/Discussion-Output"
+            },
+            "title": "Retained",
+            "type": "array"
+          }
+        },
+        "required": [
+          "retained",
+          "decisions"
+        ],
+        "title": "SpamRemovalOutput",
         "type": "object"
       },
       "StockComparisonInput": {
@@ -3218,6 +6415,85 @@
         "title": "StockHistoryOutput",
         "type": "object"
       },
+      "StockOverviewRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "annual_periods": {
+            "default": 5,
+            "maximum": 20.0,
+            "minimum": 2.0,
+            "title": "Annual Periods",
+            "type": "integer"
+          },
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval",
+            "default": "1d"
+          },
+          "quarterly_periods": {
+            "default": 8,
+            "maximum": 40.0,
+            "minimum": 4.0,
+            "title": "Quarterly Periods",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          },
+          "research_limit": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Research Limit"
+          },
+          "sentiment_limit": {
+            "default": 100,
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Sentiment Limit",
+            "type": "integer"
+          },
+          "sentiment_window_days": {
+            "default": 7,
+            "maximum": 30.0,
+            "minimum": 1.0,
+            "title": "Sentiment Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "StockOverviewRequest",
+        "type": "object"
+      },
       "StockPerformanceInput": {
         "additionalProperties": false,
         "properties": {
@@ -3505,6 +6781,644 @@
         "title": "TableRow",
         "type": "object"
       },
+      "TechnicalAnalysisRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "adx_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Adx Period",
+            "type": "integer"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "atr_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Atr Period",
+            "type": "integer"
+          },
+          "ema_period": {
+            "default": 20,
+            "maximum": 400.0,
+            "minimum": 2.0,
+            "title": "Ema Period",
+            "type": "integer"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval",
+            "default": "1d"
+          },
+          "level_lookback": {
+            "default": 60,
+            "maximum": 500.0,
+            "minimum": 5.0,
+            "title": "Level Lookback",
+            "type": "integer"
+          },
+          "macd_fast_period": {
+            "default": 12,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Macd Fast Period",
+            "type": "integer"
+          },
+          "macd_signal_period": {
+            "default": 9,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Macd Signal Period",
+            "type": "integer"
+          },
+          "macd_slow_period": {
+            "default": 26,
+            "maximum": 400.0,
+            "minimum": 3.0,
+            "title": "Macd Slow Period",
+            "type": "integer"
+          },
+          "momentum_roc_period": {
+            "default": 10,
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Momentum Roc Period",
+            "type": "integer"
+          },
+          "momentum_rsi_lower": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "45",
+            "title": "Momentum Rsi Lower"
+          },
+          "momentum_rsi_upper": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "55",
+            "title": "Momentum Rsi Upper"
+          },
+          "pivot_atr_multiplier": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 5.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "0.5",
+            "title": "Pivot Atr Multiplier"
+          },
+          "pivot_max_levels": {
+            "default": 3,
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Pivot Max Levels",
+            "type": "integer"
+          },
+          "pivot_span": {
+            "default": 2,
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Pivot Span",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          },
+          "rsi_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Rsi Period",
+            "type": "integer"
+          },
+          "sma_period": {
+            "default": 20,
+            "maximum": 400.0,
+            "minimum": 2.0,
+            "title": "Sma Period",
+            "type": "integer"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "trend_fast_period": {
+            "default": 20,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Trend Fast Period",
+            "type": "integer"
+          },
+          "trend_slow_period": {
+            "default": 50,
+            "maximum": 400.0,
+            "minimum": 3.0,
+            "title": "Trend Slow Period",
+            "type": "integer"
+          },
+          "trend_spread_threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "0.005",
+            "title": "Trend Spread Threshold"
+          },
+          "volatility_high_percentile": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "0.75",
+            "title": "Volatility High Percentile"
+          },
+          "volatility_low_percentile": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "0.25",
+            "title": "Volatility Low Percentile"
+          },
+          "volatility_period": {
+            "default": 20,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Volatility Period",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "TechnicalAnalysisRequest",
+        "type": "object"
+      },
+      "TechnicalParameters": {
+        "additionalProperties": false,
+        "properties": {
+          "adx_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Adx Period",
+            "type": "integer"
+          },
+          "atr_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Atr Period",
+            "type": "integer"
+          },
+          "ema_period": {
+            "default": 20,
+            "maximum": 400.0,
+            "minimum": 2.0,
+            "title": "Ema Period",
+            "type": "integer"
+          },
+          "level_lookback": {
+            "default": 60,
+            "maximum": 500.0,
+            "minimum": 5.0,
+            "title": "Level Lookback",
+            "type": "integer"
+          },
+          "macd_fast_period": {
+            "default": 12,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Macd Fast Period",
+            "type": "integer"
+          },
+          "macd_signal_period": {
+            "default": 9,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Macd Signal Period",
+            "type": "integer"
+          },
+          "macd_slow_period": {
+            "default": 26,
+            "maximum": 400.0,
+            "minimum": 3.0,
+            "title": "Macd Slow Period",
+            "type": "integer"
+          },
+          "momentum_roc_period": {
+            "default": 10,
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Momentum Roc Period",
+            "type": "integer"
+          },
+          "momentum_rsi_lower": {
+            "default": "45",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Momentum Rsi Lower",
+            "type": "string"
+          },
+          "momentum_rsi_upper": {
+            "default": "55",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Momentum Rsi Upper",
+            "type": "string"
+          },
+          "pivot_atr_multiplier": {
+            "default": "0.5",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Pivot Atr Multiplier",
+            "type": "string"
+          },
+          "pivot_max_levels": {
+            "default": 3,
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Pivot Max Levels",
+            "type": "integer"
+          },
+          "pivot_span": {
+            "default": 2,
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Pivot Span",
+            "type": "integer"
+          },
+          "rsi_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Rsi Period",
+            "type": "integer"
+          },
+          "sma_period": {
+            "default": 20,
+            "maximum": 400.0,
+            "minimum": 2.0,
+            "title": "Sma Period",
+            "type": "integer"
+          },
+          "trend_fast_period": {
+            "default": 20,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Trend Fast Period",
+            "type": "integer"
+          },
+          "trend_slow_period": {
+            "default": 50,
+            "maximum": 400.0,
+            "minimum": 3.0,
+            "title": "Trend Slow Period",
+            "type": "integer"
+          },
+          "trend_spread_threshold": {
+            "default": "0.005",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Trend Spread Threshold",
+            "type": "string"
+          },
+          "volatility_high_percentile": {
+            "default": "0.75",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Volatility High Percentile",
+            "type": "string"
+          },
+          "volatility_low_percentile": {
+            "default": "0.25",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Volatility Low Percentile",
+            "type": "string"
+          },
+          "volatility_period": {
+            "default": 20,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Volatility Period",
+            "type": "integer"
+          }
+        },
+        "title": "TechnicalParameters",
+        "type": "object"
+      },
+      "TechnicalSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "adx": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AdxOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "atr": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AtrOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cache": {
+            "$ref": "#/components/schemas/CacheMetadata"
+          },
+          "calculation_version": {
+            "const": "technical-v1",
+            "default": "technical-v1",
+            "title": "Calculation Version",
+            "type": "string"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "ema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EmaOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "macd": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MacdOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "momentum": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MomentumOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "observation_count": {
+            "minimum": 0.0,
+            "title": "Observation Count",
+            "type": "integer"
+          },
+          "observed_end": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed End"
+          },
+          "observed_start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed Start"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/TechnicalParameters"
+          },
+          "price_basis": {
+            "const": "adjusted_ohlc",
+            "default": "adjusted_ohlc",
+            "title": "Price Basis",
+            "type": "string"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "requested_end": {
+            "format": "date-time",
+            "title": "Requested End",
+            "type": "string"
+          },
+          "requested_start": {
+            "format": "date-time",
+            "title": "Requested Start",
+            "type": "string"
+          },
+          "resistance": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LevelOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rsi": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RsiOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sma": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SmaOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/TechnicalStatus"
+          },
+          "support": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LevelOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trend": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TrendOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "volatility": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VolatilityOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "status",
+          "interval",
+          "requested_start",
+          "requested_end",
+          "observation_count",
+          "parameters",
+          "provider",
+          "cache"
+        ],
+        "title": "TechnicalSnapshot",
+        "type": "object"
+      },
+      "TechnicalStatus": {
+        "enum": [
+          "completed",
+          "partial",
+          "empty"
+        ],
+        "title": "TechnicalStatus",
+        "type": "string"
+      },
       "TimelineItem": {
         "additionalProperties": false,
         "properties": {
@@ -3555,6 +7469,133 @@
         "title": "TimestampBasis",
         "type": "string"
       },
+      "TrendBucket": {
+        "additionalProperties": false,
+        "properties": {
+          "day": {
+            "format": "date-time",
+            "title": "Day",
+            "type": "string"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          },
+          "mention_count": {
+            "minimum": 0.0,
+            "title": "Mention Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day",
+          "mention_count"
+        ],
+        "title": "TrendBucket",
+        "type": "object"
+      },
+      "TrendDetectionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/WeightedObservation-Input"
+            },
+            "title": "Observations",
+            "type": "array"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          }
+        },
+        "required": [
+          "target",
+          "observations",
+          "start",
+          "end"
+        ],
+        "title": "TrendDetectionInput",
+        "type": "object"
+      },
+      "TrendOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "adx": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Adx",
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "rising",
+              "falling",
+              "sideways"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "fast_ema": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Fast Ema",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "slow_ema": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Slow Ema",
+            "type": "string"
+          },
+          "spread_percent": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Spread Percent",
+            "type": "string"
+          },
+          "strength": {
+            "enum": [
+              "weak",
+              "developing",
+              "strong"
+            ],
+            "title": "Strength",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "direction",
+          "strength",
+          "fast_ema",
+          "slow_ema",
+          "spread_percent",
+          "adx"
+        ],
+        "title": "TrendOutput",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -3593,6 +7634,117 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "ValuationMetric": {
+        "additionalProperties": false,
+        "properties": {
+          "calculated": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calculated"
+          },
+          "concept": {
+            "title": "Concept",
+            "type": "string"
+          },
+          "historical_reported": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FundamentalMetricPoint"
+            },
+            "title": "Historical Reported",
+            "type": "array"
+          },
+          "reported": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reported"
+          }
+        },
+        "required": [
+          "concept"
+        ],
+        "title": "ValuationMetric",
+        "type": "object"
+      },
+      "VolatilityOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "annualized_volatility": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Annualized Volatility",
+            "type": "string"
+          },
+          "atr_percent": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Atr Percent",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "percentile_rank": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percentile Rank"
+          },
+          "period": {
+            "title": "Period",
+            "type": "integer"
+          },
+          "regime": {
+            "enum": [
+              "low",
+              "normal",
+              "high",
+              "unknown"
+            ],
+            "title": "Regime",
+            "type": "string"
+          },
+          "rolling": {
+            "items": {
+              "$ref": "#/components/schemas/IndicatorPoint"
+            },
+            "title": "Rolling",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "regime",
+          "period",
+          "annualized_volatility",
+          "atr_percent",
+          "rolling"
+        ],
+        "title": "VolatilityOutput",
         "type": "object"
       },
       "WarningBanner": {
@@ -3646,6 +7798,463 @@
           "message"
         ],
         "title": "WarningBanner",
+        "type": "object"
+      },
+      "WeightedObservation-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion": {
+            "$ref": "#/components/schemas/Discussion-Input"
+          },
+          "engagement_multiplier": {
+            "anyOf": [
+              {
+                "maximum": 1.5,
+                "minimum": 1.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Engagement Multiplier"
+          },
+          "mentions": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyMention-Input"
+            },
+            "title": "Mentions",
+            "type": "array"
+          },
+          "provider_weight": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Provider Weight"
+          },
+          "source_type_weight": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Source Type Weight"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Weight"
+          }
+        },
+        "required": [
+          "discussion",
+          "mentions",
+          "provider_weight",
+          "source_type_weight",
+          "engagement_multiplier",
+          "weight"
+        ],
+        "title": "WeightedObservation",
+        "type": "object"
+      },
+      "WeightedObservation-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "discussion": {
+            "$ref": "#/components/schemas/Discussion-Output"
+          },
+          "engagement_multiplier": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Engagement Multiplier",
+            "type": "string"
+          },
+          "mentions": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyMention-Output"
+            },
+            "title": "Mentions",
+            "type": "array"
+          },
+          "provider_weight": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Provider Weight",
+            "type": "string"
+          },
+          "source_type_weight": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Source Type Weight",
+            "type": "string"
+          },
+          "weight": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Weight",
+            "type": "string"
+          }
+        },
+        "required": [
+          "discussion",
+          "mentions",
+          "provider_weight",
+          "source_type_weight",
+          "engagement_multiplier",
+          "weight"
+        ],
+        "title": "WeightedObservation",
+        "type": "object"
+      },
+      "WindowMetrics-Input": {
+        "additionalProperties": false,
+        "properties": {
+          "agreement": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agreement"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": -1.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          },
+          "mean_signal_confidence": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Signal Confidence"
+          },
+          "mention_count": {
+            "minimum": 0.0,
+            "title": "Mention Count",
+            "type": "integer"
+          },
+          "negative_share": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Negative Share"
+          },
+          "neutral_share": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Neutral Share"
+          },
+          "positive_share": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Positive Share"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          },
+          "usable_count": {
+            "minimum": 0.0,
+            "title": "Usable Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "mention_count",
+          "usable_count"
+        ],
+        "title": "WindowMetrics",
+        "type": "object"
+      },
+      "WindowMetrics-Output": {
+        "additionalProperties": false,
+        "properties": {
+          "agreement": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agreement"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          },
+          "mean_signal_confidence": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Signal Confidence"
+          },
+          "mention_count": {
+            "minimum": 0.0,
+            "title": "Mention Count",
+            "type": "integer"
+          },
+          "negative_share": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Negative Share"
+          },
+          "neutral_share": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Neutral Share"
+          },
+          "positive_share": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Positive Share"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          },
+          "usable_count": {
+            "minimum": 0.0,
+            "title": "Usable Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "mention_count",
+          "usable_count"
+        ],
+        "title": "WindowMetrics",
+        "type": "object"
+      },
+      "WorkflowPresentation": {
+        "additionalProperties": false,
+        "properties": {
+          "completion_event": {
+            "anyOf": [
+              {
+                "pattern": "^[a-z][a-z0-9_.-]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completion Event"
+          },
+          "sections": {
+            "items": {
+              "$ref": "#/components/schemas/WorkflowPresentationSection"
+            },
+            "minItems": 1,
+            "title": "Sections",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "sections"
+        ],
+        "title": "WorkflowPresentation",
+        "type": "object"
+      },
+      "WorkflowPresentationSection": {
+        "additionalProperties": false,
+        "properties": {
+          "empty_message": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Empty Message"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          },
+          "id": {
+            "pattern": "^[a-z][a-z0-9_-]*$",
+            "title": "Id",
+            "type": "string"
+          },
+          "steps": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Steps",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "steps"
+        ],
+        "title": "WorkflowPresentationSection",
         "type": "object"
       },
       "WorkflowRequest": {
@@ -3704,6 +8313,16 @@
             "format": "date-time",
             "title": "Completed At",
             "type": "string"
+          },
+          "presentation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowPresentation"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "run_id": {
             "format": "uuid",
@@ -4195,6 +8814,457 @@
         "summary": "Event Stream",
         "tags": [
           "events"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/cash-flow": {
+      "post": {
+        "operationId": "fundamental_cash_flow_api_v1_fundamentals_cash_flow_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Cash Flow",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/debt": {
+      "post": {
+        "operationId": "fundamental_debt_api_v1_fundamentals_debt_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Debt",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/growth": {
+      "post": {
+        "operationId": "growth_api_v1_fundamentals_growth_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalGrowthOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Growth",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/margins": {
+      "post": {
+        "operationId": "fundamental_margins_api_v1_fundamentals_margins_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Margins",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/peer-comparison": {
+      "post": {
+        "operationId": "peer_comparison_api_v1_fundamentals_peer_comparison_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalPeerComparisonOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Peer Comparison",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/profit": {
+      "post": {
+        "operationId": "fundamental_profit_api_v1_fundamentals_profit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Profit",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/revenue": {
+      "post": {
+        "operationId": "fundamental_revenue_api_v1_fundamentals_revenue_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Revenue",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/roce": {
+      "post": {
+        "operationId": "fundamental_roce_api_v1_fundamentals_roce_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Roce",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/roe": {
+      "post": {
+        "operationId": "fundamental_roe_api_v1_fundamentals_roe_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Roe",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/snapshot": {
+      "post": {
+        "operationId": "snapshot_api_v1_fundamentals_snapshot_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSnapshot"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Snapshot",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/valuation": {
+      "post": {
+        "operationId": "valuation_api_v1_fundamentals_valuation_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalValuationOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Valuation",
+        "tags": [
+          "fundamentals"
         ]
       }
     },
@@ -5273,6 +10343,908 @@
         "summary": "Get Run Sources",
         "tags": [
           "runs"
+        ]
+      }
+    },
+    "/api/v1/sentiment/aggregate": {
+      "post": {
+        "operationId": "aggregate_api_v1_sentiment_aggregate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AggregateSentimentInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SentimentSnapshot-Output"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Aggregate",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/analyze": {
+      "post": {
+        "operationId": "analyze_api_v1_sentiment_analyze_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SentimentAnalysisInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicSentimentAnalysis"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Analyze",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/companies/detect": {
+      "post": {
+        "operationId": "detect_api_v1_sentiment_companies_detect_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompanyDetectionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyDetectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Detect",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/discussions/collect": {
+      "post": {
+        "operationId": "collect_api_v1_sentiment_discussions_collect_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectDiscussionsInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectedDiscussions"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Collect",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/narratives": {
+      "post": {
+        "operationId": "narratives_api_v1_sentiment_narratives_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NarrativeExtractionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NarrativeList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Narratives",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/shift": {
+      "post": {
+        "operationId": "shift_api_v1_sentiment_shift_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShiftDetectionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SentimentShift"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Shift",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/sources/weight": {
+      "post": {
+        "operationId": "weight_api_v1_sentiment_sources_weight_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SourceWeightInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourceWeightOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Weight",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/spam/remove": {
+      "post": {
+        "operationId": "remove_spam_api_v1_sentiment_spam_remove_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpamRemovalInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpamRemovalOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Spam",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/sentiment/trend": {
+      "post": {
+        "operationId": "trend_api_v1_sentiment_trend_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrendDetectionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SentimentTrend"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Trend",
+        "tags": [
+          "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/stock-overview": {
+      "post": {
+        "operationId": "stock_overview_api_v1_stock_overview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockOverviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RenderedResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stock Overview",
+        "tags": [
+          "stock-overview"
+        ]
+      }
+    },
+    "/api/v1/technical/adx": {
+      "post": {
+        "operationId": "adx_api_v1_technical_adx_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdxOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Adx",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/atr": {
+      "post": {
+        "operationId": "atr_api_v1_technical_atr_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtrOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Atr",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/ema": {
+      "post": {
+        "operationId": "ema_api_v1_technical_ema_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmaOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ema",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/macd": {
+      "post": {
+        "operationId": "macd_api_v1_technical_macd_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MacdOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Macd",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/momentum": {
+      "post": {
+        "operationId": "momentum_api_v1_technical_momentum_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MomentumOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Momentum",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/resistance": {
+      "post": {
+        "operationId": "resistance_api_v1_technical_resistance_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Resistance",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/rsi": {
+      "post": {
+        "operationId": "rsi_api_v1_technical_rsi_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RsiOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Rsi",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/sma": {
+      "post": {
+        "operationId": "sma_api_v1_technical_sma_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmaOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Sma",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/snapshot": {
+      "post": {
+        "operationId": "snapshot_api_v1_technical_snapshot_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicalSnapshot"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Snapshot",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/support": {
+      "post": {
+        "operationId": "support_api_v1_technical_support_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Support",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/trend": {
+      "post": {
+        "operationId": "trend_api_v1_technical_trend_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrendOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Trend",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/volatility": {
+      "post": {
+        "operationId": "volatility_api_v1_technical_volatility_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolatilityOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Volatility",
+        "tags": [
+          "technical analysis"
         ]
       }
     },

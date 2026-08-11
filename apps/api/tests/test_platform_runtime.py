@@ -30,6 +30,7 @@ from tradesentinel.platform.contracts import (
     TargetKind,
     WorkflowDefinition,
     WorkflowExecutionRequest,
+    WorkflowInputBinding,
     WorkflowStep,
 )
 from tradesentinel.platform.dependencies import DependencyResolver
@@ -452,6 +453,16 @@ def _descriptor(name: str, permissions: tuple[str, ...] = ()):
 def test_command_parser_rejects_unknown_commands() -> None:
     with pytest.raises(CommandSyntaxError):
         CommandParser(CommandRegistry()).parse("/missing")
+
+
+def test_workflow_binding_can_pass_a_complete_typed_result() -> None:
+    binding = WorkflowInputBinding(source="steps.history.data")
+    found, value = WorkflowExecutor._resolve_binding(
+        {"steps": {"history": {"data": {"bars": [{"close": "100"}]}}}},
+        binding.source,
+    )
+    assert found is True
+    assert value == {"bars": [{"close": "100"}]}
 
 
 def test_event_bus_rejects_duplicate_subscriptions() -> None:

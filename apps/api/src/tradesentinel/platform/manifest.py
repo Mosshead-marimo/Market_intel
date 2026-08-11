@@ -52,6 +52,14 @@ class CommandManifest(ManifestModel):
     arguments: tuple[CommandArgument, ...] = ()
     options: tuple[CommandOption, ...] = ()
     examples: tuple[str, ...] = ()
+    planner_enabled: bool = True
+    side_effect: Literal["read", "write"] = "read"
+
+    @model_validator(mode="after")
+    def validate_planner_access(self) -> CommandManifest:
+        if self.planner_enabled and self.side_effect != "read":
+            raise ValueError("planner-enabled commands must be read-only")
+        return self
 
 
 class IntentManifest(ManifestModel):

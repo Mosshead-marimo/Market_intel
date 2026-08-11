@@ -1,5 +1,9 @@
 # Shared Contracts
 
+## Grounded generation
+
+`EvidenceRecord` identifies one bounded source or precomputed metric with producer, timestamp, provider, run, capability, JSON path, cutoff, and freshness metadata. `GroundedClaim` requires evidence IDs. Strict assistant plan/generation contracts and the `cited_narrative`, `market_thesis`, and `follow_up_questions` components carry approved output across transports.
+
 ## InstrumentRef
 
 ```json
@@ -124,6 +128,10 @@ Backend Pydantic models are immutable, reject unknown fields, and version the AP
 
 The committed `packages/contracts/openapi.json` and generated TypeScript declarations are derived from FastAPI. Runtime Zod schemas validate every response component before presentation. `pnpm contracts:check` detects schema drift.
 
+`WorkflowPresentation` contains a title, optional completion-event name, and ordered sections whose step references must exist and may appear in only one section. It is retained on `WorkflowResult`. The renderer converts it into domain-neutral `response_section` components with ready, partial, empty, or error state. Sections contain validated leaf components only. `event_timeline` is the reusable dated-event leaf used by corporate actions and other structured event sources.
+
+`StockOverviewRequest` accepts a query, optional exchange and time-zone-aware `as_of`, interval, and bounded optional-branch limits. `StockOverviewWindow` records the exact five-calendar-year start/end range. Overview responses use the standard `RenderedResponse`; no stock-specific envelope or narrative contract is introduced.
+
 ## Execution Contracts
 
 `ExecutionRequest` is a discriminated union with `command`, `intent`, `capability`, and `workflow` variants. Each resolves to an `ExecutionTarget` and produces one `ExecutionOutcome` containing the raw capability/workflow result plus a `RenderedResponse`.
@@ -135,3 +143,14 @@ The committed `packages/contracts/openapi.json` and generated TypeScript declara
 `ChatSession`, `ChatMessage`, and `ChatTurn` are immutable records. Turns progress through `queued`, `planning`, `executing`, `rendering`, and a terminal `completed`, `partial`, or `failed` state. Assistant messages persist the complete `RenderedResponse`.
 
 `ChatStreamEvent` is a versioned discriminated union with request, session, turn, correlation, run, sequence, and event identifiers. Variants are `status`, `typing`, `progress`, `response`, `component`, `warning`, `complete`, and `error`.
+## Public sentiment contracts
+
+`SentimentObservation` treats provider content as untrusted and accepts a provider signal only when label, score, and confidence are supplied together and label-consistent. Shared immutable contracts cover bounded discussions, spam decisions, catalog company mentions, weighted observations, adjacent-window metrics, `SentimentSnapshot`, narratives, trends, shifts, and complete analysis responses. Decimal metrics serialize as strings. `unknown` is distinct from `neutral`, and missing metrics remain null.
+
+## Technical analysis contracts
+
+`TechnicalParameters` versions every formula input and validates period relationships. `TechnicalCalculationInput` accepts a complete normalized `StockHistoryOutput` plus the requested range. Outputs include complete timestamped series for RSI, MACD, EMA, SMA, ATR, and ADX; structured support/resistance levels; descriptive trend, momentum, and volatility signals; and `TechnicalSnapshot` provenance. The snapshot records `technical-v1`, `adjusted_ohlc`, provider/cache metadata, observed range, data cutoff, and explicit warnings. Decimal values serialize as strings and unavailable values remain null.
+
+## Fundamental contracts
+
+Normalized statements declare annual/quarterly period type, fiscal metadata, filing time, currency, canonical concepts, and provider provenance. `FundamentalMetric` stores annual and quarterly points separately. Sections are `completed`, `partial`, or `empty` with warnings. `FundamentalSnapshot` preserves every section, cutoff, cache/provider lineage, and calculation version. Valuation fields keep calculated, reported, and dated historical-reported values distinct. Peer comparison contains individual dimensionless metrics, medians, and descriptive percentiles only.

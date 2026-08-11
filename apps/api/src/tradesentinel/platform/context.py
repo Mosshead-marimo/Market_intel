@@ -4,6 +4,8 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from uuid import UUID
 
+from pydantic import JsonValue
+
 from tradesentinel.platform.contracts import EventEnvelope, ExecutionContext
 from tradesentinel.platform.errors import DomainError
 from tradesentinel.platform.events import EventBus
@@ -16,6 +18,23 @@ class ExecutionContextManager:
 
     def create(self, **values: object) -> ExecutionContext:
         return ExecutionContext.model_validate(values)
+
+    async def emit(
+        self,
+        context: ExecutionContext,
+        name: str,
+        producer: str,
+        payload: dict[str, JsonValue],
+    ) -> None:
+        await self._events.publish(
+            EventEnvelope(
+                name=name,
+                correlation_id=context.correlation_id,
+                causation_id=context.causation_id,
+                producer=producer,
+                payload=payload,
+            )
+        )
 
     @asynccontextmanager
     async def workflow_scope(

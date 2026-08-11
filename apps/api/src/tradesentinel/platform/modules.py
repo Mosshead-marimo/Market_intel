@@ -101,6 +101,8 @@ class ModuleLoader:
                         arguments=command_declaration.arguments,
                         options=command_declaration.options,
                         examples=command_declaration.examples,
+                        planner_enabled=command_declaration.planner_enabled,
+                        side_effect=command_declaration.side_effect,
                     )
                 )
             for intent_declaration in manifest.intents:

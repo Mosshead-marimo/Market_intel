@@ -1,0 +1,232 @@
+name: stock_overview
+version: 1.0.0
+description: YAML-driven multi-capability stock overview without prediction or LLM use
+api_router: tradesentinel.modules.stock_overview.api:router
+capabilities:
+  - name: stock.overview.window
+    class_path: tradesentinel.modules.stock_overview.capability:WindowCapability
+    description: Resolves the five-calendar-year overview window
+    provides: [stock_overview_window]
+    idempotent: true
+commands:
+  - name: /overview
+    description: Build a structured five-year stock overview
+    target: {kind: workflow, name: stock.overview}
+    arguments: [{name: query}]
+    options:
+      - {name: exchange, destination: exchange}
+      - {name: as-of, destination: as_of}
+    examples: ['/overview TCS --exchange NSE', '/overview "Microsoft" --exchange NASDAQ']
+workflows:
+  - name: stock.overview
+    version: 1.0.0
+    description: Resolve and assemble market research sentiment technical and fundamental context
+    presentation:
+      title: Stock overview
+      completion_event: stock.overview.completed
+      sections:
+        - id: instrument
+          title: Instrument
+          steps: [resolve]
+          error_message: The instrument could not be resolved unambiguously.
+        - id: market
+          title: Market data
+          steps: [quote, history, five_year, actions]
+          empty_message: No market observations were available.
+          error_message: Required market data is unavailable.
+        - id: research
+          title: Research
+          steps: [research_report]
+          empty_message: No matching research events were found.
+          error_message: Research is unavailable because no usable news provider completed.
+        - id: sentiment
+          title: Public sentiment
+          steps: [sentiment_aggregate, sentiment_narratives, sentiment_trend, sentiment_shift]
+          empty_message: No usable public discussions were available.
+          error_message: Public sentiment is unavailable because no usable provider completed.
+        - id: technical
+          title: Technical analysis
+          steps: [technical]
+          error_message: Technical analysis could not be calculated from the available history.
+        - id: fundamentals
+          title: Fundamentals
+          steps: [fundamentals]
+          empty_message: No normalized fundamental observations were available.
+          error_message: Fundamentals are unavailable because no usable provider completed.
+    steps:
+      - id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: window
+        capability: stock.overview.window
+        input_bindings:
+          as_of: {source: input.as_of, required: false}
+      - id: quote
+        capability: stock.quote
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+      - id: history
+        capability: stock.history
+        depends_on: [resolve, window]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          start: {source: steps.window.data.start}
+          end: {source: steps.window.data.end}
+          interval: {source: input.interval, required: false}
+      - id: five_year
+        capability: stock.performance.five_year
+        depends_on: [resolve, window]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          as_of: {source: steps.window.data.end}
+      - id: actions
+        capability: stock.corporate_actions
+        depends_on: [resolve, window]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          start: {source: steps.window.data.start}
+          end: {source: steps.window.data.end}
+
+      - id: research_search
+        capability: research.news.search
+        required: false
+        depends_on: [resolve, window]
+        input_bindings:
+          query: {source: steps.resolve.data.match.instrument.name}
+          start: {source: steps.window.data.start}
+          end: {source: steps.window.data.end}
+          limit: {source: input.research_limit, required: false}
+      - id: research_deduplicate
+        capability: research.news.deduplicate
+        required: false
+        depends_on: [resolve, research_search]
+        input_bindings:
+          query: {source: steps.resolve.data.match.instrument.name}
+          sources: {source: steps.research_search.data.sources}
+      - id: research_extract
+        capability: research.events.extract
+        required: false
+        depends_on: [resolve, research_deduplicate]
+        input_bindings:
+          query: {source: steps.resolve.data.match.instrument.name}
+          sources: {source: steps.research_deduplicate.data.sources}
+      - id: research_timeline
+        capability: research.timeline
+        required: false
+        depends_on: [resolve, research_extract]
+        input_bindings:
+          query: {source: steps.resolve.data.match.instrument.name}
+          events: {source: steps.research_extract.data.events}
+      - id: research_report
+        capability: research.report
+        required: false
+        depends_on: [resolve, research_deduplicate, research_extract, research_timeline]
+        input_bindings:
+          query: {source: steps.resolve.data.match.instrument.name}
+          events: {source: steps.research_timeline.data.events}
+          sources: {source: steps.research_extract.data.sources}
+          duplicate_groups: {source: steps.research_deduplicate.data.duplicate_groups}
+          input_count: {source: steps.research_deduplicate.data.input_count}
+          unmatched_source_ids: {source: steps.research_extract.data.unmatched_source_ids}
+          document_failures: {source: steps.research_extract.data.document_failures}
+
+      - id: sentiment_catalog
+        capability: instrument.catalog
+        required: false
+        depends_on: [resolve]
+        input_bindings:
+          active_only: {source: input.active_only, required: false}
+      - id: sentiment_collect
+        capability: sentiment.discussions.collect
+        required: false
+        depends_on: [resolve]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          as_of: {source: input.as_of, required: false}
+          window_days: {source: input.sentiment_window_days, required: false}
+          limit: {source: input.sentiment_limit, required: false}
+      - id: sentiment_spam
+        capability: sentiment.spam.remove
+        required: false
+        depends_on: [sentiment_collect]
+        input_bindings:
+          discussions: {source: steps.sentiment_collect.data.discussions}
+      - id: sentiment_detect
+        capability: sentiment.companies.detect
+        required: false
+        depends_on: [resolve, sentiment_catalog, sentiment_spam]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          catalog: {source: steps.sentiment_catalog.data.instruments}
+          discussions: {source: steps.sentiment_spam.data.retained}
+      - id: sentiment_weight
+        capability: sentiment.sources.weight
+        required: false
+        depends_on: [sentiment_detect]
+        input_bindings:
+          discussions: {source: steps.sentiment_detect.data.relevant}
+      - id: sentiment_aggregate
+        capability: sentiment.aggregate
+        required: false
+        depends_on: [resolve, sentiment_collect, sentiment_detect, sentiment_weight]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          observations: {source: steps.sentiment_weight.data.observations}
+          previous_start: {source: steps.sentiment_collect.data.previous_start}
+          current_start: {source: steps.sentiment_collect.data.current_start}
+          end: {source: steps.sentiment_collect.data.end}
+          co_mentions: {source: steps.sentiment_detect.data.co_mentions}
+      - id: sentiment_narratives
+        capability: sentiment.narratives.extract
+        required: false
+        depends_on: [resolve, sentiment_collect, sentiment_weight]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          observations: {source: steps.sentiment_weight.data.observations}
+          current_start: {source: steps.sentiment_collect.data.current_start}
+          end: {source: steps.sentiment_collect.data.end}
+      - id: sentiment_trend
+        capability: sentiment.trend.detect
+        required: false
+        depends_on: [resolve, sentiment_collect, sentiment_weight]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          observations: {source: steps.sentiment_weight.data.observations}
+          start: {source: steps.sentiment_collect.data.previous_start}
+          end: {source: steps.sentiment_collect.data.end}
+      - id: sentiment_shift
+        capability: sentiment.shift.detect
+        required: false
+        depends_on: [sentiment_aggregate]
+        input_bindings:
+          snapshot: {source: steps.sentiment_aggregate.data.snapshot}
+
+      - id: technical
+        capability: technical.snapshot
+        depends_on: [history, window]
+        input_bindings:
+          history: {source: steps.history.data}
+          requested_start: {source: steps.window.data.start}
+          requested_end: {source: steps.window.data.end}
+
+      - id: fundamentals_collect
+        capability: fundamental.data.collect
+        required: false
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          as_of: {source: input.as_of, required: false}
+          annual_periods: {source: input.annual_periods, required: false}
+          quarterly_periods: {source: input.quarterly_periods, required: false}
+      - id: fundamentals
+        capability: fundamental.snapshot
+        required: false
+        depends_on: [fundamentals_collect, quote]
+        input_bindings:
+          dataset: {source: steps.fundamentals_collect.data}
+          quotes.0: {source: steps.quote.data}
+events:
+  produces: [stock.overview.completed]

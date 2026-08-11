@@ -17,6 +17,8 @@ from tradesentinel.providers.contracts import (
     FundamentalFactsRequest,
     InstrumentRecord,
     InstrumentSearchRequest,
+    LanguageModelRequest,
+    LanguageModelResponse,
     MarketQuote,
     NewsArticle,
     NewsDocument,
@@ -97,3 +99,10 @@ class FundamentalsProvider(ABC):
     async def get_fundamental_facts(
         self, context: ProviderContext, request: FundamentalFactsRequest
     ) -> tuple[FundamentalFact, ...]: ...
+
+
+class LanguageModelProvider(ABC):
+    @abstractmethod
+    async def generate(
+        self, context: ProviderContext, request: LanguageModelRequest
+    ) -> LanguageModelResponse: ...

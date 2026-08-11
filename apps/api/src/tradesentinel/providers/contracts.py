@@ -6,7 +6,7 @@ from enum import StrEnum
 from typing import Literal
 from uuid import UUID
 
-from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, model_validator
+from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, JsonValue, model_validator
 
 
 class ProviderContract(BaseModel):
@@ -19,6 +19,7 @@ class ProviderKind(StrEnum):
     SENTIMENT = "sentiment"
     ECONOMIC_DATA = "economic_data"
     FUNDAMENTALS = "fundamentals"
+    LANGUAGE_MODEL = "language_model"
 
 
 class LicenseClassification(StrEnum):
@@ -62,6 +63,31 @@ class ProviderDescriptor(ProviderContract):
     class_path: str
     timeout_ms: int = Field(default=10_000, ge=1, le=300_000)
     rate_limit: ProviderRateLimit = ProviderRateLimit()
+
+
+class LanguageModelRequest(ProviderContract):
+    task: str = Field(min_length=1, max_length=80)
+    system_prompt: str = Field(min_length=1, max_length=20_000)
+    input_payload: dict[str, JsonValue]
+    output_schema: dict[str, JsonValue]
+    max_output_tokens: int = Field(default=4_096, ge=128, le=32_768)
+    provider: str | None = None
+    excluded_providers: tuple[str, ...] = ()
+
+
+class LanguageModelUsage(ProviderContract):
+    input_tokens: int = Field(default=0, ge=0)
+    output_tokens: int = Field(default=0, ge=0)
+
+
+class LanguageModelResponse(ProviderContract):
+    output: dict[str, JsonValue]
+    provider: str = Field(min_length=1)
+    model: str = Field(min_length=1)
+    provider_request_id: str | None = None
+    finish_reason: str | None = None
+    usage: LanguageModelUsage = LanguageModelUsage()
+    created_at: datetime
 
 
 class InstrumentReference(ProviderContract):
@@ -232,13 +258,43 @@ class SentimentRequest(ProviderContract):
 
 class SentimentObservation(ProviderContract):
     source_id: str
-    text: str
+    text: str = Field(min_length=1)
     occurred_at: datetime
-    label: str | None = None
-    provider_score: Decimal | None = None
+    label: Literal["positive", "neutral", "negative"] | None = None
+    provider_score: Decimal | None = Field(default=None, ge=-1, le=1)
+    provider_confidence: Decimal | None = Field(default=None, ge=0, le=1)
     provider_model: str | None = None
+    source_type: Literal["social", "forum", "community", "blog", "other"] = "other"
+    author_id: str | None = Field(default=None, min_length=1, max_length=500)
+    url: AnyHttpUrl | None = None
+    language: str = Field(default="und", min_length=2, max_length=16)
+    engagement_count: int = Field(default=0, ge=0)
+    provider_spam: bool = False
     untrusted: Literal[True] = True
     metadata: ProviderMetadata
+
+    @model_validator(mode="after")
+    def validate_provider_signal(self) -> SentimentObservation:
+        signal = (self.label, self.provider_score, self.provider_confidence)
+        if any(value is not None for value in signal) and not all(
+            value is not None for value in signal
+        ):
+            raise ValueError("provider label, score, and confidence must be supplied together")
+        if (
+            self.label == "positive"
+            and self.provider_score is not None
+            and self.provider_score <= 0
+        ):
+            raise ValueError("positive provider labels require a positive score")
+        if (
+            self.label == "negative"
+            and self.provider_score is not None
+            and self.provider_score >= 0
+        ):
+            raise ValueError("negative provider labels require a negative score")
+        if self.label == "neutral" and self.provider_score != 0:
+            raise ValueError("neutral provider labels require a zero score")
+        return self
 
 
 class EconomicSeriesSearchRequest(ProviderContract):
@@ -288,7 +344,13 @@ class CompanyProfile(ProviderContract):
 class FinancialStatementsRequest(ProviderContract):
     instrument: InstrumentReference
     statement_types: tuple[str, ...] = ()
-    periods: int = Field(default=4, ge=1, le=40)
+    annual_periods: int = Field(default=5, ge=1, le=20)
+    quarterly_periods: int = Field(default=8, ge=0, le=40)
+
+
+class FinancialPeriodType(StrEnum):
+    ANNUAL = "annual"
+    QUARTERLY = "quarterly"
 
 
 class FinancialLineItem(ProviderContract):
@@ -300,12 +362,25 @@ class FinancialLineItem(ProviderContract):
 class FinancialStatement(ProviderContract):
     instrument: InstrumentReference
     statement_type: str
+    period_type: FinancialPeriodType
     period_start: datetime | None = None
     period_end: datetime
     filed_at: datetime | None = None
+    fiscal_year: int | None = None
+    fiscal_quarter: int | None = Field(default=None, ge=1, le=4)
     currency: str | None = None
     items: tuple[FinancialLineItem, ...]
     metadata: ProviderMetadata
+
+    @model_validator(mode="after")
+    def validate_period(self) -> FinancialStatement:
+        if self.period_start is not None and self.period_start >= self.period_end:
+            raise ValueError("statement period_start must be before period_end")
+        if self.period_type == FinancialPeriodType.ANNUAL and self.fiscal_quarter is not None:
+            raise ValueError("annual statements cannot declare a fiscal quarter")
+        if self.period_type == FinancialPeriodType.QUARTERLY and self.fiscal_quarter is None:
+            raise ValueError("quarterly statements require a fiscal quarter")
+        return self
 
 
 class FundamentalFactsRequest(ProviderContract):

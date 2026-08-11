@@ -1,5 +1,9 @@
 # API Specification
 
+## Natural-language assistant
+
+Unmatched natural language routes to `assistant.conversation` through the existing durable chat API. With no configured LLM the turn finishes with typed `LLM_NOT_CONFIGURED`; slash commands remain usable. SSE emits stage progress but no response delta before evidence validation.
+
 ## Core Endpoints
 
 ### Chat
@@ -44,6 +48,19 @@ POST /api/v1/market-data/comparison
 POST /api/v1/market-data/corporate-actions
 POST /api/v1/market-data/five-year-performance
 POST /api/v1/market-data/benchmark-comparison
+
+POST /api/v1/technical/snapshot
+POST /api/v1/technical/rsi
+POST /api/v1/technical/macd
+POST /api/v1/technical/ema
+POST /api/v1/technical/sma
+POST /api/v1/technical/atr
+POST /api/v1/technical/adx
+POST /api/v1/technical/support
+POST /api/v1/technical/resistance
+POST /api/v1/technical/trend
+POST /api/v1/technical/momentum
+POST /api/v1/technical/volatility
 ```
 
 ### Research
@@ -53,6 +70,16 @@ GET  /api/v1/research/news
 POST /api/v1/research/timeline
 POST /api/v1/research/reports
 GET  /api/v1/research/events/{event_id}/evidence
+
+POST /api/v1/sentiment/analyze
+POST /api/v1/sentiment/discussions/collect
+POST /api/v1/sentiment/spam/remove
+POST /api/v1/sentiment/companies/detect
+POST /api/v1/sentiment/sources/weight
+POST /api/v1/sentiment/aggregate
+POST /api/v1/sentiment/narratives
+POST /api/v1/sentiment/trend
+POST /api/v1/sentiment/shift
 ```
 
 ### Predictions
@@ -93,7 +120,7 @@ Example event types:
 
 ## Foundation Behavior
 
-`POST /api/v1/chat` returns HTTP 202 with a durable turn and per-turn stream URL. The stream replays after `Last-Event-ID`, sends heartbeats every 15 seconds, and closes on `complete` or `error`. Session operations are scoped to the anonymous browser principal. Instrument, market-data, and deterministic research routes are installed; prediction routes continue to return typed HTTP 501 `CAPABILITY_NOT_INSTALLED` responses.
+`POST /api/v1/chat` returns HTTP 202 with a durable turn and per-turn stream URL. The stream replays after `Last-Event-ID`, sends heartbeats every 15 seconds, and closes on `complete` or `error`. Session operations are scoped to the anonymous browser principal. Instrument, market-data, deterministic research, and public-sentiment routes are installed; prediction routes continue to return typed HTTP 501 `CAPABILITY_NOT_INSTALLED` responses. With no configured sentiment provider, public-sentiment invocation returns typed HTTP 503 `PROVIDER_NOT_CONFIGURED`.
 
 Every response includes `X-Request-ID`. Domain errors include the same UUID in the response body. The additional foundation endpoint `POST /api/v1/workflows/{workflow_name}/execute` executes a registered declarative workflow.
 
@@ -105,4 +132,14 @@ Symbol quote/history routes resolve the instrument through manifest workflows. `
 
 When no market-data adapter is configured, discovery and readiness remain available. Market-data execution returns HTTP 503 with `PROVIDER_NOT_CONFIGURED` and `details.kind: market_data`; no synthetic or stale value is substituted.
 
+Technical POST endpoints accept a query, optional exchange, interval and formula overrides. An omitted range defaults to one calendar year ending at `as_of` or current UTC time; explicit `start` and `end` must be supplied together. The endpoints execute manifest workflows and inherit canonical ambiguity, provider-unconfigured, invalid-history, and insufficient-history errors. Snapshot responses preserve partial calculations instead of converting missing sections into transport failures.
+
 Research search accepts free-text `q`, optional UTC `start`/`end`, and a bounded `limit`. Reports run the manifest workflow and return coverage, duplicate groups, events, source-backed claims, sources, and warnings. Missing news configuration returns HTTP 503 with `details.kind: news`.
+
+## Fundamentals
+
+Pipeline-backed POST routes under `/api/v1/fundamentals` expose snapshot, revenue, profit, cash-flow, debt, margins, ROE, ROCE, valuation, growth, and peer comparison. Bodies accept `query`, optional `exchange`/`as_of`, annual and quarterly limits, and explicit peers where applicable. Missing fundamentals providers return `503 PROVIDER_NOT_CONFIGURED`; missing quotes return successful partial valuation.
+
+## Stock overview
+
+`POST /api/v1/stock-overview` accepts `StockOverviewRequest` and returns the standard rendered response. The module-owned route delegates to `stock.overview`; it contains no analysis or execution-order logic. Missing optional news, sentiment, or fundamentals providers returns HTTP 200 with partial/error sections. Missing required market data returns `503 PROVIDER_NOT_CONFIGURED`; invalid or insufficient required core data returns a typed 422 error.

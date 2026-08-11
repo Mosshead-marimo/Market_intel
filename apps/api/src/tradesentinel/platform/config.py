@@ -41,13 +41,45 @@ class Settings(BaseSettings):
     sentiment_providers: tuple[str, ...] = ()
     economic_data_providers: tuple[str, ...] = ()
     fundamentals_providers: tuple[str, ...] = ()
+    llm_providers: tuple[str, ...] = ()
+    openai_api_key: SecretStr | None = None
+    anthropic_api_key: SecretStr | None = None
+    openai_model: str = "gpt-5-mini"
+    anthropic_model: str = "claude-sonnet-5"
+    llm_timeout_ms: int = Field(default=45_000, ge=1_000, le=300_000)
+    llm_max_input_characters: int = Field(default=120_000, ge=1_000, le=1_000_000)
+    llm_max_output_tokens: int = Field(default=4_096, ge=128, le=32_768)
+    llm_max_evidence_records: int = Field(default=160, ge=1, le=1_000)
+    llm_max_planned_commands: int = Field(default=4, ge=1, le=4)
+    llm_repair_attempts: int = Field(default=1, ge=0, le=1)
     stock_quote_cache_ttl_seconds: int = Field(default=15, ge=1, le=3_600)
     stock_history_cache_ttl_seconds: int = Field(default=21_600, ge=1, le=604_800)
     stock_actions_cache_ttl_seconds: int = Field(default=86_400, ge=1, le=2_592_000)
+    fundamentals_profile_cache_ttl_seconds: int = Field(default=86_400, ge=60, le=2_592_000)
+    fundamentals_data_cache_ttl_seconds: int = Field(default=21_600, ge=60, le=604_800)
     research_document_fetch_limit: int = Field(default=10, ge=0, le=100)
     research_evidence_excerpt_length: int = Field(default=280, ge=40, le=2_000)
     research_extraction_version: str = Field(default="rules-v1", min_length=1, max_length=64)
     research_default_search_limit: int = Field(default=20, ge=1, le=100)
+    sentiment_lexicon_version: str = Field(default="lexicon-v1", min_length=1, max_length=64)
+    sentiment_excerpt_length: int = Field(default=280, ge=40, le=2_000)
+    sentiment_minimum_mentions: int = Field(default=3, ge=1, le=1_000)
+    sentiment_spam_minimum_tokens: int = Field(default=3, ge=1, le=20)
+    sentiment_spam_max_urls: int = Field(default=3, ge=0, le=20)
+    sentiment_spam_max_tags: int = Field(default=8, ge=0, le=100)
+    sentiment_spam_repeated_ratio: float = Field(default=0.60, ge=0, le=1)
+    sentiment_spam_author_burst: int = Field(default=5, ge=1, le=100)
+    sentiment_narrative_limit: int = Field(default=10, ge=1, le=50)
+    sentiment_provider_weights: dict[str, float] = Field(default_factory=dict)
+    sentiment_source_type_weights: dict[str, float] = Field(default_factory=dict)
+    sentiment_trend_stability_threshold: float = Field(default=0.02, ge=0, le=1)
+
+    @model_validator(mode="after")
+    def validate_sentiment_weights(self) -> Settings:
+        for group in (self.sentiment_provider_weights, self.sentiment_source_type_weights):
+            if any(weight < 0 or weight > 10 for weight in group.values()):
+                raise ValueError("sentiment weights must be between 0 and 10")
+        return self
 
     @model_validator(mode="after")
     def production_requires_external_infrastructure(self) -> Settings:

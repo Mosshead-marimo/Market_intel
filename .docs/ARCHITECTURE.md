@@ -1,5 +1,9 @@
 # Architecture
 
+## Evidence-grounded assistant
+
+`llm_assistant` is a feature module, not part of the domain-neutral platform. Its manifest declares both vendor adapters, six assistant capabilities, and the natural-language fallback. A late-bound execution gateway exposes only registry-derived, planner-enabled read-only commands and routes validated calls through the normal pipeline. Vendor output is buffered until schema and evidence validation pass. See ADR 0022.
+
 ## Architecture Principle
 
 TradeSentinel uses a modular monolith with plugin-style capability registration.
@@ -171,3 +175,23 @@ Resolution normalizes text and applies fixed exact, prefix, and fuzzy similarity
 The `research` module depends only on `NewsProvider`, execution context, settings, and its module-owned repository. Its manifest owns six capabilities, `/news`, `/research`, `/sources`, two workflows, lifecycle events, and its API router. Empty news-provider configuration preserves startup and fails only at invocation with typed HTTP 503.
 
 Articles remain untrusted. The module canonicalizes and deduplicates source metadata, conditionally retrieves documents from the originating provider, applies versioned phrase rules, and stores normalized events plus source-backed claims in the `research` schema. Reports are structured evidence indexes; there is no LLM, narrative synthesis, sentiment, recommendation, or inferred event date.
+
+The `public_sentiment` module depends on the `SentimentProvider` port and the public `instrument.resolve` and `instrument.catalog` capabilities. Its manifest owns all eight processing capabilities, four commands, the complete workflow, lifecycle events, and its API router. No platform or central API code names a sentiment target. Empty sentiment-provider configuration preserves discovery and returns typed HTTP 503 only when collection is invoked.
+
+## Deterministic technical analysis
+
+`technical_analysis` is a stateless calculation module. Its manifest owns thirteen capabilities, twelve commands, twelve workflows, lifecycle events, and its API router. Resolution and cached market-history retrieval remain explicit workflow dependencies, so the module imports neither provider interfaces nor `stock_market_data` internals. Calculator methods are synchronous, side-effect-free, Decimal-based functions wrapped by async capabilities. The aggregate snapshot catches only typed insufficient-history failures and preserves all independently available sections as a partial response.
+
+Workflow bindings may target either a nested result path or the complete `steps.<id>.data` object. Whole-result binding is required when a downstream capability consumes a validated shared contract such as `StockHistoryOutput`; the workflow executor still exposes only explicitly declared dependencies.
+
+Each processing stage is a typed, independently executable service operation. Provider signal triples take precedence; incomplete or absent triples use a versioned deterministic lexicon. Spam removal precedes engagement weighting. Aggregation, narrative extraction, linear trend detection, and adjacent-window shift calculation are deterministic descriptions of observed discussions, never predictions.
+
+## Deterministic fundamentals
+
+`fundamentals` depends on public provider/domain contracts, the cache port, and execution contracts. Its manifest composes public instrument resolution/catalog and batch quote capabilities; Python code never imports their private implementations. Provider normalization, deterministic accounting calculations, capability wrappers, and thin routes remain separate. Missing fundamentals configuration is an execution-time 503, while missing market data preserves a partial reported-only valuation. See ADR 0020.
+
+## YAML-driven stock overview
+
+`stock_overview` is a composition module rather than a new analysis engine. Its manifest owns the dependency DAG, required/optional policy, command, route, lifecycle event, and ordered presentation sections. The platform compiles dependencies into concurrent layers and renders presentation metadata generically; neither platform nor central API code names an overview target or section order.
+
+Instrument resolution, market retrieval, and technical calculation are required. Research, public sentiment, and fundamentals are optional branches whose typed failures become unavailable sections while usable core output is retained. Technical analysis consumes the same validated five-year history result, and fundamentals consumes the same quote result. See ADR 0021.

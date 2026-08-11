@@ -8,6 +8,7 @@ from tradesentinel.providers.errors import ProviderNotFoundError, ProviderRegist
 from tradesentinel.providers.interfaces import (
     EconomicDataProvider,
     FundamentalsProvider,
+    LanguageModelProvider,
     MarketDataProvider,
     NewsProvider,
     SentimentProvider,
@@ -19,6 +20,7 @@ ProviderInterface = type[
     | SentimentProvider
     | EconomicDataProvider
     | FundamentalsProvider
+    | LanguageModelProvider
 ]
 
 INTERFACE_BY_KIND: dict[ProviderKind, ProviderInterface] = {
@@ -27,6 +29,7 @@ INTERFACE_BY_KIND: dict[ProviderKind, ProviderInterface] = {
     ProviderKind.SENTIMENT: SentimentProvider,
     ProviderKind.ECONOMIC_DATA: EconomicDataProvider,
     ProviderKind.FUNDAMENTALS: FundamentalsProvider,
+    ProviderKind.LANGUAGE_MODEL: LanguageModelProvider,
 }
 
 

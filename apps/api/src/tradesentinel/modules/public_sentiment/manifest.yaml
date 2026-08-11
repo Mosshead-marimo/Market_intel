@@ -1,0 +1,96 @@
+name: public_sentiment
+version: 1.0.0
+description: Deterministic public discussion sentiment analysis without prediction or LLM use
+api_router: tradesentinel.modules.public_sentiment.api:router
+capabilities:
+  - {name: sentiment.discussions.collect, class_path: tradesentinel.modules.public_sentiment.capability:CollectDiscussionsCapability, description: Collects normalized provider discussions for adjacent windows, provides: [sentiment_discussions], idempotent: true}
+  - {name: sentiment.spam.remove, class_path: tradesentinel.modules.public_sentiment.capability:RemoveSpamCapability, description: Removes discussions using deterministic spam rules, provides: [filtered_discussions], idempotent: true}
+  - {name: sentiment.companies.detect, class_path: tradesentinel.modules.public_sentiment.capability:DetectCompaniesCapability, description: Detects catalog companies and requested-target relevance, provides: [company_mentions], idempotent: true}
+  - {name: sentiment.sources.weight, class_path: tradesentinel.modules.public_sentiment.capability:WeightSourcesCapability, description: Applies configured provider source-type and capped engagement weights, provides: [weighted_sentiment], idempotent: true}
+  - {name: sentiment.aggregate, class_path: tradesentinel.modules.public_sentiment.capability:AggregateSentimentCapability, description: Aggregates descriptive sentiment for current and previous windows, provides: [sentiment_snapshot], idempotent: true}
+  - {name: sentiment.narratives.extract, class_path: tradesentinel.modules.public_sentiment.capability:ExtractNarrativesCapability, description: Extracts deterministic taxonomy and n-gram narratives, provides: [sentiment_narratives], idempotent: true}
+  - {name: sentiment.trend.detect, class_path: tradesentinel.modules.public_sentiment.capability:DetectTrendCapability, description: Detects daily observed sentiment trends, provides: [sentiment_trend], idempotent: true}
+  - {name: sentiment.shift.detect, class_path: tradesentinel.modules.public_sentiment.capability:DetectShiftCapability, description: Calculates descriptive adjacent-window sentiment shift, provides: [sentiment_shift], idempotent: true}
+commands:
+  - name: /public-sentiment
+    description: Analyze public sentiment for one resolved instrument
+    target: {kind: workflow, name: sentiment.public.request}
+    arguments: [{name: query}]
+    options: &sentiment_options
+      - {name: exchange, destination: exchange}
+      - {name: as-of, destination: as_of}
+      - {name: window-days, destination: window_days}
+      - {name: limit, destination: limit}
+    examples: ['/public-sentiment "Microsoft" --exchange NASDAQ']
+  - {name: /sentiment-trend, description: Analyze the observed public-sentiment trend, target: {kind: workflow, name: sentiment.public.request}, arguments: [{name: query}], options: *sentiment_options, examples: ['/sentiment-trend MSFT']}
+  - {name: /narratives, description: Extract public-discussion narratives, target: {kind: workflow, name: sentiment.public.request}, arguments: [{name: query}], options: *sentiment_options, examples: ['/narratives MSFT']}
+  - {name: /sentiment-shift, description: Calculate descriptive public-sentiment shift, target: {kind: workflow, name: sentiment.public.request}, arguments: [{name: query}], options: *sentiment_options, examples: ['/sentiment-shift MSFT']}
+workflows:
+  - name: sentiment.public.request
+    version: 1.0.0
+    description: Resolve target collect filter detect weight and analyze public discussions
+    steps:
+      - id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: catalog
+        capability: instrument.catalog
+        input_bindings:
+          active_only: {source: input.active_only, required: false}
+      - id: collect
+        capability: sentiment.discussions.collect
+        depends_on: [resolve]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          as_of: {source: input.as_of, required: false}
+          window_days: {source: input.window_days, required: false}
+          limit: {source: input.limit, required: false}
+      - id: spam
+        capability: sentiment.spam.remove
+        depends_on: [collect]
+        input_bindings: {discussions: {source: steps.collect.data.discussions}}
+      - id: detect
+        capability: sentiment.companies.detect
+        depends_on: [resolve, catalog, spam]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          catalog: {source: steps.catalog.data.instruments}
+          discussions: {source: steps.spam.data.retained}
+      - id: weight
+        capability: sentiment.sources.weight
+        depends_on: [detect]
+        input_bindings: {discussions: {source: steps.detect.data.relevant}}
+      - id: aggregate
+        capability: sentiment.aggregate
+        depends_on: [resolve, collect, detect, weight]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          observations: {source: steps.weight.data.observations}
+          previous_start: {source: steps.collect.data.previous_start}
+          current_start: {source: steps.collect.data.current_start}
+          end: {source: steps.collect.data.end}
+          co_mentions: {source: steps.detect.data.co_mentions}
+      - id: narratives
+        capability: sentiment.narratives.extract
+        depends_on: [resolve, collect, weight]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          observations: {source: steps.weight.data.observations}
+          current_start: {source: steps.collect.data.current_start}
+          end: {source: steps.collect.data.end}
+      - id: trend
+        capability: sentiment.trend.detect
+        depends_on: [resolve, collect, weight]
+        input_bindings:
+          target: {source: steps.resolve.data.match.instrument}
+          observations: {source: steps.weight.data.observations}
+          start: {source: steps.collect.data.previous_start}
+          end: {source: steps.collect.data.end}
+      - id: shift
+        capability: sentiment.shift.detect
+        depends_on: [aggregate]
+        input_bindings: {snapshot: {source: steps.aggregate.data.snapshot}}
+events:
+  produces: [sentiment.discussions.collected, sentiment.spam.filtered, sentiment.companies.detected, sentiment.sources.weighted, sentiment.snapshot.completed, sentiment.narratives.extracted, sentiment.trend.detected, sentiment.shift.detected]

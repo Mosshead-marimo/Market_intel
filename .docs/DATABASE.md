@@ -1,5 +1,9 @@
 # Database Design
 
+## Assistant schema
+
+Migration `0007_llm_audit` owns `assistant.generations`. It is a metadata ledger rather than a prompt archive. Chat messages remain the authoritative approved response.
+
 ## Primary Store
 
 PostgreSQL is the primary database. TimescaleDB may be used for time-series workloads and pgvector for semantic retrieval.
@@ -79,3 +83,9 @@ Revision `0003_chat_worker_leases` adds attempt counters and renewable worker le
 Revision `0004_instrument_catalog` creates the module-owned `market.exchanges`, `market.instruments`, and `market.instrument_aliases` tables with normalized lookup indexes and canonical uniqueness constraints. It seeds 16 explicitly labeled `builtin_seed_v1` equity listings across NSE, BSE, NASDAQ, and NYSE. The migration is reversible and removes only the instrument catalog schema it creates.
 
 Revision `0005_research_events` creates module-owned `research.sources`, `research.documents`, `research.events`, `research.event_sources`, and `research.claims`. Deterministic identifiers and uniqueness constraints make extraction idempotent. Documents retain metadata and hashes, while claims retain bounded excerpts and complete source/provider/timestamp/confidence provenance.
+
+Revision `0006_public_sentiment` creates the module-owned `sentiment` tables for bounded normalized discussions, spam decisions, company mentions, source weights, snapshots, narratives, trends, and shifts. Provider/source identifiers and deterministic UUIDs make retries idempotent. Author identifiers are SHA-256 hashed before persistence and unrestricted provider payloads are never stored.
+
+Technical analysis is intentionally stateless and adds no migration or `technical` tables. It reuses cached normalized market history and standard platform run records; calculated indicators are returned in run results rather than written through a module repository.
+
+Fundamentals is cache-only and adds no migration or schema. Profiles, statements, and facts use bounded TTL caches; calculated sections are returned through normal run results. Durable financial-statement storage remains outside this increment.

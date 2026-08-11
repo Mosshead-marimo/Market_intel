@@ -8,6 +8,11 @@ capabilities:
     description: Returns a validated current quote
     provides: [stock_quote]
     idempotent: true
+  - name: stock.quote.batch
+    class_path: tradesentinel.modules.stock_market_data.capability:QuoteBatchCapability
+    description: Returns cached structured quotes for up to ten canonical instruments
+    provides: [stock_quote_batch]
+    idempotent: true
   - name: stock.history
     class_path: tradesentinel.modules.stock_market_data.capability:HistoryCapability
     description: Returns validated adjusted price history

@@ -1,5 +1,11 @@
 # Security
 
+## Generated-content boundary
+
+Retrieved excerpts remain untrusted. Models never receive credentials, raw histories, unrestricted articles, database rows, or full provider payloads. A deterministic gate rejects missing citations, unsupported numbers, calculations, probabilities, targets, forecasts, and recommendations. Raw prompts and rejected output are not retained.
+
+Overview composition does not log or emit provider payloads. Completion events contain identifiers, section status/counts, and cutoff metadata only. Research articles and public discussions retain their existing untrusted-content handling, and the response renderer consumes validated capability contracts rather than raw provider values.
+
 ## Authentication and Authorization
 
 - Use secure session or token-based authentication.
@@ -46,3 +52,7 @@
 - Logs contain provider identity, operation, duration, error code, and correlation IDs, never request payloads, raw responses, credentials, or tokens.
 - Authentication, configuration, licensing, and invalid-output failures are permanent and cannot silently fall through to another vendor.
 - Research rules inspect untrusted text as data only. They never execute retrieved instructions, render raw HTML, log bodies, or forward content to an LLM. Persisted excerpts are bounded by configuration.
+Public discussions are untrusted input. The sentiment module never executes or renders embedded instructions, never logs discussion text or author identifiers in lifecycle events, hashes author identifiers before persistence, bounds stored excerpts, and rejects unrestricted provider payload storage. URLs remain typed optional evidence metadata.
+Technical analysis introduces no credentials, external clients, content execution, or persistence. Inputs are bounded by strict period/range contracts, malformed OHLC histories are rejected with user-safe errors, and capability exceptions never expose provider payloads. Architecture checks prohibit AI libraries, external clients, provider SDKs, and database access in the module.
+
+Fundamentals routes and capabilities cannot import external clients, provider SDKs, database libraries, AI libraries, prediction code, or private instrument/stock modules. Provider payloads are validated before caching, keys contain no credentials, and user-safe errors never expose vendor payloads.

@@ -96,6 +96,44 @@ class EvidenceSource(ContractModel):
     reliability_weight: float | None = Field(default=None, ge=0, le=1)
 
 
+class EvidenceKind(StrEnum):
+    PROVIDER_OBSERVATION = "provider_observation"
+    CALCULATED_METRIC = "calculated_metric"
+    RESEARCH_CLAIM = "research_claim"
+    METHODOLOGY = "methodology"
+    COMMAND_CATALOG = "command_catalog"
+    USER_ASSERTION = "user_assertion"
+
+
+class EvidenceRecord(ContractModel):
+    evidence_id: str = Field(pattern=r"^ev_[a-f0-9]{16}$")
+    kind: EvidenceKind
+    title: str = Field(min_length=1, max_length=240)
+    value: str = Field(min_length=1, max_length=2_000)
+    producer: str = Field(min_length=1, max_length=160)
+    timestamp: datetime
+    provider: str | None = Field(default=None, max_length=160)
+    source_ids: tuple[str, ...] = ()
+    run_id: UUID | None = None
+    capability: str | None = None
+    json_path: str | None = None
+    data_cutoff: datetime | None = None
+    freshness: Literal["fresh", "stale", "unknown"] = "unknown"
+    untrusted: bool = False
+
+
+class GroundedClaim(ContractModel):
+    claim_id: str = Field(pattern=r"^claim_[a-z0-9_-]+$")
+    text: str = Field(min_length=1, max_length=1_200)
+    evidence_ids: tuple[str, ...] = Field(min_length=1)
+
+
+class FollowUpQuestion(ContractModel):
+    id: str = Field(pattern=r"^[a-z][a-z0-9_-]*$")
+    label: str = Field(min_length=1, max_length=160)
+    prompt: str = Field(min_length=1, max_length=500)
+
+
 class CapabilityWarning(ContractModel):
     code: str
     message: str
@@ -169,6 +207,19 @@ class NewsTimeline(ComponentBase):
     items: tuple[TimelineItem, ...]
 
 
+class EventTimelineItem(ContractModel):
+    occurred_at: datetime
+    label: str
+    description: str | None = None
+    category: str | None = None
+    source_id: str | None = None
+
+
+class EventTimeline(ComponentBase):
+    type: Literal["event_timeline"] = "event_timeline"
+    items: tuple[EventTimelineItem, ...]
+
+
 class PredictionCard(ComponentBase):
     type: Literal["prediction_card"] = "prediction_card"
     direction: Literal["rise", "sideways", "decline", "uncertain"]
@@ -217,18 +268,66 @@ class WarningBanner(ComponentBase):
     message: str
 
 
+class CitedNarrative(ComponentBase):
+    type: Literal["cited_narrative"] = "cited_narrative"
+    claims: tuple[GroundedClaim, ...]
+
+
+class MarketThesisComponent(ComponentBase):
+    type: Literal["market_thesis"] = "market_thesis"
+    supportive: tuple[GroundedClaim, ...] = ()
+    contradictory: tuple[GroundedClaim, ...] = ()
+    uncertainties: tuple[GroundedClaim, ...] = ()
+
+
+class FollowUpQuestions(ComponentBase):
+    type: Literal["follow_up_questions"] = "follow_up_questions"
+    questions: tuple[FollowUpQuestion, ...] = Field(max_length=3)
+
+
+LeafResponseComponent = Annotated[
+    SummaryCard
+    | MetricGrid
+    | PriceChart
+    | SentimentChart
+    | NewsTimeline
+    | EventTimeline
+    | PredictionCard
+    | ScenarioTable
+    | ComparisonTable
+    | RiskCard
+    | SourceList
+    | WarningBanner
+    | CitedNarrative
+    | MarketThesisComponent
+    | FollowUpQuestions,
+    Field(discriminator="type"),
+]
+
+
+class ResponseSection(ComponentBase):
+    type: Literal["response_section"] = "response_section"
+    description: str | None = None
+    items: tuple[LeafResponseComponent, ...] = ()
+
+
 ResponseComponent = Annotated[
     SummaryCard
     | MetricGrid
     | PriceChart
     | SentimentChart
     | NewsTimeline
+    | EventTimeline
     | PredictionCard
     | ScenarioTable
     | ComparisonTable
     | RiskCard
     | SourceList
-    | WarningBanner,
+    | WarningBanner
+    | CitedNarrative
+    | MarketThesisComponent
+    | FollowUpQuestions
+    | ResponseSection,
     Field(discriminator="type"),
 ]
 
@@ -239,6 +338,7 @@ class CapabilityResult(ContractModel):
     data: dict[str, JsonValue] = Field(default_factory=dict)
     summary: str | None = None
     sources: tuple[EvidenceSource, ...] = ()
+    evidence: tuple[EvidenceRecord, ...] = ()
     warnings: tuple[CapabilityWarning, ...] = ()
     components: tuple[ResponseComponent, ...] = ()
     metadata: RunMetadata
@@ -291,6 +391,8 @@ class CommandDescriptor(ContractModel):
     arguments: tuple[CommandArgument, ...] = ()
     options: tuple[CommandOption, ...] = ()
     examples: tuple[str, ...] = ()
+    planner_enabled: bool = True
+    side_effect: Literal["read", "write"] = "read"
 
 
 class IntentDescriptor(ContractModel):
@@ -319,7 +421,12 @@ class IntentMatch(ContractModel):
 
 
 class WorkflowInputBinding(ContractModel):
-    source: str = Field(pattern=r"^(?:input|steps\.[a-zA-Z0-9_-]+\.data)(?:\.[a-zA-Z0-9_-]+)+$")
+    source: str = Field(
+        pattern=(
+            r"^(?:input(?:\.[a-zA-Z0-9_-]+)+|"
+            r"steps\.[a-zA-Z0-9_-]+\.data(?:\.[a-zA-Z0-9_-]+)*)$"
+        )
+    )
     required: bool = True
 
 
@@ -331,11 +438,36 @@ class WorkflowStep(ContractModel):
     input_bindings: dict[str, WorkflowInputBinding] = Field(default_factory=dict)
 
 
+class WorkflowPresentationSection(ContractModel):
+    id: str = Field(pattern=r"^[a-z][a-z0-9_-]*$")
+    title: str = Field(min_length=1, max_length=120)
+    steps: tuple[str, ...] = Field(min_length=1)
+    empty_message: str | None = Field(default=None, min_length=1, max_length=500)
+    error_message: str | None = Field(default=None, min_length=1, max_length=500)
+
+
+class WorkflowPresentation(ContractModel):
+    title: str = Field(min_length=1, max_length=160)
+    completion_event: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_.-]*$")
+    sections: tuple[WorkflowPresentationSection, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_sections(self) -> WorkflowPresentation:
+        identifiers = [section.id for section in self.sections]
+        if len(identifiers) != len(set(identifiers)):
+            raise ValueError("workflow presentation section IDs must be unique")
+        steps = [step for section in self.sections for step in section.steps]
+        if len(steps) != len(set(steps)):
+            raise ValueError("workflow presentation steps may appear in only one section")
+        return self
+
+
 class WorkflowDefinition(ContractModel):
     name: str
     version: str
     description: str
     steps: tuple[WorkflowStep, ...]
+    presentation: WorkflowPresentation | None = None
 
     @model_validator(mode="after")
     def validate_steps(self) -> WorkflowDefinition:
@@ -355,6 +487,15 @@ class WorkflowDefinition(ContractModel):
                     raise ValueError(
                         f"step {step.id} binding references undeclared dependency {parts[1]}"
                     )
+        if self.presentation is not None:
+            presented = {
+                step_id for section in self.presentation.sections for step_id in section.steps
+            }
+            missing = presented - known
+            if missing:
+                raise ValueError(
+                    f"workflow presentation references unknown steps: {sorted(missing)}"
+                )
         return self
 
 
@@ -366,6 +507,7 @@ class WorkflowResult(ContractModel):
     warnings: tuple[CapabilityWarning, ...] = ()
     started_at: datetime
     completed_at: datetime
+    presentation: WorkflowPresentation | None = None
 
 
 class CommandExecutionRequest(ContractModel):
@@ -405,6 +547,7 @@ class RenderedResponse(ContractModel):
     text: str
     components: tuple[ResponseComponent, ...] = ()
     sources: tuple[EvidenceSource, ...] = ()
+    evidence: tuple[EvidenceRecord, ...] = ()
     warnings: tuple[CapabilityWarning, ...] = ()
     run_id: UUID | None = None
     generated_at: datetime

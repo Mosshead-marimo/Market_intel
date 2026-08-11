@@ -1,0 +1,174 @@
+name: technical_analysis
+version: 1.0.0
+description: Deterministic adjusted-OHLC technical indicators without AI or prediction
+api_router: tradesentinel.modules.technical_analysis.api:router
+capabilities:
+  - {name: technical.window.resolve, class_path: tradesentinel.modules.technical_analysis.capability:WindowCapability, description: Resolves an explicit or default one-calendar-year analysis window, provides: [technical_window], idempotent: true}
+  - {name: technical.rsi, class_path: tradesentinel.modules.technical_analysis.capability:RsiCapability, description: Calculates Wilder relative strength index, provides: [technical_rsi], idempotent: true}
+  - {name: technical.macd, class_path: tradesentinel.modules.technical_analysis.capability:MacdCapability, description: Calculates MACD signal and histogram series, provides: [technical_macd], idempotent: true}
+  - {name: technical.ema, class_path: tradesentinel.modules.technical_analysis.capability:EmaCapability, description: Calculates an exponential moving average, provides: [technical_ema], idempotent: true}
+  - {name: technical.sma, class_path: tradesentinel.modules.technical_analysis.capability:SmaCapability, description: Calculates a simple moving average, provides: [technical_sma], idempotent: true}
+  - {name: technical.atr, class_path: tradesentinel.modules.technical_analysis.capability:AtrCapability, description: Calculates Wilder average true range, provides: [technical_atr], idempotent: true}
+  - {name: technical.adx, class_path: tradesentinel.modules.technical_analysis.capability:AdxCapability, description: Calculates ADX and directional indicator series, provides: [technical_adx], idempotent: true}
+  - {name: technical.support, class_path: tradesentinel.modules.technical_analysis.capability:SupportCapability, description: Calculates rolling and ATR-clustered support levels, provides: [technical_support], idempotent: true}
+  - {name: technical.resistance, class_path: tradesentinel.modules.technical_analysis.capability:ResistanceCapability, description: Calculates rolling and ATR-clustered resistance levels, provides: [technical_resistance], idempotent: true}
+  - {name: technical.trend, class_path: tradesentinel.modules.technical_analysis.capability:TrendCapability, description: Classifies observed EMA spread and ADX trend strength, provides: [technical_trend], idempotent: true}
+  - {name: technical.momentum, class_path: tradesentinel.modules.technical_analysis.capability:MomentumCapability, description: Classifies observed RSI MACD and rate-of-change momentum, provides: [technical_momentum], idempotent: true}
+  - {name: technical.volatility, class_path: tradesentinel.modules.technical_analysis.capability:VolatilityCapability, description: Calculates realized volatility ATR percentage and adaptive regime, provides: [technical_volatility], idempotent: true}
+  - {name: technical.snapshot, class_path: tradesentinel.modules.technical_analysis.capability:SnapshotCapability, description: Returns the complete deterministic technical snapshot, provides: [technical_snapshot], idempotent: true}
+commands:
+  - name: /technical
+    description: Return the complete deterministic technical snapshot
+    target: {kind: workflow, name: technical.snapshot.request}
+    arguments: &query_argument [{name: query}]
+    options: &technical_options
+      - {name: exchange, destination: exchange}
+      - {name: start, destination: start}
+      - {name: end, destination: end}
+      - {name: as-of, destination: as_of}
+      - {name: interval, destination: interval}
+      - {name: rsi-period, destination: rsi_period}
+      - {name: macd-fast-period, destination: macd_fast_period}
+      - {name: macd-slow-period, destination: macd_slow_period}
+      - {name: macd-signal-period, destination: macd_signal_period}
+      - {name: ema-period, destination: ema_period}
+      - {name: sma-period, destination: sma_period}
+      - {name: atr-period, destination: atr_period}
+      - {name: adx-period, destination: adx_period}
+      - {name: momentum-roc-period, destination: momentum_roc_period}
+      - {name: volatility-period, destination: volatility_period}
+      - {name: trend-fast-period, destination: trend_fast_period}
+      - {name: trend-slow-period, destination: trend_slow_period}
+      - {name: level-lookback, destination: level_lookback}
+      - {name: pivot-span, destination: pivot_span}
+      - {name: pivot-max-levels, destination: pivot_max_levels}
+      - {name: pivot-atr-multiplier, destination: pivot_atr_multiplier}
+      - {name: trend-spread-threshold, destination: trend_spread_threshold}
+      - {name: momentum-rsi-lower, destination: momentum_rsi_lower}
+      - {name: momentum-rsi-upper, destination: momentum_rsi_upper}
+      - {name: volatility-low-percentile, destination: volatility_low_percentile}
+      - {name: volatility-high-percentile, destination: volatility_high_percentile}
+    examples: ['/technical MSFT --exchange NASDAQ', '/technical TCS --exchange NSE --rsi-period 14']
+  - {name: /rsi, description: Calculate Wilder RSI, target: {kind: workflow, name: technical.rsi.request}, arguments: *query_argument, options: *technical_options, examples: ['/rsi MSFT --rsi-period 14']}
+  - {name: /macd, description: Calculate MACD, target: {kind: workflow, name: technical.macd.request}, arguments: *query_argument, options: *technical_options, examples: ['/macd MSFT']}
+  - {name: /ema, description: Calculate EMA, target: {kind: workflow, name: technical.ema.request}, arguments: *query_argument, options: *technical_options, examples: ['/ema MSFT --ema-period 20']}
+  - {name: /sma, description: Calculate SMA, target: {kind: workflow, name: technical.sma.request}, arguments: *query_argument, options: *technical_options, examples: ['/sma MSFT --sma-period 20']}
+  - {name: /atr, description: Calculate Wilder ATR, target: {kind: workflow, name: technical.atr.request}, arguments: *query_argument, options: *technical_options, examples: ['/atr MSFT']}
+  - {name: /adx, description: Calculate ADX, target: {kind: workflow, name: technical.adx.request}, arguments: *query_argument, options: *technical_options, examples: ['/adx MSFT']}
+  - {name: /support, description: Calculate historical support levels, target: {kind: workflow, name: technical.support.request}, arguments: *query_argument, options: *technical_options, examples: ['/support MSFT']}
+  - {name: /resistance, description: Calculate historical resistance levels, target: {kind: workflow, name: technical.resistance.request}, arguments: *query_argument, options: *technical_options, examples: ['/resistance MSFT']}
+  - {name: /trend, description: Classify observed trend, target: {kind: workflow, name: technical.trend.request}, arguments: *query_argument, options: *technical_options, examples: ['/trend MSFT']}
+  - {name: /momentum, description: Classify observed momentum, target: {kind: workflow, name: technical.momentum.request}, arguments: *query_argument, options: *technical_options, examples: ['/momentum MSFT']}
+  - {name: /volatility, description: Calculate realized volatility and regime, target: {kind: workflow, name: technical.volatility.request}, arguments: *query_argument, options: *technical_options, examples: ['/volatility MSFT']}
+workflows:
+  - name: technical.rsi.request
+    version: 1.0.0
+    description: Resolve history and calculate RSI
+    steps:
+      - &resolve_step
+        id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - &window_step
+        id: window
+        capability: technical.window.resolve
+        input_bindings:
+          start: {source: input.start, required: false}
+          end: {source: input.end, required: false}
+          as_of: {source: input.as_of, required: false}
+      - &history_step
+        id: history
+        capability: stock.history
+        depends_on: [resolve, window]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          start: {source: steps.window.data.start}
+          end: {source: steps.window.data.end}
+          interval: {source: input.interval, required: false}
+      - id: result
+        capability: technical.rsi
+        depends_on: [history, window]
+        input_bindings: &calculation_input
+          history: {source: steps.history.data}
+          requested_start: {source: steps.window.data.start}
+          requested_end: {source: steps.window.data.end}
+          parameters.rsi_period: {source: input.rsi_period, required: false}
+  - name: technical.macd.request
+    version: 1.0.0
+    description: Resolve history and calculate MACD
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.macd, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.macd_fast_period: {source: input.macd_fast_period, required: false}, parameters.macd_slow_period: {source: input.macd_slow_period, required: false}, parameters.macd_signal_period: {source: input.macd_signal_period, required: false}}}]
+  - name: technical.ema.request
+    version: 1.0.0
+    description: Resolve history and calculate EMA
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.ema, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.ema_period: {source: input.ema_period, required: false}}}]
+  - name: technical.sma.request
+    version: 1.0.0
+    description: Resolve history and calculate SMA
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.sma, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.sma_period: {source: input.sma_period, required: false}}}]
+  - name: technical.atr.request
+    version: 1.0.0
+    description: Resolve history and calculate ATR
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.atr, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.atr_period: {source: input.atr_period, required: false}}}]
+  - name: technical.adx.request
+    version: 1.0.0
+    description: Resolve history and calculate ADX
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.adx, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.adx_period: {source: input.adx_period, required: false}}}]
+  - name: technical.support.request
+    version: 1.0.0
+    description: Resolve history and calculate support
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.support, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.level_lookback: {source: input.level_lookback, required: false}, parameters.pivot_span: {source: input.pivot_span, required: false}, parameters.pivot_max_levels: {source: input.pivot_max_levels, required: false}, parameters.atr_period: {source: input.atr_period, required: false}, parameters.pivot_atr_multiplier: {source: input.pivot_atr_multiplier, required: false}}}]
+  - name: technical.resistance.request
+    version: 1.0.0
+    description: Resolve history and calculate resistance
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.resistance, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.level_lookback: {source: input.level_lookback, required: false}, parameters.pivot_span: {source: input.pivot_span, required: false}, parameters.pivot_max_levels: {source: input.pivot_max_levels, required: false}, parameters.atr_period: {source: input.atr_period, required: false}, parameters.pivot_atr_multiplier: {source: input.pivot_atr_multiplier, required: false}}}]
+  - name: technical.trend.request
+    version: 1.0.0
+    description: Resolve history and classify trend
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.trend, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.trend_fast_period: {source: input.trend_fast_period, required: false}, parameters.trend_slow_period: {source: input.trend_slow_period, required: false}, parameters.adx_period: {source: input.adx_period, required: false}, parameters.trend_spread_threshold: {source: input.trend_spread_threshold, required: false}}}]
+  - name: technical.momentum.request
+    version: 1.0.0
+    description: Resolve history and classify momentum
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.momentum, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.rsi_period: {source: input.rsi_period, required: false}, parameters.macd_fast_period: {source: input.macd_fast_period, required: false}, parameters.macd_slow_period: {source: input.macd_slow_period, required: false}, parameters.macd_signal_period: {source: input.macd_signal_period, required: false}, parameters.momentum_roc_period: {source: input.momentum_roc_period, required: false}, parameters.momentum_rsi_lower: {source: input.momentum_rsi_lower, required: false}, parameters.momentum_rsi_upper: {source: input.momentum_rsi_upper, required: false}}}]
+  - name: technical.volatility.request
+    version: 1.0.0
+    description: Resolve history and calculate volatility
+    steps: [*resolve_step, *window_step, *history_step, {id: result, capability: technical.volatility, depends_on: [history, window], input_bindings: {history: {source: steps.history.data}, requested_start: {source: steps.window.data.start}, requested_end: {source: steps.window.data.end}, parameters.volatility_period: {source: input.volatility_period, required: false}, parameters.atr_period: {source: input.atr_period, required: false}, parameters.volatility_low_percentile: {source: input.volatility_low_percentile, required: false}, parameters.volatility_high_percentile: {source: input.volatility_high_percentile, required: false}}}]
+  - name: technical.snapshot.request
+    version: 1.0.0
+    description: Resolve history and return a complete technical snapshot
+    steps:
+      - *resolve_step
+      - *window_step
+      - *history_step
+      - id: result
+        capability: technical.snapshot
+        depends_on: [history, window]
+        input_bindings:
+          history: {source: steps.history.data}
+          requested_start: {source: steps.window.data.start}
+          requested_end: {source: steps.window.data.end}
+          parameters.rsi_period: {source: input.rsi_period, required: false}
+          parameters.macd_fast_period: {source: input.macd_fast_period, required: false}
+          parameters.macd_slow_period: {source: input.macd_slow_period, required: false}
+          parameters.macd_signal_period: {source: input.macd_signal_period, required: false}
+          parameters.ema_period: {source: input.ema_period, required: false}
+          parameters.sma_period: {source: input.sma_period, required: false}
+          parameters.atr_period: {source: input.atr_period, required: false}
+          parameters.adx_period: {source: input.adx_period, required: false}
+          parameters.momentum_roc_period: {source: input.momentum_roc_period, required: false}
+          parameters.volatility_period: {source: input.volatility_period, required: false}
+          parameters.trend_fast_period: {source: input.trend_fast_period, required: false}
+          parameters.trend_slow_period: {source: input.trend_slow_period, required: false}
+          parameters.level_lookback: {source: input.level_lookback, required: false}
+          parameters.pivot_span: {source: input.pivot_span, required: false}
+          parameters.pivot_max_levels: {source: input.pivot_max_levels, required: false}
+          parameters.pivot_atr_multiplier: {source: input.pivot_atr_multiplier, required: false}
+          parameters.trend_spread_threshold: {source: input.trend_spread_threshold, required: false}
+          parameters.momentum_rsi_lower: {source: input.momentum_rsi_lower, required: false}
+          parameters.momentum_rsi_upper: {source: input.momentum_rsi_upper, required: false}
+          parameters.volatility_low_percentile: {source: input.volatility_low_percentile, required: false}
+          parameters.volatility_high_percentile: {source: input.volatility_high_percentile, required: false}
+events:
+  produces: [technical.window.completed, technical.rsi.completed, technical.macd.completed, technical.ema.completed, technical.sma.completed, technical.atr.completed, technical.adx.completed, technical.support.completed, technical.resistance.completed, technical.trend.completed, technical.momentum.completed, technical.volatility.completed, technical.snapshot.completed]

@@ -25,6 +25,7 @@ from tradesentinel.platform.context import ExecutionContextManager
 from tradesentinel.platform.dependencies import DependencyResolver
 from tradesentinel.platform.events import EventBus, InMemoryEventBus, RedisStreamEventBus
 from tradesentinel.platform.execution import CapabilityExecutor
+from tradesentinel.platform.gateway import ExecutionGateway
 from tradesentinel.platform.intents import ExactExampleIntentResolver
 from tradesentinel.platform.modules import ModuleLoader
 from tradesentinel.platform.persistence import (
@@ -74,6 +75,7 @@ class Container:
     tasks: BackgroundTaskRunner
     providers: ProviderRegistry
     provider_factory: ProviderFactory
+    gateway: ExecutionGateway
 
     async def close(self) -> None:
         await self.tasks.close()
@@ -103,11 +105,13 @@ def build_container(settings: Settings) -> Container:
     commands = CommandRegistry()
     intents = IntentRegistry()
     workflows = WorkflowRegistry(capabilities)
+    gateway = ExecutionGateway(commands)
     dependency_resolver = DependencyResolver()
     dependency_resolver.register_instance(Settings, settings)
     dependency_resolver.register_instance(EventBus, events)
     dependency_resolver.register_instance(RateLimiter, rate_limiter)
     dependency_resolver.register_instance(CacheStore, cache)
+    dependency_resolver.register_instance(ExecutionGateway, gateway)
     dependency_resolver.register_instance(
         PersistenceResources,
         PersistenceResources(backend=settings.persistence_backend, sessions=session_factory),
@@ -124,6 +128,7 @@ def build_container(settings: Settings) -> Container:
             ProviderKind.SENTIMENT: settings.sentiment_providers,
             ProviderKind.ECONOMIC_DATA: settings.economic_data_providers,
             ProviderKind.FUNDAMENTALS: settings.fundamentals_providers,
+            ProviderKind.LANGUAGE_MODEL: settings.llm_providers,
         },
     ).load(loader, settings.module_roots)
     contexts = ExecutionContextManager(events)
@@ -139,6 +144,7 @@ def build_container(settings: Settings) -> Container:
         contexts,
         ResponseRenderer(),
     )
+    gateway.bind(pipeline)
     loader.bind_event_consumers(pipeline)
     chat_repository: ChatRepository = (
         SqlChatRepository(session_factory)
@@ -158,6 +164,7 @@ def build_container(settings: Settings) -> Container:
         context_message_limit=settings.chat_context_message_limit,
     )
     events.subscribe("chat.turn.requested", chat.handle_requested)
+    events.subscribe("assistant.progress", chat.handle_assistant_progress)
     tasks = BackgroundTaskRunner()
     return Container(
         settings=settings,
@@ -180,4 +187,5 @@ def build_container(settings: Settings) -> Container:
         tasks=tasks,
         providers=providers,
         provider_factory=provider_factory,
+        gateway=gateway,
     )

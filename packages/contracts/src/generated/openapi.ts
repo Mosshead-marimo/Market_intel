@@ -159,6 +159,193 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/fundamentals/cash-flow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fundamental Cash Flow */
+        post: operations["fundamental_cash_flow_api_v1_fundamentals_cash_flow_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/debt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fundamental Debt */
+        post: operations["fundamental_debt_api_v1_fundamentals_debt_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/growth": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Growth */
+        post: operations["growth_api_v1_fundamentals_growth_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/margins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fundamental Margins */
+        post: operations["fundamental_margins_api_v1_fundamentals_margins_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/peer-comparison": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Peer Comparison */
+        post: operations["peer_comparison_api_v1_fundamentals_peer_comparison_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/profit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fundamental Profit */
+        post: operations["fundamental_profit_api_v1_fundamentals_profit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/revenue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fundamental Revenue */
+        post: operations["fundamental_revenue_api_v1_fundamentals_revenue_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/roce": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fundamental Roce */
+        post: operations["fundamental_roce_api_v1_fundamentals_roce_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/roe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Fundamental Roe */
+        post: operations["fundamental_roe_api_v1_fundamentals_roe_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Snapshot */
+        post: operations["snapshot_api_v1_fundamentals_snapshot_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fundamentals/valuation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Valuation */
+        post: operations["valuation_api_v1_fundamentals_valuation_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/instruments/autocomplete": {
         parameters: {
             query?: never;
@@ -516,6 +703,380 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sentiment/aggregate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Aggregate */
+        post: operations["aggregate_api_v1_sentiment_aggregate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sentiment/analyze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Analyze */
+        post: operations["analyze_api_v1_sentiment_analyze_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sentiment/companies/detect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Detect */
+        post: operations["detect_api_v1_sentiment_companies_detect_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sentiment/discussions/collect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Collect */
+        post: operations["collect_api_v1_sentiment_discussions_collect_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sentiment/narratives": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Narratives */
+        post: operations["narratives_api_v1_sentiment_narratives_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sentiment/shift": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Shift */
+        post: operations["shift_api_v1_sentiment_shift_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sentiment/sources/weight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Weight */
+        post: operations["weight_api_v1_sentiment_sources_weight_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sentiment/spam/remove": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Remove Spam */
+        post: operations["remove_spam_api_v1_sentiment_spam_remove_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sentiment/trend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Trend */
+        post: operations["trend_api_v1_sentiment_trend_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stock-overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stock Overview */
+        post: operations["stock_overview_api_v1_stock_overview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/adx": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Adx */
+        post: operations["adx_api_v1_technical_adx_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/atr": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Atr */
+        post: operations["atr_api_v1_technical_atr_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/ema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ema */
+        post: operations["ema_api_v1_technical_ema_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/macd": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Macd */
+        post: operations["macd_api_v1_technical_macd_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/momentum": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Momentum */
+        post: operations["momentum_api_v1_technical_momentum_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/resistance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resistance */
+        post: operations["resistance_api_v1_technical_resistance_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/rsi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rsi */
+        post: operations["rsi_api_v1_technical_rsi_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/sma": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sma */
+        post: operations["sma_api_v1_technical_sma_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Snapshot */
+        post: operations["snapshot_api_v1_technical_snapshot_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/support": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Support */
+        post: operations["support_api_v1_technical_support_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/trend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Trend */
+        post: operations["trend_api_v1_technical_trend_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/technical/volatility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Volatility */
+        post: operations["volatility_api_v1_technical_volatility_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/workflows/{workflow_name}/execute": {
         parameters: {
             query?: never;
@@ -591,6 +1152,61 @@ export interface components {
             /** Volume */
             volume?: string | null;
         };
+        /** AdxOutput */
+        AdxOutput: {
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            latest: components["schemas"]["AdxPoint"];
+            /** Period */
+            period: number;
+            /** Points */
+            points: components["schemas"]["AdxPoint"][];
+        };
+        /** AdxPoint */
+        AdxPoint: {
+            /** Adx */
+            adx: string;
+            /** Negative Di */
+            negative_di: string;
+            /** Positive Di */
+            positive_di: string;
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+        };
+        /** AggregateSentimentInput */
+        AggregateSentimentInput: {
+            /**
+             * Co Mentions
+             * @default []
+             */
+            co_mentions: components["schemas"]["InstrumentRef"][];
+            /**
+             * Current Start
+             * Format: date-time
+             */
+            current_start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Observations */
+            observations: components["schemas"]["WeightedObservation-Input"][];
+            /**
+             * Previous Start
+             * Format: date-time
+             */
+            previous_start: string;
+            target: components["schemas"]["InstrumentRef"];
+        };
+        /**
+         * AnalysisStatus
+         * @enum {string}
+         */
+        AnalysisStatus: "completed" | "partial" | "empty" | "insufficient";
         /** ApiErrorDetail */
         ApiErrorDetail: {
             /** Code */
@@ -612,6 +1228,15 @@ export interface components {
          * @enum {string}
          */
         AssetType: "equity" | "etf" | "index" | "fund" | "currency" | "commodity" | "crypto" | "other";
+        /**
+         * AtrOutput
+         * @description Average true-range output.
+         */
+        AtrOutput: {
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            series: components["schemas"]["IndicatorSeries"];
+        };
         /** BenchmarkComparisonInput */
         BenchmarkComparisonInput: {
             benchmark: components["schemas"]["InstrumentRef"];
@@ -696,11 +1321,16 @@ export interface components {
              * Components
              * @default []
              */
-            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"])[];
+            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["CitedNarrative"] | components["schemas"]["MarketThesisComponent"] | components["schemas"]["FollowUpQuestions"] | components["schemas"]["ResponseSection"])[];
             /** Data */
             data?: {
                 [key: string]: components["schemas"]["JsonValue"];
             };
+            /**
+             * Evidence
+             * @default []
+             */
+            evidence: components["schemas"]["EvidenceRecord"][];
             metadata: components["schemas"]["RunMetadata"];
             /**
              * Sources
@@ -946,6 +1576,64 @@ export interface components {
          * @enum {string}
          */
         ChatTurnStatus: "queued" | "planning" | "executing" | "rendering" | "completed" | "partial" | "failed";
+        /** CitedNarrative */
+        CitedNarrative: {
+            /** Claims */
+            claims: components["schemas"]["GroundedClaim"][];
+            /** Id */
+            id: string;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "cited_narrative";
+        };
+        /** CollectDiscussionsInput */
+        CollectDiscussionsInput: {
+            /** As Of */
+            as_of?: string | null;
+            /**
+             * Limit
+             * @default 500
+             */
+            limit: number;
+            target: components["schemas"]["InstrumentRef"];
+            /**
+             * Window Days
+             * @default 7
+             */
+            window_days: number;
+        };
+        /** CollectedDiscussions */
+        CollectedDiscussions: {
+            /**
+             * Current Start
+             * Format: date-time
+             */
+            current_start: string;
+            /** Discussions */
+            discussions: components["schemas"]["Discussion-Output"][];
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /**
+             * Previous Start
+             * Format: date-time
+             */
+            previous_start: string;
+            target: components["schemas"]["InstrumentRef"];
+        };
         /** CommandRequest */
         CommandRequest: {
             /** Command */
@@ -963,6 +1651,65 @@ export interface components {
             response: components["schemas"]["RenderedResponse"];
             /** Result */
             result: components["schemas"]["CapabilityResult"] | components["schemas"]["WorkflowResult"];
+        };
+        /** CompanyDetectionInput */
+        CompanyDetectionInput: {
+            /** Catalog */
+            catalog: components["schemas"]["InstrumentRef"][];
+            /** Discussions */
+            discussions: components["schemas"]["Discussion-Input"][];
+            target: components["schemas"]["InstrumentRef"];
+        };
+        /** CompanyDetectionOutput */
+        CompanyDetectionOutput: {
+            /** Co Mentions */
+            co_mentions: components["schemas"]["InstrumentRef"][];
+            /** Discussions */
+            discussions: components["schemas"]["DetectedDiscussion-Output"][];
+            /** Relevant */
+            relevant: components["schemas"]["DetectedDiscussion-Output"][];
+            target: components["schemas"]["InstrumentRef"];
+        };
+        /** CompanyMention */
+        "CompanyMention-Input": {
+            /** Confidence */
+            confidence: number | string;
+            instrument: components["schemas"]["InstrumentRef"];
+            /** Matched Value */
+            matched_value: string;
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "cashtag" | "symbol" | "name" | "alias";
+        };
+        /** CompanyMention */
+        "CompanyMention-Output": {
+            /** Confidence */
+            confidence: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            /** Matched Value */
+            matched_value: string;
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "cashtag" | "symbol" | "name" | "alias";
+        };
+        /** CompanyProfile */
+        CompanyProfile: {
+            /** Description */
+            description?: string | null;
+            /** Industry */
+            industry?: string | null;
+            instrument: components["schemas"]["InstrumentReference"];
+            /** Legal Name */
+            legal_name: string;
+            metadata: components["schemas"]["ProviderMetadata"];
+            /** Reporting Currency */
+            reporting_currency?: string | null;
+            /** Sector */
+            sector?: string | null;
         };
         /** ComparisonTable */
         ComparisonTable: {
@@ -1016,6 +1763,80 @@ export interface components {
              */
             status: "healthy" | "unhealthy" | "disabled";
         };
+        /** DetectedDiscussion */
+        "DetectedDiscussion-Input": {
+            discussion: components["schemas"]["Discussion-Input"];
+            /** Mentions */
+            mentions: components["schemas"]["CompanyMention-Input"][];
+            /** Target Relevant */
+            target_relevant: boolean;
+        };
+        /** DetectedDiscussion */
+        "DetectedDiscussion-Output": {
+            discussion: components["schemas"]["Discussion-Output"];
+            /** Mentions */
+            mentions: components["schemas"]["CompanyMention-Output"][];
+            /** Target Relevant */
+            target_relevant: boolean;
+        };
+        /** Discussion */
+        "Discussion-Input": {
+            /** Author Hash */
+            author_hash?: string | null;
+            /** Content Hash */
+            content_hash: string;
+            /**
+             * Discussion Id
+             * Format: uuid
+             */
+            discussion_id: string;
+            /** Engagement Count */
+            engagement_count: number;
+            evidence: components["schemas"]["SentimentEvidence"];
+            /** Language */
+            language: string;
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+            /** Provider Source Id */
+            provider_source_id: string;
+            /** Provider Spam */
+            provider_spam: boolean;
+            signal: components["schemas"]["SentimentSignal-Input"];
+            /** Text Excerpt */
+            text_excerpt: string;
+        };
+        /** Discussion */
+        "Discussion-Output": {
+            /** Author Hash */
+            author_hash?: string | null;
+            /** Content Hash */
+            content_hash: string;
+            /**
+             * Discussion Id
+             * Format: uuid
+             */
+            discussion_id: string;
+            /** Engagement Count */
+            engagement_count: number;
+            evidence: components["schemas"]["SentimentEvidence"];
+            /** Language */
+            language: string;
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+            /** Provider Source Id */
+            provider_source_id: string;
+            /** Provider Spam */
+            provider_spam: boolean;
+            signal: components["schemas"]["SentimentSignal-Output"];
+            /** Text Excerpt */
+            text_excerpt: string;
+        };
         /** DuplicateGroup */
         DuplicateGroup: {
             /** Duplicate Source Ids */
@@ -1027,6 +1848,100 @@ export interface components {
             reason: "provider_source" | "canonical_url" | "document_hash" | "title_day";
             /** Representative Source Id */
             representative_source_id: string;
+        };
+        /**
+         * EmaOutput
+         * @description Exponential moving-average output.
+         */
+        EmaOutput: {
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            series: components["schemas"]["IndicatorSeries"];
+        };
+        /** EventTimeline */
+        EventTimeline: {
+            /** Id */
+            id: string;
+            /** Items */
+            items: components["schemas"]["EventTimelineItem"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "event_timeline";
+        };
+        /** EventTimelineItem */
+        EventTimelineItem: {
+            /** Category */
+            category?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Label */
+            label: string;
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+            /** Source Id */
+            source_id?: string | null;
+        };
+        /**
+         * EvidenceKind
+         * @enum {string}
+         */
+        EvidenceKind: "provider_observation" | "calculated_metric" | "research_claim" | "methodology" | "command_catalog" | "user_assertion";
+        /** EvidenceRecord */
+        EvidenceRecord: {
+            /** Capability */
+            capability?: string | null;
+            /** Data Cutoff */
+            data_cutoff?: string | null;
+            /** Evidence Id */
+            evidence_id: string;
+            /**
+             * Freshness
+             * @default unknown
+             * @enum {string}
+             */
+            freshness: "fresh" | "stale" | "unknown";
+            /** Json Path */
+            json_path?: string | null;
+            kind: components["schemas"]["EvidenceKind"];
+            /** Producer */
+            producer: string;
+            /** Provider */
+            provider?: string | null;
+            /** Run Id */
+            run_id?: string | null;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+            /** Title */
+            title: string;
+            /**
+             * Untrusted
+             * @default false
+             */
+            untrusted: boolean;
+            /** Value */
+            value: string;
         };
         /** EvidenceSource */
         EvidenceSource: {
@@ -1053,6 +1968,11 @@ export interface components {
              */
             url: string;
         };
+        /**
+         * FinancialPeriodType
+         * @enum {string}
+         */
+        FinancialPeriodType: "annual" | "quarterly";
         /** FiveYearPerformanceInput */
         FiveYearPerformanceInput: {
             /**
@@ -1076,11 +1996,279 @@ export interface components {
              */
             requested_as_of: string;
         };
+        /** FollowUpQuestion */
+        FollowUpQuestion: {
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Prompt */
+            prompt: string;
+        };
+        /** FollowUpQuestions */
+        FollowUpQuestions: {
+            /** Id */
+            id: string;
+            /** Questions */
+            questions: components["schemas"]["FollowUpQuestion"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "follow_up_questions";
+        };
         /**
          * FreshnessStatus
          * @enum {string}
          */
         FreshnessStatus: "fresh" | "stale" | "unknown";
+        /** FundamentalAnalysisRequest */
+        FundamentalAnalysisRequest: {
+            /**
+             * Annual Periods
+             * @default 5
+             */
+            annual_periods: number;
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of?: string;
+            /** Exchange */
+            exchange?: string | null;
+            /**
+             * Peers
+             * @default []
+             */
+            peers: string[];
+            /**
+             * Quarterly Periods
+             * @default 8
+             */
+            quarterly_periods: number;
+            /** Query */
+            query: string;
+        };
+        /** FundamentalGrowthOutput */
+        FundamentalGrowthOutput: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Data Cutoff */
+            data_cutoff?: string | null;
+            instrument: components["schemas"]["InstrumentRef"];
+            /** Metrics */
+            metrics: components["schemas"]["GrowthMetric"][];
+            status: components["schemas"]["FundamentalStatus"];
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /** FundamentalMetric */
+        FundamentalMetric: {
+            /**
+             * Annual
+             * @default []
+             */
+            annual: components["schemas"]["FundamentalMetricPoint"][];
+            /** Concept */
+            concept: string;
+            /** Label */
+            label: string;
+            /** Latest */
+            latest?: string | null;
+            /**
+             * Quarterly
+             * @default []
+             */
+            quarterly: components["schemas"]["FundamentalMetricPoint"][];
+            /** Unit */
+            unit: string;
+        };
+        /** FundamentalMetricPoint */
+        FundamentalMetricPoint: {
+            /** Currency */
+            currency?: string | null;
+            /** Filed At */
+            filed_at?: string | null;
+            /**
+             * Period End
+             * Format: date-time
+             */
+            period_end: string;
+            /** Period Start */
+            period_start?: string | null;
+            period_type: components["schemas"]["FinancialPeriodType"];
+            provider: components["schemas"]["ProviderMetadata"];
+            /** Unit */
+            unit: string;
+            /** Value */
+            value: string | null;
+        };
+        /** FundamentalPeerComparisonOutput */
+        FundamentalPeerComparisonOutput: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Comparisons */
+            comparisons: components["schemas"]["PeerMetricComparison"][];
+            /** Peers */
+            peers: components["schemas"]["InstrumentRef"][];
+            status: components["schemas"]["FundamentalStatus"];
+            target: components["schemas"]["InstrumentRef"];
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /** FundamentalSectionOutput */
+        FundamentalSectionOutput: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Data Cutoff */
+            data_cutoff?: string | null;
+            instrument: components["schemas"]["InstrumentRef"];
+            /** Metrics */
+            metrics: components["schemas"]["FundamentalMetric"][];
+            /**
+             * Section
+             * @enum {string}
+             */
+            section: "revenue" | "profit" | "cash_flow" | "debt" | "margins" | "roe" | "roce";
+            status: components["schemas"]["FundamentalStatus"];
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /** FundamentalSnapshot */
+        FundamentalSnapshot: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /**
+             * Calculation Version
+             * @default fundamentals-v1
+             * @constant
+             */
+            calculation_version: "fundamentals-v1";
+            cash_flow: components["schemas"]["FundamentalSectionOutput"];
+            /** Data Cutoff */
+            data_cutoff?: string | null;
+            debt: components["schemas"]["FundamentalSectionOutput"];
+            growth: components["schemas"]["FundamentalGrowthOutput"];
+            instrument: components["schemas"]["InstrumentRef"];
+            margins: components["schemas"]["FundamentalSectionOutput"];
+            profile: components["schemas"]["CompanyProfile"];
+            profit: components["schemas"]["FundamentalSectionOutput"];
+            revenue: components["schemas"]["FundamentalSectionOutput"];
+            roce: components["schemas"]["FundamentalSectionOutput"];
+            roe: components["schemas"]["FundamentalSectionOutput"];
+            status: components["schemas"]["FundamentalStatus"];
+            valuation: components["schemas"]["FundamentalValuationOutput"];
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /**
+         * FundamentalStatus
+         * @enum {string}
+         */
+        FundamentalStatus: "completed" | "partial" | "empty";
+        /** FundamentalValuationOutput */
+        FundamentalValuationOutput: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /** Currency */
+            currency?: string | null;
+            /** Data Cutoff */
+            data_cutoff?: string | null;
+            instrument: components["schemas"]["InstrumentRef"];
+            /** Metrics */
+            metrics: components["schemas"]["ValuationMetric"][];
+            status: components["schemas"]["FundamentalStatus"];
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /** GroundedClaim */
+        GroundedClaim: {
+            /** Claim Id */
+            claim_id: string;
+            /** Evidence Ids */
+            evidence_ids: string[];
+            /** Text */
+            text: string;
+        };
+        /** GrowthMetric */
+        GrowthMetric: {
+            /** Annual Cagr */
+            annual_cagr?: string | null;
+            /**
+             * Annual Yoy
+             * @default []
+             */
+            annual_yoy: components["schemas"]["GrowthPoint"][];
+            /** Concept */
+            concept: string;
+            /**
+             * Quarterly Qoq
+             * @default []
+             */
+            quarterly_qoq: components["schemas"]["GrowthPoint"][];
+            /**
+             * Quarterly Yoy
+             * @default []
+             */
+            quarterly_yoy: components["schemas"]["GrowthPoint"][];
+        };
+        /** GrowthPoint */
+        GrowthPoint: {
+            /** Absolute Change */
+            absolute_change: string | null;
+            /**
+             * Comparison
+             * @enum {string}
+             */
+            comparison: "yoy" | "qoq";
+            /** Percent Change */
+            percent_change: string | null;
+            /**
+             * Period End
+             * Format: date-time
+             */
+            period_end: string;
+            period_type: components["schemas"]["FinancialPeriodType"];
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -1110,6 +2298,25 @@ export interface components {
             status: "healthy" | "degraded" | "unhealthy";
             /** Version */
             version: string;
+        };
+        /** IndicatorPoint */
+        IndicatorPoint: {
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+            /** Value */
+            value: string;
+        };
+        /** IndicatorSeries */
+        IndicatorSeries: {
+            /** Latest */
+            latest: string;
+            /** Period */
+            period: number;
+            /** Points */
+            points: components["schemas"]["IndicatorPoint"][];
         };
         /** InstrumentAutocompleteOutput */
         InstrumentAutocompleteOutput: {
@@ -1153,6 +2360,15 @@ export interface components {
             /** Symbol */
             symbol: string;
         };
+        /** InstrumentReference */
+        InstrumentReference: {
+            /** Exchange */
+            exchange?: string | null;
+            /** Identifier */
+            identifier?: string | null;
+            /** Symbol */
+            symbol: string;
+        };
         /** InstrumentResolveOutput */
         InstrumentResolveOutput: {
             /**
@@ -1177,16 +2393,94 @@ export interface components {
             query: string;
         };
         JsonValue: unknown;
+        /** LevelOutput */
+        LevelOutput: {
+            /** Current Price */
+            current_price: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            /** Levels */
+            levels: components["schemas"]["PriceLevel"][];
+            /** Lookback */
+            lookback: number;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "support" | "resistance";
+        };
         /**
          * LicenseClassification
          * @enum {string}
          */
         LicenseClassification: "internal" | "redistributable" | "restricted" | "unknown";
+        /** MacdOutput */
+        MacdOutput: {
+            /** Fast Period */
+            fast_period: number;
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            latest: components["schemas"]["MacdPoint"];
+            /** Points */
+            points: components["schemas"]["MacdPoint"][];
+            /** Signal Period */
+            signal_period: number;
+            /** Slow Period */
+            slow_period: number;
+        };
+        /** MacdPoint */
+        MacdPoint: {
+            /** Histogram */
+            histogram: string;
+            /** Macd */
+            macd: string;
+            /** Signal */
+            signal: string;
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string;
+        };
         /**
          * MarketInterval
          * @enum {string}
          */
         MarketInterval: "1d" | "1wk" | "1mo";
+        /** MarketThesisComponent */
+        MarketThesisComponent: {
+            /**
+             * Contradictory
+             * @default []
+             */
+            contradictory: components["schemas"]["GroundedClaim"][];
+            /** Id */
+            id: string;
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /**
+             * Supportive
+             * @default []
+             */
+            supportive: components["schemas"]["GroundedClaim"][];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "market_thesis";
+            /**
+             * Uncertainties
+             * @default []
+             */
+            uncertainties: components["schemas"]["GroundedClaim"][];
+        };
         /** MetricGrid */
         MetricGrid: {
             /** Id */
@@ -1216,6 +2510,77 @@ export interface components {
             label: string;
             /** Value */
             value: string;
+        };
+        /** MomentumOutput */
+        MomentumOutput: {
+            /**
+             * Direction
+             * @enum {string}
+             */
+            direction: "positive" | "neutral" | "negative";
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            /** Macd Histogram */
+            macd_histogram: string;
+            /** Negative Votes */
+            negative_votes: number;
+            /** Positive Votes */
+            positive_votes: number;
+            /** Rate Of Change */
+            rate_of_change: string;
+            /** Rsi */
+            rsi: string;
+        };
+        /** Narrative */
+        Narrative: {
+            /** Confidence */
+            confidence: string;
+            /** Discussion Ids */
+            discussion_ids: string[];
+            /** Mention Count */
+            mention_count: number;
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "taxonomy" | "ngram";
+            /**
+             * Narrative Id
+             * Format: uuid
+             */
+            narrative_id: string;
+            /** Observation Timestamps */
+            observation_timestamps: string[];
+            /** Providers */
+            providers: string[];
+            sentiment: components["schemas"]["SentimentLabel"];
+            /** Topic */
+            topic: string;
+            /** Weighted Share */
+            weighted_share: string;
+        };
+        /** NarrativeExtractionInput */
+        NarrativeExtractionInput: {
+            /**
+             * Current Start
+             * Format: date-time
+             */
+            current_start: string;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Observations */
+            observations: components["schemas"]["WeightedObservation-Input"][];
+            target: components["schemas"]["InstrumentRef"];
+        };
+        /** NarrativeList */
+        NarrativeList: {
+            /** Narratives */
+            narratives: components["schemas"]["Narrative"][];
+            status: components["schemas"]["AnalysisStatus"];
+            target: components["schemas"]["InstrumentRef"];
         };
         /** NewsSearchInput */
         NewsSearchInput: {
@@ -1255,6 +2620,23 @@ export interface components {
              * @enum {string}
              */
             type: "news_timeline";
+        };
+        /** PeerMetricComparison */
+        PeerMetricComparison: {
+            /** Concept */
+            concept: string;
+            /** Median */
+            median: string | null;
+            /** Values */
+            values: components["schemas"]["PeerMetricValue"][];
+        };
+        /** PeerMetricValue */
+        PeerMetricValue: {
+            instrument: components["schemas"]["InstrumentRef"];
+            /** Percentile */
+            percentile?: string | null;
+            /** Value */
+            value: string | null;
         };
         /** PerformanceMetrics */
         PerformanceMetrics: {
@@ -1344,6 +2726,30 @@ export interface components {
              */
             type: "price_chart";
         };
+        /** PriceLevel */
+        PriceLevel: {
+            /** Distance Percent */
+            distance_percent: string;
+            /**
+             * First Tested At
+             * Format: date-time
+             */
+            first_tested_at: string;
+            /**
+             * Last Tested At
+             * Format: date-time
+             */
+            last_tested_at: string;
+            /** Level */
+            level: string;
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "rolling_extreme" | "pivot_cluster";
+            /** Touches */
+            touches: number;
+        };
         /** ProviderMetadata */
         ProviderMetadata: {
             /** @default unknown */
@@ -1364,6 +2770,13 @@ export interface components {
             /** Timezone */
             timezone?: string | null;
         };
+        /** PublicSentimentAnalysis */
+        PublicSentimentAnalysis: {
+            narratives: components["schemas"]["NarrativeList"];
+            shift: components["schemas"]["SentimentShift"];
+            snapshot: components["schemas"]["SentimentSnapshot-Output"];
+            trend: components["schemas"]["SentimentTrend"];
+        };
         /** RebasedPoint */
         RebasedPoint: {
             /**
@@ -1380,7 +2793,12 @@ export interface components {
              * Components
              * @default []
              */
-            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"])[];
+            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["CitedNarrative"] | components["schemas"]["MarketThesisComponent"] | components["schemas"]["FollowUpQuestions"] | components["schemas"]["ResponseSection"])[];
+            /**
+             * Evidence
+             * @default []
+             */
+            evidence: components["schemas"]["EvidenceRecord"][];
             /**
              * Generated At
              * Format: date-time
@@ -1578,6 +2996,32 @@ export interface components {
             /** Query */
             query: string;
         };
+        /** ResponseSection */
+        ResponseSection: {
+            /** Description */
+            description?: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Items
+             * @default []
+             */
+            items: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["CitedNarrative"] | components["schemas"]["MarketThesisComponent"] | components["schemas"]["FollowUpQuestions"])[];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "response_section";
+        };
         /** RiskCard */
         RiskCard: {
             /** Id */
@@ -1610,6 +3054,12 @@ export interface components {
              * @enum {string}
              */
             severity: "low" | "medium" | "high" | "unknown";
+        };
+        /** RsiOutput */
+        RsiOutput: {
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            series: components["schemas"]["IndicatorSeries"];
         };
         /** RunMetadata */
         RunMetadata: {
@@ -1679,6 +3129,25 @@ export interface components {
              */
             type: "scenario_table";
         };
+        /** SentimentAnalysisInput */
+        SentimentAnalysisInput: {
+            /** As Of */
+            as_of?: string | null;
+            /** Exchange */
+            exchange?: string | null;
+            /**
+             * Limit
+             * @default 500
+             */
+            limit: number;
+            /** Query */
+            query: string;
+            /**
+             * Window Days
+             * @default 7
+             */
+            window_days: number;
+        };
         /** SentimentChart */
         SentimentChart: {
             /** Id */
@@ -1700,6 +3169,196 @@ export interface components {
              */
             type: "sentiment_chart";
         };
+        /** SentimentEvidence */
+        SentimentEvidence: {
+            /**
+             * Observed At
+             * Format: date-time
+             */
+            observed_at: string;
+            /** Provider */
+            provider: string;
+            /**
+             * Retrieved At
+             * Format: date-time
+             */
+            retrieved_at: string;
+            /** Source Id */
+            source_id: string;
+            /** Source Type */
+            source_type: string;
+            /**
+             * Untrusted
+             * @default true
+             * @constant
+             */
+            untrusted: true;
+            /** Url */
+            url?: string | null;
+        };
+        /**
+         * SentimentLabel
+         * @enum {string}
+         */
+        SentimentLabel: "positive" | "neutral" | "negative" | "unknown";
+        /** SentimentShift */
+        SentimentShift: {
+            /** Description */
+            description: string;
+            /** Sentiment Component */
+            sentiment_component?: string | null;
+            /** Shift Score */
+            shift_score?: string | null;
+            status: components["schemas"]["AnalysisStatus"];
+            target: components["schemas"]["InstrumentRef"];
+            /** Volume Component */
+            volume_component?: string | null;
+        };
+        /** SentimentSignal */
+        "SentimentSignal-Input": {
+            /** Confidence */
+            confidence?: number | string | null;
+            label: components["schemas"]["SentimentLabel"];
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "provider" | "lexicon" | "none";
+            /**
+             * Negative Hits
+             * @default 0
+             */
+            negative_hits: number;
+            /**
+             * Positive Hits
+             * @default 0
+             */
+            positive_hits: number;
+            /** Score */
+            score?: number | string | null;
+            /** Version */
+            version: string;
+        };
+        /** SentimentSignal */
+        "SentimentSignal-Output": {
+            /** Confidence */
+            confidence?: string | null;
+            label: components["schemas"]["SentimentLabel"];
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "provider" | "lexicon" | "none";
+            /**
+             * Negative Hits
+             * @default 0
+             */
+            negative_hits: number;
+            /**
+             * Positive Hits
+             * @default 0
+             */
+            positive_hits: number;
+            /** Score */
+            score?: string | null;
+            /** Version */
+            version: string;
+        };
+        /** SentimentSnapshot */
+        "SentimentSnapshot-Input": {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /**
+             * Co Mentions
+             * @default []
+             */
+            co_mentions: components["schemas"]["InstrumentRef"][];
+            /** Confidence */
+            confidence?: number | string | null;
+            current: components["schemas"]["WindowMetrics-Input"];
+            /** Lexicon Version */
+            lexicon_version: string;
+            previous: components["schemas"]["WindowMetrics-Input"];
+            /**
+             * Snapshot Id
+             * Format: uuid
+             */
+            snapshot_id: string;
+            status: components["schemas"]["AnalysisStatus"];
+            target: components["schemas"]["InstrumentRef"];
+            /** Volume Change */
+            volume_change?: number | string | null;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /** SentimentSnapshot */
+        "SentimentSnapshot-Output": {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            /**
+             * Co Mentions
+             * @default []
+             */
+            co_mentions: components["schemas"]["InstrumentRef"][];
+            /** Confidence */
+            confidence?: string | null;
+            current: components["schemas"]["WindowMetrics-Output"];
+            /** Lexicon Version */
+            lexicon_version: string;
+            previous: components["schemas"]["WindowMetrics-Output"];
+            /**
+             * Snapshot Id
+             * Format: uuid
+             */
+            snapshot_id: string;
+            status: components["schemas"]["AnalysisStatus"];
+            target: components["schemas"]["InstrumentRef"];
+            /** Volume Change */
+            volume_change?: string | null;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /** SentimentTrend */
+        SentimentTrend: {
+            /** Acceleration */
+            acceleration?: string | null;
+            /** Buckets */
+            buckets: components["schemas"]["TrendBucket"][];
+            /**
+             * Direction
+             * @enum {string}
+             */
+            direction: "improving" | "stable" | "deteriorating" | "insufficient";
+            /** Slope */
+            slope?: string | null;
+            status: components["schemas"]["AnalysisStatus"];
+            target: components["schemas"]["InstrumentRef"];
+        };
+        /** ShiftDetectionInput */
+        ShiftDetectionInput: {
+            snapshot: components["schemas"]["SentimentSnapshot-Input"];
+        };
+        /**
+         * SmaOutput
+         * @description Simple moving-average output.
+         */
+        SmaOutput: {
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            series: components["schemas"]["IndicatorSeries"];
+        };
         /** SourceList */
         SourceList: {
             /** Id */
@@ -1720,6 +3379,43 @@ export interface components {
              * @enum {string}
              */
             type: "source_list";
+        };
+        /** SourceWeightInput */
+        SourceWeightInput: {
+            /** Discussions */
+            discussions: components["schemas"]["DetectedDiscussion-Input"][];
+        };
+        /** SourceWeightOutput */
+        SourceWeightOutput: {
+            /** Observations */
+            observations: components["schemas"]["WeightedObservation-Output"][];
+        };
+        /** SpamDecision */
+        SpamDecision: {
+            /**
+             * Discussion Id
+             * Format: uuid
+             */
+            discussion_id: string;
+            /**
+             * Reasons
+             * @default []
+             */
+            reasons: ("provider_spam" | "too_short" | "too_many_urls" | "too_many_tags" | "repeated_tokens" | "duplicate" | "author_burst")[];
+            /** Spam */
+            spam: boolean;
+        };
+        /** SpamRemovalInput */
+        SpamRemovalInput: {
+            /** Discussions */
+            discussions: components["schemas"]["Discussion-Input"][];
+        };
+        /** SpamRemovalOutput */
+        SpamRemovalOutput: {
+            /** Decisions */
+            decisions: components["schemas"]["SpamDecision"][];
+            /** Retained */
+            retained: components["schemas"]["Discussion-Output"][];
         };
         /** StockComparisonInput */
         StockComparisonInput: {
@@ -1847,6 +3543,42 @@ export interface components {
             price_basis: "adjusted";
             provider: components["schemas"]["ProviderMetadata"];
         };
+        /** StockOverviewRequest */
+        StockOverviewRequest: {
+            /**
+             * Annual Periods
+             * @default 5
+             */
+            annual_periods: number;
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of?: string;
+            /** Exchange */
+            exchange?: string | null;
+            /** @default 1d */
+            interval: components["schemas"]["MarketInterval"];
+            /**
+             * Quarterly Periods
+             * @default 8
+             */
+            quarterly_periods: number;
+            /** Query */
+            query: string;
+            /** Research Limit */
+            research_limit?: number | null;
+            /**
+             * Sentiment Limit
+             * @default 100
+             */
+            sentiment_limit: number;
+            /**
+             * Sentiment Window Days
+             * @default 7
+             */
+            sentiment_window_days: number;
+        };
         /** StockPerformanceInput */
         StockPerformanceInput: {
             /**
@@ -1938,6 +3670,294 @@ export interface components {
             /** Cells */
             cells: string[];
         };
+        /** TechnicalAnalysisRequest */
+        TechnicalAnalysisRequest: {
+            /**
+             * Adx Period
+             * @default 14
+             */
+            adx_period: number;
+            /** As Of */
+            as_of?: string | null;
+            /**
+             * Atr Period
+             * @default 14
+             */
+            atr_period: number;
+            /**
+             * Ema Period
+             * @default 20
+             */
+            ema_period: number;
+            /** End */
+            end?: string | null;
+            /** Exchange */
+            exchange?: string | null;
+            /** @default 1d */
+            interval: components["schemas"]["MarketInterval"];
+            /**
+             * Level Lookback
+             * @default 60
+             */
+            level_lookback: number;
+            /**
+             * Macd Fast Period
+             * @default 12
+             */
+            macd_fast_period: number;
+            /**
+             * Macd Signal Period
+             * @default 9
+             */
+            macd_signal_period: number;
+            /**
+             * Macd Slow Period
+             * @default 26
+             */
+            macd_slow_period: number;
+            /**
+             * Momentum Roc Period
+             * @default 10
+             */
+            momentum_roc_period: number;
+            /**
+             * Momentum Rsi Lower
+             * @default 45
+             */
+            momentum_rsi_lower: number | string;
+            /**
+             * Momentum Rsi Upper
+             * @default 55
+             */
+            momentum_rsi_upper: number | string;
+            /**
+             * Pivot Atr Multiplier
+             * @default 0.5
+             */
+            pivot_atr_multiplier: number | string;
+            /**
+             * Pivot Max Levels
+             * @default 3
+             */
+            pivot_max_levels: number;
+            /**
+             * Pivot Span
+             * @default 2
+             */
+            pivot_span: number;
+            /** Query */
+            query: string;
+            /**
+             * Rsi Period
+             * @default 14
+             */
+            rsi_period: number;
+            /**
+             * Sma Period
+             * @default 20
+             */
+            sma_period: number;
+            /** Start */
+            start?: string | null;
+            /**
+             * Trend Fast Period
+             * @default 20
+             */
+            trend_fast_period: number;
+            /**
+             * Trend Slow Period
+             * @default 50
+             */
+            trend_slow_period: number;
+            /**
+             * Trend Spread Threshold
+             * @default 0.005
+             */
+            trend_spread_threshold: number | string;
+            /**
+             * Volatility High Percentile
+             * @default 0.75
+             */
+            volatility_high_percentile: number | string;
+            /**
+             * Volatility Low Percentile
+             * @default 0.25
+             */
+            volatility_low_percentile: number | string;
+            /**
+             * Volatility Period
+             * @default 20
+             */
+            volatility_period: number;
+        };
+        /** TechnicalParameters */
+        TechnicalParameters: {
+            /**
+             * Adx Period
+             * @default 14
+             */
+            adx_period: number;
+            /**
+             * Atr Period
+             * @default 14
+             */
+            atr_period: number;
+            /**
+             * Ema Period
+             * @default 20
+             */
+            ema_period: number;
+            /**
+             * Level Lookback
+             * @default 60
+             */
+            level_lookback: number;
+            /**
+             * Macd Fast Period
+             * @default 12
+             */
+            macd_fast_period: number;
+            /**
+             * Macd Signal Period
+             * @default 9
+             */
+            macd_signal_period: number;
+            /**
+             * Macd Slow Period
+             * @default 26
+             */
+            macd_slow_period: number;
+            /**
+             * Momentum Roc Period
+             * @default 10
+             */
+            momentum_roc_period: number;
+            /**
+             * Momentum Rsi Lower
+             * @default 45
+             */
+            momentum_rsi_lower: string;
+            /**
+             * Momentum Rsi Upper
+             * @default 55
+             */
+            momentum_rsi_upper: string;
+            /**
+             * Pivot Atr Multiplier
+             * @default 0.5
+             */
+            pivot_atr_multiplier: string;
+            /**
+             * Pivot Max Levels
+             * @default 3
+             */
+            pivot_max_levels: number;
+            /**
+             * Pivot Span
+             * @default 2
+             */
+            pivot_span: number;
+            /**
+             * Rsi Period
+             * @default 14
+             */
+            rsi_period: number;
+            /**
+             * Sma Period
+             * @default 20
+             */
+            sma_period: number;
+            /**
+             * Trend Fast Period
+             * @default 20
+             */
+            trend_fast_period: number;
+            /**
+             * Trend Slow Period
+             * @default 50
+             */
+            trend_slow_period: number;
+            /**
+             * Trend Spread Threshold
+             * @default 0.005
+             */
+            trend_spread_threshold: string;
+            /**
+             * Volatility High Percentile
+             * @default 0.75
+             */
+            volatility_high_percentile: string;
+            /**
+             * Volatility Low Percentile
+             * @default 0.25
+             */
+            volatility_low_percentile: string;
+            /**
+             * Volatility Period
+             * @default 20
+             */
+            volatility_period: number;
+        };
+        /** TechnicalSnapshot */
+        TechnicalSnapshot: {
+            adx?: components["schemas"]["AdxOutput"] | null;
+            atr?: components["schemas"]["AtrOutput"] | null;
+            cache: components["schemas"]["CacheMetadata"];
+            /**
+             * Calculation Version
+             * @default technical-v1
+             * @constant
+             */
+            calculation_version: "technical-v1";
+            /** Data Cutoff */
+            data_cutoff?: string | null;
+            ema?: components["schemas"]["EmaOutput"] | null;
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            macd?: components["schemas"]["MacdOutput"] | null;
+            momentum?: components["schemas"]["MomentumOutput"] | null;
+            /** Observation Count */
+            observation_count: number;
+            /** Observed End */
+            observed_end?: string | null;
+            /** Observed Start */
+            observed_start?: string | null;
+            parameters: components["schemas"]["TechnicalParameters"];
+            /**
+             * Price Basis
+             * @default adjusted_ohlc
+             * @constant
+             */
+            price_basis: "adjusted_ohlc";
+            provider: components["schemas"]["ProviderMetadata"];
+            /**
+             * Requested End
+             * Format: date-time
+             */
+            requested_end: string;
+            /**
+             * Requested Start
+             * Format: date-time
+             */
+            requested_start: string;
+            resistance?: components["schemas"]["LevelOutput"] | null;
+            rsi?: components["schemas"]["RsiOutput"] | null;
+            sma?: components["schemas"]["SmaOutput"] | null;
+            status: components["schemas"]["TechnicalStatus"];
+            support?: components["schemas"]["LevelOutput"] | null;
+            trend?: components["schemas"]["TrendOutput"] | null;
+            volatility?: components["schemas"]["VolatilityOutput"] | null;
+            /**
+             * Warnings
+             * @default []
+             */
+            warnings: string[];
+        };
+        /**
+         * TechnicalStatus
+         * @enum {string}
+         */
+        TechnicalStatus: "completed" | "partial" | "empty";
         /** TimelineItem */
         TimelineItem: {
             /** Description */
@@ -1957,6 +3977,57 @@ export interface components {
          * @enum {string}
          */
         TimestampBasis: "published" | "retrieved";
+        /** TrendBucket */
+        TrendBucket: {
+            /**
+             * Day
+             * Format: date-time
+             */
+            day: string;
+            /** Mean Score */
+            mean_score?: string | null;
+            /** Mention Count */
+            mention_count: number;
+        };
+        /** TrendDetectionInput */
+        TrendDetectionInput: {
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Observations */
+            observations: components["schemas"]["WeightedObservation-Input"][];
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            target: components["schemas"]["InstrumentRef"];
+        };
+        /** TrendOutput */
+        TrendOutput: {
+            /** Adx */
+            adx: string;
+            /**
+             * Direction
+             * @enum {string}
+             */
+            direction: "rising" | "falling" | "sideways";
+            /** Fast Ema */
+            fast_ema: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            /** Slow Ema */
+            slow_ema: string;
+            /** Spread Percent */
+            spread_percent: string;
+            /**
+             * Strength
+             * @enum {string}
+             */
+            strength: "weak" | "developing" | "strong";
+        };
         /** ValidationError */
         ValidationError: {
             /** Context */
@@ -1969,6 +4040,40 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** ValuationMetric */
+        ValuationMetric: {
+            /** Calculated */
+            calculated?: string | null;
+            /** Concept */
+            concept: string;
+            /**
+             * Historical Reported
+             * @default []
+             */
+            historical_reported: components["schemas"]["FundamentalMetricPoint"][];
+            /** Reported */
+            reported?: string | null;
+        };
+        /** VolatilityOutput */
+        VolatilityOutput: {
+            /** Annualized Volatility */
+            annualized_volatility: string;
+            /** Atr Percent */
+            atr_percent: string;
+            instrument: components["schemas"]["InstrumentRef"];
+            interval: components["schemas"]["MarketInterval"];
+            /** Percentile Rank */
+            percentile_rank?: string | null;
+            /** Period */
+            period: number;
+            /**
+             * Regime
+             * @enum {string}
+             */
+            regime: "low" | "normal" | "high" | "unknown";
+            /** Rolling */
+            rolling: components["schemas"]["IndicatorPoint"][];
         };
         /** WarningBanner */
         WarningBanner: {
@@ -1992,6 +4097,114 @@ export interface components {
              * @enum {string}
              */
             type: "warning_banner";
+        };
+        /** WeightedObservation */
+        "WeightedObservation-Input": {
+            discussion: components["schemas"]["Discussion-Input"];
+            /** Engagement Multiplier */
+            engagement_multiplier: number | string;
+            /** Mentions */
+            mentions: components["schemas"]["CompanyMention-Input"][];
+            /** Provider Weight */
+            provider_weight: number | string;
+            /** Source Type Weight */
+            source_type_weight: number | string;
+            /** Weight */
+            weight: number | string;
+        };
+        /** WeightedObservation */
+        "WeightedObservation-Output": {
+            discussion: components["schemas"]["Discussion-Output"];
+            /** Engagement Multiplier */
+            engagement_multiplier: string;
+            /** Mentions */
+            mentions: components["schemas"]["CompanyMention-Output"][];
+            /** Provider Weight */
+            provider_weight: string;
+            /** Source Type Weight */
+            source_type_weight: string;
+            /** Weight */
+            weight: string;
+        };
+        /** WindowMetrics */
+        "WindowMetrics-Input": {
+            /** Agreement */
+            agreement?: number | string | null;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Mean Score */
+            mean_score?: number | string | null;
+            /** Mean Signal Confidence */
+            mean_signal_confidence?: number | string | null;
+            /** Mention Count */
+            mention_count: number;
+            /** Negative Share */
+            negative_share?: number | string | null;
+            /** Neutral Share */
+            neutral_share?: number | string | null;
+            /** Positive Share */
+            positive_share?: number | string | null;
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /** Usable Count */
+            usable_count: number;
+        };
+        /** WindowMetrics */
+        "WindowMetrics-Output": {
+            /** Agreement */
+            agreement?: string | null;
+            /**
+             * End
+             * Format: date-time
+             */
+            end: string;
+            /** Mean Score */
+            mean_score?: string | null;
+            /** Mean Signal Confidence */
+            mean_signal_confidence?: string | null;
+            /** Mention Count */
+            mention_count: number;
+            /** Negative Share */
+            negative_share?: string | null;
+            /** Neutral Share */
+            neutral_share?: string | null;
+            /** Positive Share */
+            positive_share?: string | null;
+            /**
+             * Start
+             * Format: date-time
+             */
+            start: string;
+            /** Usable Count */
+            usable_count: number;
+        };
+        /** WorkflowPresentation */
+        WorkflowPresentation: {
+            /** Completion Event */
+            completion_event?: string | null;
+            /** Sections */
+            sections: components["schemas"]["WorkflowPresentationSection"][];
+            /** Title */
+            title: string;
+        };
+        /** WorkflowPresentationSection */
+        WorkflowPresentationSection: {
+            /** Empty Message */
+            empty_message?: string | null;
+            /** Error Message */
+            error_message?: string | null;
+            /** Id */
+            id: string;
+            /** Steps */
+            steps: string[];
+            /** Title */
+            title: string;
         };
         /** WorkflowRequest */
         WorkflowRequest: {
@@ -2019,6 +4232,7 @@ export interface components {
              * Format: date-time
              */
             completed_at: string;
+            presentation?: components["schemas"]["WorkflowPresentation"] | null;
             /**
              * Run Id
              * Format: uuid
@@ -2369,6 +4583,369 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    fundamental_cash_flow_api_v1_fundamentals_cash_flow_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalSectionOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    fundamental_debt_api_v1_fundamentals_debt_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalSectionOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    growth_api_v1_fundamentals_growth_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalGrowthOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    fundamental_margins_api_v1_fundamentals_margins_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalSectionOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    peer_comparison_api_v1_fundamentals_peer_comparison_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalPeerComparisonOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    fundamental_profit_api_v1_fundamentals_profit_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalSectionOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    fundamental_revenue_api_v1_fundamentals_revenue_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalSectionOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    fundamental_roce_api_v1_fundamentals_roce_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalSectionOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    fundamental_roe_api_v1_fundamentals_roe_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalSectionOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    snapshot_api_v1_fundamentals_snapshot_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalSnapshot"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    valuation_api_v1_fundamentals_valuation_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FundamentalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FundamentalValuationOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -3036,6 +5613,732 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RunSourcesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    aggregate_api_v1_sentiment_aggregate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AggregateSentimentInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SentimentSnapshot-Output"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    analyze_api_v1_sentiment_analyze_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SentimentAnalysisInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicSentimentAnalysis"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    detect_api_v1_sentiment_companies_detect_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompanyDetectionInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompanyDetectionOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    collect_api_v1_sentiment_discussions_collect_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectDiscussionsInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectedDiscussions"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    narratives_api_v1_sentiment_narratives_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NarrativeExtractionInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NarrativeList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    shift_api_v1_sentiment_shift_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShiftDetectionInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SentimentShift"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    weight_api_v1_sentiment_sources_weight_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SourceWeightInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SourceWeightOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_spam_api_v1_sentiment_spam_remove_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SpamRemovalInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpamRemovalOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    trend_api_v1_sentiment_trend_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TrendDetectionInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SentimentTrend"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stock_overview_api_v1_stock_overview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockOverviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RenderedResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    adx_api_v1_technical_adx_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdxOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    atr_api_v1_technical_atr_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AtrOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ema_api_v1_technical_ema_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmaOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    macd_api_v1_technical_macd_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MacdOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    momentum_api_v1_technical_momentum_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MomentumOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resistance_api_v1_technical_resistance_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LevelOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rsi_api_v1_technical_rsi_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RsiOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sma_api_v1_technical_sma_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SmaOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    snapshot_api_v1_technical_snapshot_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TechnicalSnapshot"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    support_api_v1_technical_support_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LevelOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    trend_api_v1_technical_trend_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrendOutput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    volatility_api_v1_technical_volatility_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TechnicalAnalysisRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VolatilityOutput"];
                 };
             };
             /** @description Validation Error */
