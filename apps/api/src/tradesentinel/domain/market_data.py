@@ -36,6 +36,17 @@ class StockQuoteInput(MarketDataContract):
     instrument: InstrumentRef
 
 
+class StockQuoteBatchInput(MarketDataContract):
+    instruments: tuple[InstrumentRef, ...] = Field(min_length=1, max_length=10)
+
+    @model_validator(mode="after")
+    def validate_unique(self) -> StockQuoteBatchInput:
+        identifiers = [item.instrument_id for item in self.instruments]
+        if len(identifiers) != len(set(identifiers)):
+            raise ValueError("batch quote instruments must be unique")
+        return self
+
+
 class MarketRangeInput(MarketDataContract):
     instrument: InstrumentRef
     start: datetime
@@ -121,6 +132,18 @@ class StockQuoteOutput(MarketDataContract):
     market_status: str | None = None
     provider: ProviderMetadata
     cache: CacheMetadata
+
+
+class StockQuoteFailure(MarketDataContract):
+    instrument: InstrumentRef
+    code: str
+    message: str
+    retryable: bool = False
+
+
+class StockQuoteBatchOutput(MarketDataContract):
+    items: tuple[StockQuoteOutput, ...]
+    failures: tuple[StockQuoteFailure, ...] = ()
 
 
 class AdjustedPriceBar(MarketDataContract):

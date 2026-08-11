@@ -318,7 +318,13 @@ class CompanyProfile(ProviderContract):
 class FinancialStatementsRequest(ProviderContract):
     instrument: InstrumentReference
     statement_types: tuple[str, ...] = ()
-    periods: int = Field(default=4, ge=1, le=40)
+    annual_periods: int = Field(default=5, ge=1, le=20)
+    quarterly_periods: int = Field(default=8, ge=0, le=40)
+
+
+class FinancialPeriodType(StrEnum):
+    ANNUAL = "annual"
+    QUARTERLY = "quarterly"
 
 
 class FinancialLineItem(ProviderContract):
@@ -330,12 +336,25 @@ class FinancialLineItem(ProviderContract):
 class FinancialStatement(ProviderContract):
     instrument: InstrumentReference
     statement_type: str
+    period_type: FinancialPeriodType
     period_start: datetime | None = None
     period_end: datetime
     filed_at: datetime | None = None
+    fiscal_year: int | None = None
+    fiscal_quarter: int | None = Field(default=None, ge=1, le=4)
     currency: str | None = None
     items: tuple[FinancialLineItem, ...]
     metadata: ProviderMetadata
+
+    @model_validator(mode="after")
+    def validate_period(self) -> FinancialStatement:
+        if self.period_start is not None and self.period_start >= self.period_end:
+            raise ValueError("statement period_start must be before period_end")
+        if self.period_type == FinancialPeriodType.ANNUAL and self.fiscal_quarter is not None:
+            raise ValueError("annual statements cannot declare a fiscal quarter")
+        if self.period_type == FinancialPeriodType.QUARTERLY and self.fiscal_quarter is None:
+            raise ValueError("quarterly statements require a fiscal quarter")
+        return self
 
 
 class FundamentalFactsRequest(ProviderContract):

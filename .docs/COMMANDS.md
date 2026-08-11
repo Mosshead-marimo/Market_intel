@@ -110,7 +110,7 @@ Shows dominant positive and negative market narratives.
 
 ### `/technical`
 
-Returns indicators, market regime, momentum, support, resistance, and volatility.
+Returns the complete deterministic technical snapshot. `/rsi`, `/macd`, `/ema`, `/sma`, `/atr`, `/adx`, `/support`, `/resistance`, `/trend`, `/momentum`, and `/volatility` expose the same independently executable calculations. All accept a query plus optional exchange, interval, range, and relevant period overrides. Example: `/rsi MSFT --exchange NASDAQ --rsi-period 14`.
 
 ### `/fundamentals`
 
@@ -171,3 +171,8 @@ Displays registered commands and examples.
 - `/sentiment-shift <query>` executes the same evidence pipeline and exposes adjacent-window shift.
 
 All accept `--exchange`, `--as-of`, `--window-days`, and `--limit`. The manifest owns parsing and workflow targets; command code contains no sentiment conditionals.
+
+## Fundamentals
+
+- `/fundamentals`, `/revenue`, `/profit`, `/cash-flow`, `/debt`, `/margins`, `/roe`, `/roce`, `/valuation`, and `/growth` accept query, exchange, as-of, and period-limit options.
+- `/peer-compare` also accepts one quoted comma-separated `--peers` value with optional `@EXCHANGE` qualifiers. Explicit peers replace automatic industry/sector selection.

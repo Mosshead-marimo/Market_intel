@@ -40,3 +40,10 @@ Validated quote, history, and corporate-action responses are cached behind `Cach
 ## Public discussions
 
 Public sentiment reads exclusively through `SentimentProvider`. Adapters normalize vendor observations; they do not aggregate, reinterpret, predict, or rank them. A complete provider-produced signal is retained with provider model metadata. Text-only or incomplete observations use the module's disclosed lexicon fallback. Provider/source weights are configuration, and chain failover retains the provider runtime's existing one-success semantics.
+## Technical-analysis provenance
+
+Technical calculations consume only the normalized output of `stock.history`. Provider identity, observation/retrieval timestamps, freshness, and cache hit/miss metadata propagate unchanged into `TechnicalSnapshot`. Raw OHLC is scaled by `adjusted_close / close`; invalid or missing adjustment data is rejected. The module never calls a provider or external API directly and never substitutes synthetic observations.
+
+## Fundamentals provenance
+
+`FundamentalsProvider` supplies normalized profiles, annual/quarterly statements, and dated facts. Adapters map vendor concepts to canonical identifiers and preserve unknown identifiers for disclosure. Profiles cache for 24 hours; statements/facts cache for 6 hours using provider-chain fingerprints. Current quotes remain a separate market-data capability. No production fundamentals adapter is bundled.

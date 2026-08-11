@@ -157,8 +157,14 @@ Modules may declare `api_router: package.module:router`. The API adapter validat
 
 `public_sentiment` registers collection, spam removal, company detection, source weighting, aggregation, narrative extraction, trend detection, and shift detection. The workflow obtains the resolved target and complete catalog through public instrument capabilities. This preserves module privacy: sentiment code imports only shared instrument contracts and never instrument repository or service internals.
 
+`technical_analysis` registers window resolution, RSI, MACD, EMA, SMA, ATR, ADX, support, resistance, trend, momentum, volatility, and aggregate snapshot capabilities. It has no provider, repository, database schema, or manual registration hook. Its manifest composes `instrument.resolve`, `technical.window.resolve`, and `stock.history`, then passes the complete validated history result to a pure calculator capability through an explicit whole-result binding.
+
 The manifest owns registration metadata. A capability class owns only its input model and async execution method. Annotated constructor dependencies are resolved from registered platform ports or recursively constructed module-private concrete services; unresolved, untyped, abstract, or cyclic dependencies fail startup.
 
 Discovery order is deterministic and registration is atomic. Commands, intents, workflows, and event consumers are generated from manifests after the complete capability graph validates. `platform.system` is the executable reference and contains no market logic.
 
 Intent declarations use `match: exact` with examples or declare the single application-wide `match: fallback`. `input_field` binds original natural-language text into the target payload. Startup rejects multiple fallbacks, so core code never owns a default feature target.
+
+## Fundamentals discovery
+
+`fundamentals/manifest.yaml` owns fourteen capabilities, eleven commands, eleven workflows, events, and its router. Collection and peer-selection targets are internal composition units; public accounting sections remain independently executable. Provider injection is lazy, and no central API or composition-root conditional names the module.

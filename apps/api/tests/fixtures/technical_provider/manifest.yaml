@@ -1,0 +1,11 @@
+name: test_technical_provider
+version: 1.0.0
+description: Deterministic test-only provider with a full technical history window
+providers:
+  - kind: market_data
+    name: technical-market
+    class_path: support.fake_technical_provider:TechnicalMarketDataProvider
+capabilities:
+  - name: test.technical_provider
+    class_path: support.fake_market_provider:ProviderFixtureCapability
+    description: Makes the test-only technical provider manifest valid

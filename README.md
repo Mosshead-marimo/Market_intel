@@ -1,6 +1,6 @@
 # TradeSentinel
 
-TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, structured stock market data, deterministic evidence-first news research, and deterministic public-sentiment analysis. It ships no live vendor adapter, credentials, LLM market analysis, recommendations, or prediction implementation.
+TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, structured stock market data, deterministic evidence-first news research, deterministic public-sentiment analysis, and deterministic technical analysis. It ships no live vendor adapter, credentials, LLM market analysis, recommendations, or prediction implementation.
 
 ## Foundation
 
@@ -39,6 +39,8 @@ The market-data manifest exposes `/quote`, `/history`, `/performance`, `/compare
 The research manifest exposes `/news`, `/research`, and `/sources`. It searches a configured `NewsProvider`, conservatively deduplicates articles, applies versioned phrase rules, stores normalized events and evidence, and returns timelines and evidence indexes. Confidence is extraction-rule strength rather than truth probability. Retrieved content remains untrusted and is never sent to an LLM.
 
 The public-sentiment manifest exposes `/public-sentiment`, `/sentiment-trend`, `/narratives`, and `/sentiment-shift`. It resolves one canonical target, consumes the complete instrument catalog, filters spam, applies provider/source/engagement weights, and returns structured snapshots, narratives, trends, and descriptive shifts. Provider sentiment is preferred only when its label, score, and confidence are complete; otherwise the versioned lexicon is used. Unknown text is excluded rather than treated as neutral. No output is a forecast.
+
+The technical-analysis manifest exposes `/technical`, `/rsi`, `/macd`, `/ema`, `/sma`, `/atr`, `/adx`, `/support`, `/resistance`, `/trend`, `/momentum`, and `/volatility`. Workflows resolve the instrument and one-year default window, then call the cached `stock.history` capability. The module scales OHLC by the adjusted-close ratio and calculates every output with pure Decimal arithmetic. Labels describe historical observations only; they are not predictions or recommendations.
 
 Run the stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start. Market-data, research, and public-sentiment execution remain unavailable until their external provider modules are selected, but the API, worker, web application, and provider-free capabilities start normally.
 
@@ -158,3 +160,7 @@ Domain concepts such as RSI, sentiment, valuation, and prediction belong inside 
 ## Repository Documentation
 
 The `docs/` directory contains the source of truth for product, architecture, contracts, workflows, commands, security, compliance, testing, and implementation planning.
+
+## Fundamentals
+
+The manifest-discovered `fundamentals` module exposes deterministic revenue, profit, cash-flow, debt, margins, ROE, ROCE, valuation, growth, peer comparison, and aggregate snapshot capabilities. Annual and quarterly trends remain separate. Current calculated valuation is distinct from provider-reported multiples; missing quotes yield partial reported-only valuation. Example commands are `/fundamentals TCS --exchange NSE`, `/growth MSFT --exchange NASDAQ`, and `/peer-compare TCS --exchange NSE --peers "INFY@NSE,RELIANCE@NSE"`.

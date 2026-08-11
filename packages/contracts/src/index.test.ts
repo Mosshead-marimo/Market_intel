@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   benchmarkComparisonOutputSchema,
+  fundamentalPeerComparisonSchema,
+  fundamentalSectionSchema,
   instrumentResolveOutputSchema,
   instrumentSearchOutputSchema,
   researchClaimSchema,
@@ -10,6 +12,8 @@ import {
   sentimentShiftSchema,
   sentimentSnapshotSchema,
   stockQuoteOutputSchema,
+  technicalRsiOutputSchema,
+  technicalSnapshotSchema,
 } from "./index";
 
 describe("response component contract", () => {
@@ -243,5 +247,186 @@ describe("public sentiment contracts", () => {
       }),
     ).toThrow();
     expect(sentimentLabelSchema.safeParse("bullish").success).toBe(false);
+  });
+});
+
+describe("technical analysis contracts", () => {
+  const instrument = {
+    instrument_id: "00000000-0000-4000-8000-000000000001",
+    symbol: "MSFT",
+    name: "Microsoft Corporation",
+    exchange: "NASDAQ",
+    asset_type: "equity",
+    currency: "USD",
+    aliases: ["Microsoft"],
+  } as const;
+  const rsi = {
+    instrument,
+    interval: "1d",
+    series: {
+      period: 14,
+      latest: "55.25",
+      points: [{ timestamp: "2026-08-08T00:00:00Z", value: "55.25" }],
+    },
+  } as const;
+
+  it("validates Decimal indicator series", () => {
+    expect(technicalRsiOutputSchema.parse(rsi).series.latest).toBe("55.25");
+    expect(() =>
+      technicalRsiOutputSchema.parse({
+        ...rsi,
+        series: { ...rsi.series, latest: 55.25 },
+      }),
+    ).toThrow();
+  });
+
+  it("preserves explicit partial snapshots and rejects prediction fields", () => {
+    const snapshot = {
+      instrument,
+      status: "partial",
+      interval: "1d",
+      requested_start: "2025-08-08T00:00:00Z",
+      requested_end: "2026-08-08T00:00:00Z",
+      observed_start: "2026-07-01T00:00:00Z",
+      observed_end: "2026-08-08T00:00:00Z",
+      data_cutoff: "2026-08-08T00:00:00Z",
+      observation_count: 30,
+      price_basis: "adjusted_ohlc",
+      calculation_version: "technical-v1",
+      parameters: {
+        rsi_period: 14,
+        macd_fast_period: 12,
+        macd_slow_period: 26,
+        macd_signal_period: 9,
+        ema_period: 20,
+        sma_period: 20,
+        atr_period: 14,
+        adx_period: 14,
+        momentum_roc_period: 10,
+        volatility_period: 20,
+        trend_fast_period: 20,
+        trend_slow_period: 50,
+        level_lookback: 60,
+        pivot_span: 2,
+        pivot_max_levels: 3,
+        pivot_atr_multiplier: "0.5",
+        trend_spread_threshold: "0.005",
+        momentum_rsi_lower: "45",
+        momentum_rsi_upper: "55",
+        volatility_low_percentile: "0.25",
+        volatility_high_percentile: "0.75",
+      },
+      provider: {
+        provider: "test-market",
+        source_id: "history",
+        retrieved_at: "2026-08-08T00:00:00Z",
+        license: "internal",
+        freshness: "fresh",
+      },
+      cache: {
+        disposition: "hit",
+        cached_at: "2026-08-08T00:00:00Z",
+        expires_at: "2026-08-08T06:00:00Z",
+      },
+      warnings: ["trend requires 50 observations; 30 were available."],
+      rsi,
+      trend: null,
+    } as const;
+    expect(technicalSnapshotSchema.parse(snapshot).status).toBe("partial");
+    expect(() =>
+      technicalSnapshotSchema.parse({ ...snapshot, prediction: "rising" }),
+    ).toThrow();
+  });
+});
+
+describe("fundamental contracts", () => {
+  const instrument = {
+    instrument_id: "00000000-0000-4000-8000-000000000001",
+    symbol: "TCS",
+    name: "Tata Consultancy Services Limited",
+    exchange: "NSE",
+    asset_type: "equity",
+    currency: "INR",
+    aliases: [],
+  } as const;
+  const provider = {
+    provider: "test-fundamentals",
+    source_id: "statement-2025",
+    retrieved_at: "2026-01-01T00:00:00Z",
+    license: "internal",
+    freshness: "fresh",
+  } as const;
+
+  it("keeps annual and quarterly accounting trends separate", () => {
+    const section = fundamentalSectionSchema.parse({
+      instrument,
+      section: "revenue",
+      status: "completed",
+      as_of: "2026-01-01T00:00:00Z",
+      data_cutoff: "2025-12-31T00:00:00Z",
+      metrics: [
+        {
+          concept: "revenue",
+          label: "Revenue",
+          unit: "currency",
+          latest: "1400",
+          annual: [
+            {
+              period_type: "annual",
+              period_end: "2025-12-31T00:00:00Z",
+              value: "1400",
+              unit: "currency",
+              currency: "INR",
+              provider,
+            },
+          ],
+          quarterly: [
+            {
+              period_type: "quarterly",
+              period_end: "2025-12-28T00:00:00Z",
+              value: "320",
+              unit: "currency",
+              currency: "INR",
+              provider,
+            },
+          ],
+        },
+      ],
+      warnings: [],
+    });
+    expect(section.metrics[0]?.annual).toHaveLength(1);
+    expect(section.metrics[0]?.quarterly).toHaveLength(1);
+  });
+
+  it("validates descriptive peer percentiles and rejects composite fields", () => {
+    const comparison = {
+      target: instrument,
+      peers: [
+        {
+          ...instrument,
+          instrument_id: "00000000-0000-4000-8000-000000000002",
+          symbol: "INFY",
+        },
+      ],
+      status: "completed",
+      as_of: "2026-01-01T00:00:00Z",
+      comparisons: [
+        {
+          concept: "roe",
+          median: "18.2",
+          values: [{ instrument, value: "17.9", percentile: "0.5" }],
+        },
+      ],
+      warnings: [],
+    };
+    expect(
+      fundamentalPeerComparisonSchema.parse(comparison).comparisons,
+    ).toHaveLength(1);
+    expect(() =>
+      fundamentalPeerComparisonSchema.parse({
+        ...comparison,
+        composite_score: "0.9",
+      }),
+    ).toThrow();
   });
 });

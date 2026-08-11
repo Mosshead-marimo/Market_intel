@@ -138,3 +138,11 @@ The committed `packages/contracts/openapi.json` and generated TypeScript declara
 ## Public sentiment contracts
 
 `SentimentObservation` treats provider content as untrusted and accepts a provider signal only when label, score, and confidence are supplied together and label-consistent. Shared immutable contracts cover bounded discussions, spam decisions, catalog company mentions, weighted observations, adjacent-window metrics, `SentimentSnapshot`, narratives, trends, shifts, and complete analysis responses. Decimal metrics serialize as strings. `unknown` is distinct from `neutral`, and missing metrics remain null.
+
+## Technical analysis contracts
+
+`TechnicalParameters` versions every formula input and validates period relationships. `TechnicalCalculationInput` accepts a complete normalized `StockHistoryOutput` plus the requested range. Outputs include complete timestamped series for RSI, MACD, EMA, SMA, ATR, and ADX; structured support/resistance levels; descriptive trend, momentum, and volatility signals; and `TechnicalSnapshot` provenance. The snapshot records `technical-v1`, `adjusted_ohlc`, provider/cache metadata, observed range, data cutoff, and explicit warnings. Decimal values serialize as strings and unavailable values remain null.
+
+## Fundamental contracts
+
+Normalized statements declare annual/quarterly period type, fiscal metadata, filing time, currency, canonical concepts, and provider provenance. `FundamentalMetric` stores annual and quarterly points separately. Sections are `completed`, `partial`, or `empty` with warnings. `FundamentalSnapshot` preserves every section, cutoff, cache/provider lineage, and calculation version. Valuation fields keep calculated, reported, and dated historical-reported values distinct. Peer comparison contains individual dimensionless metrics, medians, and descriptive percentiles only.

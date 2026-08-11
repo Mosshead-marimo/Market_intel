@@ -11,6 +11,8 @@ from tradesentinel.domain.instruments import (
     InstrumentCatalogOutput,
     InstrumentMatch,
     InstrumentRef,
+    InstrumentResolveBatchInput,
+    InstrumentResolveBatchOutput,
     InstrumentResolveInput,
     InstrumentResolveOutput,
     InstrumentSearchInput,
@@ -136,4 +138,29 @@ class InstrumentResolutionService:
             )
         return InstrumentResolveOutput(
             query=request.query.strip(), status="resolved", match=eligible[0]
+        )
+
+    async def resolve_batch(
+        self, request: InstrumentResolveBatchInput
+    ) -> InstrumentResolveBatchOutput:
+        results = tuple(
+            [
+                await self.resolve(InstrumentResolveInput(query=item.query, exchange=item.exchange))
+                for item in request.queries
+            ]
+        )
+        instruments = tuple(
+            result.match.instrument
+            for result in results
+            if result.status == "resolved" and result.match is not None
+        )
+        identifiers = [item.instrument_id for item in instruments]
+        if len(identifiers) != len(set(identifiers)):
+            raise ValueError("batch resolution produced duplicate instruments")
+        return InstrumentResolveBatchOutput(
+            results=results,
+            instruments=instruments,
+            unresolved_queries=tuple(
+                result.query for result in results if result.status != "resolved"
+            ),
         )

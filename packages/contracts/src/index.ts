@@ -555,6 +555,184 @@ export const benchmarkComparisonOutputSchema = z.object({
   excess_cagr: decimalSchema,
 });
 
+export const technicalParametersSchema = z
+  .object({
+    rsi_period: z.number().int().min(2).max(200),
+    macd_fast_period: z.number().int().min(2).max(200),
+    macd_slow_period: z.number().int().min(3).max(400),
+    macd_signal_period: z.number().int().min(2).max(200),
+    ema_period: z.number().int().min(2).max(400),
+    sma_period: z.number().int().min(2).max(400),
+    atr_period: z.number().int().min(2).max(200),
+    adx_period: z.number().int().min(2).max(200),
+    momentum_roc_period: z.number().int().min(1).max(200),
+    volatility_period: z.number().int().min(2).max(200),
+    trend_fast_period: z.number().int().min(2).max(200),
+    trend_slow_period: z.number().int().min(3).max(400),
+    level_lookback: z.number().int().min(5).max(500),
+    pivot_span: z.number().int().min(1).max(20),
+    pivot_max_levels: z.number().int().min(1).max(10),
+    pivot_atr_multiplier: decimalSchema,
+    trend_spread_threshold: decimalSchema,
+    momentum_rsi_lower: decimalSchema,
+    momentum_rsi_upper: decimalSchema,
+    volatility_low_percentile: decimalSchema,
+    volatility_high_percentile: decimalSchema,
+  })
+  .strict();
+
+const technicalIndicatorPointSchema = z
+  .object({ timestamp: z.string(), value: decimalSchema })
+  .strict();
+const technicalIndicatorSeriesSchema = z
+  .object({
+    period: z.number().int().positive(),
+    latest: decimalSchema,
+    points: z.array(technicalIndicatorPointSchema),
+  })
+  .strict();
+const technicalSeriesOutputBase = z
+  .object({
+    instrument: instrumentRefSchema,
+    interval: z.enum(["1d", "1wk", "1mo"]),
+    series: technicalIndicatorSeriesSchema,
+  })
+  .strict();
+
+export const technicalRsiOutputSchema = technicalSeriesOutputBase;
+export const technicalEmaOutputSchema = technicalSeriesOutputBase;
+export const technicalSmaOutputSchema = technicalSeriesOutputBase;
+export const technicalAtrOutputSchema = technicalSeriesOutputBase;
+
+const macdPointSchema = z
+  .object({
+    timestamp: z.string(),
+    macd: decimalSchema,
+    signal: decimalSchema,
+    histogram: decimalSchema,
+  })
+  .strict();
+export const technicalMacdOutputSchema = z
+  .object({
+    instrument: instrumentRefSchema,
+    interval: z.enum(["1d", "1wk", "1mo"]),
+    fast_period: z.number().int().positive(),
+    slow_period: z.number().int().positive(),
+    signal_period: z.number().int().positive(),
+    latest: macdPointSchema,
+    points: z.array(macdPointSchema),
+  })
+  .strict();
+
+const adxPointSchema = z
+  .object({
+    timestamp: z.string(),
+    adx: decimalSchema,
+    positive_di: decimalSchema,
+    negative_di: decimalSchema,
+  })
+  .strict();
+export const technicalAdxOutputSchema = z
+  .object({
+    instrument: instrumentRefSchema,
+    interval: z.enum(["1d", "1wk", "1mo"]),
+    period: z.number().int().positive(),
+    latest: adxPointSchema,
+    points: z.array(adxPointSchema),
+  })
+  .strict();
+
+const priceLevelSchema = z
+  .object({
+    method: z.enum(["rolling_extreme", "pivot_cluster"]),
+    level: decimalSchema,
+    touches: z.number().int().positive(),
+    first_tested_at: z.string(),
+    last_tested_at: z.string(),
+    distance_percent: decimalSchema,
+  })
+  .strict();
+export const technicalLevelOutputSchema = z
+  .object({
+    instrument: instrumentRefSchema,
+    interval: z.enum(["1d", "1wk", "1mo"]),
+    side: z.enum(["support", "resistance"]),
+    current_price: decimalSchema,
+    lookback: z.number().int().positive(),
+    levels: z.array(priceLevelSchema),
+  })
+  .strict();
+
+export const technicalTrendOutputSchema = z
+  .object({
+    instrument: instrumentRefSchema,
+    interval: z.enum(["1d", "1wk", "1mo"]),
+    direction: z.enum(["rising", "falling", "sideways"]),
+    strength: z.enum(["weak", "developing", "strong"]),
+    fast_ema: decimalSchema,
+    slow_ema: decimalSchema,
+    spread_percent: decimalSchema,
+    adx: decimalSchema,
+  })
+  .strict();
+
+export const technicalMomentumOutputSchema = z
+  .object({
+    instrument: instrumentRefSchema,
+    interval: z.enum(["1d", "1wk", "1mo"]),
+    direction: z.enum(["positive", "neutral", "negative"]),
+    positive_votes: z.number().int().min(0).max(3),
+    negative_votes: z.number().int().min(0).max(3),
+    rsi: decimalSchema,
+    macd_histogram: decimalSchema,
+    rate_of_change: decimalSchema,
+  })
+  .strict();
+
+export const technicalVolatilityOutputSchema = z
+  .object({
+    instrument: instrumentRefSchema,
+    interval: z.enum(["1d", "1wk", "1mo"]),
+    regime: z.enum(["low", "normal", "high", "unknown"]),
+    period: z.number().int().positive(),
+    annualized_volatility: decimalSchema,
+    atr_percent: decimalSchema,
+    percentile_rank: decimalSchema.nullable().optional(),
+    rolling: z.array(technicalIndicatorPointSchema),
+  })
+  .strict();
+
+export const technicalSnapshotSchema = z
+  .object({
+    instrument: instrumentRefSchema,
+    status: z.enum(["completed", "partial", "empty"]),
+    interval: z.enum(["1d", "1wk", "1mo"]),
+    requested_start: z.string(),
+    requested_end: z.string(),
+    observed_start: z.string().nullable().optional(),
+    observed_end: z.string().nullable().optional(),
+    data_cutoff: z.string().nullable().optional(),
+    observation_count: z.number().int().nonnegative(),
+    price_basis: z.literal("adjusted_ohlc"),
+    calculation_version: z.literal("technical-v1"),
+    parameters: technicalParametersSchema,
+    provider: providerMetadataSchema,
+    cache: cacheMetadataSchema,
+    warnings: z.array(z.string()),
+    rsi: technicalRsiOutputSchema.nullable().optional(),
+    macd: technicalMacdOutputSchema.nullable().optional(),
+    ema: technicalEmaOutputSchema.nullable().optional(),
+    sma: technicalSmaOutputSchema.nullable().optional(),
+    atr: technicalAtrOutputSchema.nullable().optional(),
+    adx: technicalAdxOutputSchema.nullable().optional(),
+    support: technicalLevelOutputSchema.nullable().optional(),
+    resistance: technicalLevelOutputSchema.nullable().optional(),
+    trend: technicalTrendOutputSchema.nullable().optional(),
+    momentum: technicalMomentumOutputSchema.nullable().optional(),
+    volatility: technicalVolatilityOutputSchema.nullable().optional(),
+  })
+  .strict();
+
 export const researchSourceSchema = z.object({
   source_id: z.string().min(1),
   provider_source_id: z.string().min(1),
@@ -786,6 +964,137 @@ export const publicSentimentAnalysisSchema = z.object({
   shift: sentimentShiftSchema,
 });
 
+export const fundamentalStatusSchema = z.enum([
+  "completed",
+  "partial",
+  "empty",
+]);
+
+const fundamentalPointSchema = z.object({
+  period_type: z.enum(["annual", "quarterly"]),
+  period_start: z.string().nullable().optional(),
+  period_end: z.string(),
+  filed_at: z.string().nullable().optional(),
+  value: decimalSchema.nullable(),
+  unit: z.string(),
+  currency: z.string().nullable().optional(),
+  provider: providerMetadataSchema,
+});
+
+const fundamentalMetricSchema = z.object({
+  concept: z.string(),
+  label: z.string(),
+  unit: z.string(),
+  latest: decimalSchema.nullable().optional(),
+  annual: z.array(fundamentalPointSchema),
+  quarterly: z.array(fundamentalPointSchema),
+});
+
+export const fundamentalSectionSchema = z.object({
+  instrument: instrumentRefSchema,
+  section: z.enum([
+    "revenue",
+    "profit",
+    "cash_flow",
+    "debt",
+    "margins",
+    "roe",
+    "roce",
+  ]),
+  status: fundamentalStatusSchema,
+  as_of: z.string(),
+  metrics: z.array(fundamentalMetricSchema),
+  warnings: z.array(z.string()),
+  data_cutoff: z.string().nullable().optional(),
+});
+
+export const fundamentalGrowthSchema = z.object({
+  instrument: instrumentRefSchema,
+  status: fundamentalStatusSchema,
+  as_of: z.string(),
+  metrics: z.array(
+    z.object({
+      concept: z.string(),
+      annual_yoy: z.array(z.record(z.unknown())),
+      quarterly_yoy: z.array(z.record(z.unknown())),
+      quarterly_qoq: z.array(z.record(z.unknown())),
+      annual_cagr: decimalSchema.nullable().optional(),
+    }),
+  ),
+  warnings: z.array(z.string()),
+  data_cutoff: z.string().nullable().optional(),
+});
+
+export const fundamentalValuationSchema = z.object({
+  instrument: instrumentRefSchema,
+  status: fundamentalStatusSchema,
+  as_of: z.string(),
+  currency: z.string().nullable().optional(),
+  metrics: z.array(
+    z.object({
+      concept: z.string(),
+      calculated: decimalSchema.nullable().optional(),
+      reported: decimalSchema.nullable().optional(),
+      historical_reported: z.array(fundamentalPointSchema),
+    }),
+  ),
+  warnings: z.array(z.string()),
+  data_cutoff: z.string().nullable().optional(),
+});
+
+const companyProfileSchema = z.object({
+  instrument: z.object({ symbol: z.string(), exchange: z.string() }),
+  legal_name: z.string(),
+  sector: z.string().nullable().optional(),
+  industry: z.string().nullable().optional(),
+  reporting_currency: z.string().nullable().optional(),
+  metadata: providerMetadataSchema,
+});
+
+export const fundamentalSnapshotSchema = z
+  .object({
+    instrument: instrumentRefSchema,
+    status: fundamentalStatusSchema,
+    as_of: z.string(),
+    data_cutoff: z.string().nullable().optional(),
+    calculation_version: z.literal("fundamentals-v1"),
+    profile: companyProfileSchema,
+    revenue: fundamentalSectionSchema,
+    profit: fundamentalSectionSchema,
+    cash_flow: fundamentalSectionSchema,
+    debt: fundamentalSectionSchema,
+    margins: fundamentalSectionSchema,
+    roe: fundamentalSectionSchema,
+    roce: fundamentalSectionSchema,
+    valuation: fundamentalValuationSchema,
+    growth: fundamentalGrowthSchema,
+    warnings: z.array(z.string()),
+  })
+  .strict();
+
+export const fundamentalPeerComparisonSchema = z
+  .object({
+    target: instrumentRefSchema,
+    peers: z.array(instrumentRefSchema).min(1).max(9),
+    status: fundamentalStatusSchema,
+    as_of: z.string(),
+    comparisons: z.array(
+      z.object({
+        concept: z.string(),
+        median: decimalSchema.nullable(),
+        values: z.array(
+          z.object({
+            instrument: instrumentRefSchema,
+            value: decimalSchema.nullable(),
+            percentile: decimalSchema.nullable().optional(),
+          }),
+        ),
+      }),
+    ),
+    warnings: z.array(z.string()),
+  })
+  .strict();
+
 export type ResponseComponent = z.infer<typeof responseComponentSchema>;
 export type CapabilityDescriptor = z.infer<typeof capabilityDescriptorSchema>;
 export type CommandDescriptor = z.infer<typeof commandDescriptorSchema>;
@@ -825,6 +1134,22 @@ export type FiveYearPerformanceOutput = z.infer<
 export type BenchmarkComparisonOutput = z.infer<
   typeof benchmarkComparisonOutputSchema
 >;
+export type TechnicalParameters = z.infer<typeof technicalParametersSchema>;
+export type TechnicalRsiOutput = z.infer<typeof technicalRsiOutputSchema>;
+export type TechnicalMacdOutput = z.infer<typeof technicalMacdOutputSchema>;
+export type TechnicalEmaOutput = z.infer<typeof technicalEmaOutputSchema>;
+export type TechnicalSmaOutput = z.infer<typeof technicalSmaOutputSchema>;
+export type TechnicalAtrOutput = z.infer<typeof technicalAtrOutputSchema>;
+export type TechnicalAdxOutput = z.infer<typeof technicalAdxOutputSchema>;
+export type TechnicalLevelOutput = z.infer<typeof technicalLevelOutputSchema>;
+export type TechnicalTrendOutput = z.infer<typeof technicalTrendOutputSchema>;
+export type TechnicalMomentumOutput = z.infer<
+  typeof technicalMomentumOutputSchema
+>;
+export type TechnicalVolatilityOutput = z.infer<
+  typeof technicalVolatilityOutputSchema
+>;
+export type TechnicalSnapshot = z.infer<typeof technicalSnapshotSchema>;
 export type ResearchSource = z.infer<typeof researchSourceSchema>;
 export type ResearchClaim = z.infer<typeof researchClaimSchema>;
 export type ResearchEvent = z.infer<typeof researchEventSchema>;
@@ -843,4 +1168,11 @@ export type SentimentTrend = z.infer<typeof sentimentTrendSchema>;
 export type SentimentShift = z.infer<typeof sentimentShiftSchema>;
 export type PublicSentimentAnalysis = z.infer<
   typeof publicSentimentAnalysisSchema
+>;
+export type FundamentalSection = z.infer<typeof fundamentalSectionSchema>;
+export type FundamentalGrowth = z.infer<typeof fundamentalGrowthSchema>;
+export type FundamentalValuation = z.infer<typeof fundamentalValuationSchema>;
+export type FundamentalSnapshot = z.infer<typeof fundamentalSnapshotSchema>;
+export type FundamentalPeerComparison = z.infer<
+  typeof fundamentalPeerComparisonSchema
 >;

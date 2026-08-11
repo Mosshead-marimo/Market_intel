@@ -26,6 +26,11 @@ capabilities:
     description: Returns the complete active canonical instrument catalog
     provides: [instrument_catalog]
     idempotent: true
+  - name: instrument.resolve.batch
+    class_path: tradesentinel.modules.instrument_resolution.capability:ResolveBatchCapability
+    description: Resolves up to nine explicit instrument queries as one typed batch
+    provides: [instrument_batch]
+    idempotent: true
 commands:
   - name: /search
     description: Search the canonical instrument catalog

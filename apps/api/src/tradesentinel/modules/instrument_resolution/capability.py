@@ -8,6 +8,8 @@ from tradesentinel.domain.instruments import (
     InstrumentCatalogInput,
     InstrumentCatalogOutput,
     InstrumentMatch,
+    InstrumentResolveBatchInput,
+    InstrumentResolveBatchOutput,
     InstrumentResolveInput,
     InstrumentResolveOutput,
     InstrumentSearchInput,
@@ -182,4 +184,33 @@ class CatalogCapability(Capability[InstrumentCatalogInput]):
                 duration_ms=max(0, int((completed - started).total_seconds() * 1_000)),
                 freshness="unknown",
             ),
+        )
+
+
+class ResolveBatchCapability(Capability[InstrumentResolveBatchInput]):
+    input_model = InstrumentResolveBatchInput
+
+    def __init__(self, service: InstrumentResolutionService) -> None:
+        self._service = service
+
+    async def execute(
+        self, context: ExecutionContext, payload: InstrumentResolveBatchInput
+    ) -> CapabilityResult:
+        del context
+        started = datetime.now(UTC)
+        output: InstrumentResolveBatchOutput = await self._service.resolve_batch(payload)
+        completed = datetime.now(UTC)
+        warnings = tuple(
+            CapabilityWarning(
+                code="INSTRUMENT_BATCH_UNRESOLVED",
+                message=f"Instrument query '{query}' was not resolved unambiguously.",
+            )
+            for query in output.unresolved_queries
+        )
+        return CapabilityResult(
+            capability="",
+            status=RunStatus.PARTIAL if warnings else RunStatus.COMPLETED,
+            data=output.model_dump(mode="json"),
+            warnings=warnings,
+            metadata=RunMetadata(started_at=started, completed_at=completed),
         )

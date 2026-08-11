@@ -319,7 +319,12 @@ class IntentMatch(ContractModel):
 
 
 class WorkflowInputBinding(ContractModel):
-    source: str = Field(pattern=r"^(?:input|steps\.[a-zA-Z0-9_-]+\.data)(?:\.[a-zA-Z0-9_-]+)+$")
+    source: str = Field(
+        pattern=(
+            r"^(?:input(?:\.[a-zA-Z0-9_-]+)+|"
+            r"steps\.[a-zA-Z0-9_-]+\.data(?:\.[a-zA-Z0-9_-]+)*)$"
+        )
+    )
     required: bool = True
 
 

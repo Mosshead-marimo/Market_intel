@@ -100,3 +100,55 @@ def test_research_transport_and_logic_respect_boundaries() -> None:
         assert "openai" not in source
         assert "anthropic" not in source
     assert "NewsProvider" in (module / "service.py").read_text(encoding="utf-8")
+
+
+def test_technical_analysis_is_pure_and_pipeline_bound() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/technical_analysis")
+    forbidden = (
+        "httpx",
+        "requests",
+        "aiohttp",
+        "openai",
+        "anthropic",
+        "langchain",
+        "sqlalchemy",
+        "pandas",
+        "numpy",
+        "talib",
+        "tradesentinel.modules.stock_market_data",
+    )
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8").casefold()
+        assert not any(name in source for name in forbidden), path
+    shared_api = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in Path("apps/api/src/tradesentinel/api").rglob("*.py")
+    )
+    assert "technical.snapshot" not in shared_api
+    assert "technical_analysis" not in shared_api
+
+
+def test_fundamentals_is_provider_bound_and_transport_neutral() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/fundamentals")
+    forbidden = (
+        "httpx",
+        "requests",
+        "aiohttp",
+        "openai",
+        "anthropic",
+        "langchain",
+        "sqlalchemy",
+        "tradesentinel.modules.instrument_resolution",
+        "tradesentinel.modules.stock_market_data",
+    )
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8").casefold()
+        assert not any(name in source for name in forbidden), path
+    service = (module / "service.py").read_text(encoding="utf-8")
+    assert "FundamentalsProvider" in service
+    shared_api = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in Path("apps/api/src/tradesentinel/api").rglob("*.py")
+    )
+    assert "fundamental.snapshot" not in shared_api
+    assert "modules.fundamentals" not in shared_api

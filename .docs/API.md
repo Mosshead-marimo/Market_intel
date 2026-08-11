@@ -44,6 +44,19 @@ POST /api/v1/market-data/comparison
 POST /api/v1/market-data/corporate-actions
 POST /api/v1/market-data/five-year-performance
 POST /api/v1/market-data/benchmark-comparison
+
+POST /api/v1/technical/snapshot
+POST /api/v1/technical/rsi
+POST /api/v1/technical/macd
+POST /api/v1/technical/ema
+POST /api/v1/technical/sma
+POST /api/v1/technical/atr
+POST /api/v1/technical/adx
+POST /api/v1/technical/support
+POST /api/v1/technical/resistance
+POST /api/v1/technical/trend
+POST /api/v1/technical/momentum
+POST /api/v1/technical/volatility
 ```
 
 ### Research
@@ -115,4 +128,10 @@ Symbol quote/history routes resolve the instrument through manifest workflows. `
 
 When no market-data adapter is configured, discovery and readiness remain available. Market-data execution returns HTTP 503 with `PROVIDER_NOT_CONFIGURED` and `details.kind: market_data`; no synthetic or stale value is substituted.
 
+Technical POST endpoints accept a query, optional exchange, interval and formula overrides. An omitted range defaults to one calendar year ending at `as_of` or current UTC time; explicit `start` and `end` must be supplied together. The endpoints execute manifest workflows and inherit canonical ambiguity, provider-unconfigured, invalid-history, and insufficient-history errors. Snapshot responses preserve partial calculations instead of converting missing sections into transport failures.
+
 Research search accepts free-text `q`, optional UTC `start`/`end`, and a bounded `limit`. Reports run the manifest workflow and return coverage, duplicate groups, events, source-backed claims, sources, and warnings. Missing news configuration returns HTTP 503 with `details.kind: news`.
+
+## Fundamentals
+
+Pipeline-backed POST routes under `/api/v1/fundamentals` expose snapshot, revenue, profit, cash-flow, debt, margins, ROE, ROCE, valuation, growth, and peer comparison. Bodies accept `query`, optional `exchange`/`as_of`, annual and quarterly limits, and explicit peers where applicable. Missing fundamentals providers return `503 PROVIDER_NOT_CONFIGURED`; missing quotes return successful partial valuation.

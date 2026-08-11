@@ -12,12 +12,15 @@ from tradesentinel.domain.market_data import (
     StockCorporateActionsInput,
     StockHistoryInput,
     StockPerformanceInput,
+    StockQuoteBatchInput,
+    StockQuoteBatchOutput,
     StockQuoteInput,
 )
 from tradesentinel.modules.stock_market_data.service import StockMarketDataService
 from tradesentinel.platform.capabilities import Capability
 from tradesentinel.platform.contracts import (
     CapabilityResult,
+    CapabilityWarning,
     ExecutionContext,
     RunMetadata,
     RunStatus,
@@ -45,6 +48,36 @@ class QuoteCapability(Capability[StockQuoteInput]):
     ) -> CapabilityResult:
         started = datetime.now(UTC)
         return _result(await self._service.quote(context, payload), started)
+
+
+class QuoteBatchCapability(Capability[StockQuoteBatchInput]):
+    input_model = StockQuoteBatchInput
+
+    def __init__(self, service: StockMarketDataService) -> None:
+        self._service = service
+
+    async def execute(
+        self, context: ExecutionContext, payload: StockQuoteBatchInput
+    ) -> CapabilityResult:
+        started = datetime.now(UTC)
+        output: StockQuoteBatchOutput = await self._service.quote_batch(context, payload)
+        result = _result(output, started)
+        if not output.failures:
+            return result
+        return result.model_copy(
+            update={
+                "status": RunStatus.PARTIAL,
+                "warnings": tuple(
+                    CapabilityWarning(
+                        code=item.code,
+                        message=item.message,
+                        retryable=item.retryable,
+                        details={"instrument_id": str(item.instrument.instrument_id)},
+                    )
+                    for item in output.failures
+                ),
+            }
+        )
 
 
 class HistoryCapability(Capability[StockHistoryInput]):

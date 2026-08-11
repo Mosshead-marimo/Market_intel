@@ -58,6 +58,73 @@
         "title": "AdjustedPriceBar",
         "type": "object"
       },
+      "AdxOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "latest": {
+            "$ref": "#/components/schemas/AdxPoint"
+          },
+          "period": {
+            "title": "Period",
+            "type": "integer"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/AdxPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "period",
+          "latest",
+          "points"
+        ],
+        "title": "AdxOutput",
+        "type": "object"
+      },
+      "AdxPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "adx": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Adx",
+            "type": "string"
+          },
+          "negative_di": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Negative Di",
+            "type": "string"
+          },
+          "positive_di": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Positive Di",
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "adx",
+          "positive_di",
+          "negative_di"
+        ],
+        "title": "AdxPoint",
+        "type": "object"
+      },
       "AggregateSentimentInput": {
         "additionalProperties": false,
         "properties": {
@@ -159,6 +226,28 @@
         ],
         "title": "AssetType",
         "type": "string"
+      },
+      "AtrOutput": {
+        "additionalProperties": false,
+        "description": "Average true-range output.",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "series": {
+            "$ref": "#/components/schemas/IndicatorSeries"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "series"
+        ],
+        "title": "AtrOutput",
+        "type": "object"
       },
       "BenchmarkComparisonInput": {
         "additionalProperties": false,
@@ -1252,6 +1341,72 @@
         "title": "CompanyMention",
         "type": "object"
       },
+      "CompanyProfile": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "industry": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Industry"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentReference"
+          },
+          "legal_name": {
+            "title": "Legal Name",
+            "type": "string"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "reporting_currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reporting Currency"
+          },
+          "sector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector"
+          }
+        },
+        "required": [
+          "instrument",
+          "legal_name",
+          "metadata"
+        ],
+        "title": "CompanyProfile",
+        "type": "object"
+      },
       "ComparisonTable": {
         "additionalProperties": false,
         "properties": {
@@ -1622,6 +1777,28 @@
         "title": "DuplicateGroup",
         "type": "object"
       },
+      "EmaOutput": {
+        "additionalProperties": false,
+        "description": "Exponential moving-average output.",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "series": {
+            "$ref": "#/components/schemas/IndicatorSeries"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "series"
+        ],
+        "title": "EmaOutput",
+        "type": "object"
+      },
       "EvidenceSource": {
         "additionalProperties": false,
         "properties": {
@@ -1689,6 +1866,14 @@
         "title": "EvidenceSource",
         "type": "object"
       },
+      "FinancialPeriodType": {
+        "enum": [
+          "annual",
+          "quarterly"
+        ],
+        "title": "FinancialPeriodType",
+        "type": "string"
+      },
       "FiveYearPerformanceInput": {
         "additionalProperties": false,
         "properties": {
@@ -1740,6 +1925,618 @@
         ],
         "title": "FreshnessStatus",
         "type": "string"
+      },
+      "FundamentalAnalysisRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "annual_periods": {
+            "default": 5,
+            "maximum": 20.0,
+            "minimum": 2.0,
+            "title": "Annual Periods",
+            "type": "integer"
+          },
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "peers": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 9,
+            "title": "Peers",
+            "type": "array"
+          },
+          "quarterly_periods": {
+            "default": 8,
+            "maximum": 40.0,
+            "minimum": 4.0,
+            "title": "Quarterly Periods",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "FundamentalAnalysisRequest",
+        "type": "object"
+      },
+      "FundamentalGrowthOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/GrowthMetric"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "status",
+          "as_of",
+          "metrics"
+        ],
+        "title": "FundamentalGrowthOutput",
+        "type": "object"
+      },
+      "FundamentalMetric": {
+        "additionalProperties": false,
+        "properties": {
+          "annual": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FundamentalMetricPoint"
+            },
+            "title": "Annual",
+            "type": "array"
+          },
+          "concept": {
+            "title": "Concept",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "latest": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest"
+          },
+          "quarterly": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FundamentalMetricPoint"
+            },
+            "title": "Quarterly",
+            "type": "array"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "concept",
+          "label",
+          "unit"
+        ],
+        "title": "FundamentalMetric",
+        "type": "object"
+      },
+      "FundamentalMetricPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "filed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filed At"
+          },
+          "period_end": {
+            "format": "date-time",
+            "title": "Period End",
+            "type": "string"
+          },
+          "period_start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period Start"
+          },
+          "period_type": {
+            "$ref": "#/components/schemas/FinancialPeriodType"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "period_type",
+          "period_end",
+          "value",
+          "unit",
+          "provider"
+        ],
+        "title": "FundamentalMetricPoint",
+        "type": "object"
+      },
+      "FundamentalPeerComparisonOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "comparisons": {
+            "items": {
+              "$ref": "#/components/schemas/PeerMetricComparison"
+            },
+            "title": "Comparisons",
+            "type": "array"
+          },
+          "peers": {
+            "items": {
+              "$ref": "#/components/schemas/InstrumentRef"
+            },
+            "title": "Peers",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "target": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "target",
+          "peers",
+          "status",
+          "as_of",
+          "comparisons"
+        ],
+        "title": "FundamentalPeerComparisonOutput",
+        "type": "object"
+      },
+      "FundamentalSectionOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/FundamentalMetric"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "section": {
+            "enum": [
+              "revenue",
+              "profit",
+              "cash_flow",
+              "debt",
+              "margins",
+              "roe",
+              "roce"
+            ],
+            "title": "Section",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "section",
+          "status",
+          "as_of",
+          "metrics"
+        ],
+        "title": "FundamentalSectionOutput",
+        "type": "object"
+      },
+      "FundamentalSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "calculation_version": {
+            "const": "fundamentals-v1",
+            "default": "fundamentals-v1",
+            "title": "Calculation Version",
+            "type": "string"
+          },
+          "cash_flow": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "debt": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "growth": {
+            "$ref": "#/components/schemas/FundamentalGrowthOutput"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "margins": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/CompanyProfile"
+          },
+          "profit": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "revenue": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "roce": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "roe": {
+            "$ref": "#/components/schemas/FundamentalSectionOutput"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "valuation": {
+            "$ref": "#/components/schemas/FundamentalValuationOutput"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "status",
+          "as_of",
+          "profile",
+          "revenue",
+          "profit",
+          "cash_flow",
+          "debt",
+          "margins",
+          "roe",
+          "roce",
+          "valuation",
+          "growth"
+        ],
+        "title": "FundamentalSnapshot",
+        "type": "object"
+      },
+      "FundamentalStatus": {
+        "enum": [
+          "completed",
+          "partial",
+          "empty"
+        ],
+        "title": "FundamentalStatus",
+        "type": "string"
+      },
+      "FundamentalValuationOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/ValuationMetric"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FundamentalStatus"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "status",
+          "as_of",
+          "metrics"
+        ],
+        "title": "FundamentalValuationOutput",
+        "type": "object"
+      },
+      "GrowthMetric": {
+        "additionalProperties": false,
+        "properties": {
+          "annual_cagr": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Annual Cagr"
+          },
+          "annual_yoy": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GrowthPoint"
+            },
+            "title": "Annual Yoy",
+            "type": "array"
+          },
+          "concept": {
+            "title": "Concept",
+            "type": "string"
+          },
+          "quarterly_qoq": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GrowthPoint"
+            },
+            "title": "Quarterly Qoq",
+            "type": "array"
+          },
+          "quarterly_yoy": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/GrowthPoint"
+            },
+            "title": "Quarterly Yoy",
+            "type": "array"
+          }
+        },
+        "required": [
+          "concept"
+        ],
+        "title": "GrowthMetric",
+        "type": "object"
+      },
+      "GrowthPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "absolute_change": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Absolute Change"
+          },
+          "comparison": {
+            "enum": [
+              "yoy",
+              "qoq"
+            ],
+            "title": "Comparison",
+            "type": "string"
+          },
+          "percent_change": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percent Change"
+          },
+          "period_end": {
+            "format": "date-time",
+            "title": "Period End",
+            "type": "string"
+          },
+          "period_type": {
+            "$ref": "#/components/schemas/FinancialPeriodType"
+          }
+        },
+        "required": [
+          "period_type",
+          "period_end",
+          "comparison",
+          "absolute_change",
+          "percent_change"
+        ],
+        "title": "GrowthPoint",
+        "type": "object"
       },
       "HTTPValidationError": {
         "properties": {
@@ -1795,6 +2592,55 @@
           "checked_at"
         ],
         "title": "HealthResult",
+        "type": "object"
+      },
+      "IndicatorPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "value"
+        ],
+        "title": "IndicatorPoint",
+        "type": "object"
+      },
+      "IndicatorSeries": {
+        "additionalProperties": false,
+        "properties": {
+          "latest": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Latest",
+            "type": "string"
+          },
+          "period": {
+            "title": "Period",
+            "type": "integer"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/IndicatorPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          }
+        },
+        "required": [
+          "period",
+          "latest",
+          "points"
+        ],
+        "title": "IndicatorSeries",
         "type": "object"
       },
       "InstrumentAutocompleteOutput": {
@@ -1905,6 +2751,43 @@
         "title": "InstrumentRef",
         "type": "object"
       },
+      "InstrumentReference": {
+        "additionalProperties": false,
+        "properties": {
+          "exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "identifier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Identifier"
+          },
+          "symbol": {
+            "minLength": 1,
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "title": "InstrumentReference",
+        "type": "object"
+      },
       "InstrumentResolveOutput": {
         "additionalProperties": false,
         "properties": {
@@ -1970,6 +2853,51 @@
         "type": "object"
       },
       "JsonValue": {},
+      "LevelOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "current_price": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Current Price",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "levels": {
+            "items": {
+              "$ref": "#/components/schemas/PriceLevel"
+            },
+            "title": "Levels",
+            "type": "array"
+          },
+          "lookback": {
+            "title": "Lookback",
+            "type": "integer"
+          },
+          "side": {
+            "enum": [
+              "support",
+              "resistance"
+            ],
+            "title": "Side",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "side",
+          "current_price",
+          "lookback",
+          "levels"
+        ],
+        "title": "LevelOutput",
+        "type": "object"
+      },
       "LicenseClassification": {
         "enum": [
           "internal",
@@ -1979,6 +2907,83 @@
         ],
         "title": "LicenseClassification",
         "type": "string"
+      },
+      "MacdOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "fast_period": {
+            "title": "Fast Period",
+            "type": "integer"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "latest": {
+            "$ref": "#/components/schemas/MacdPoint"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/MacdPoint"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "signal_period": {
+            "title": "Signal Period",
+            "type": "integer"
+          },
+          "slow_period": {
+            "title": "Slow Period",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "fast_period",
+          "slow_period",
+          "signal_period",
+          "latest",
+          "points"
+        ],
+        "title": "MacdOutput",
+        "type": "object"
+      },
+      "MacdPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "histogram": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Histogram",
+            "type": "string"
+          },
+          "macd": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Macd",
+            "type": "string"
+          },
+          "signal": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Signal",
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "macd",
+          "signal",
+          "histogram"
+        ],
+        "title": "MacdPoint",
+        "type": "object"
       },
       "MarketInterval": {
         "enum": [
@@ -2068,6 +3073,65 @@
           "value"
         ],
         "title": "MetricItem",
+        "type": "object"
+      },
+      "MomentumOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "direction": {
+            "enum": [
+              "positive",
+              "neutral",
+              "negative"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "macd_histogram": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Macd Histogram",
+            "type": "string"
+          },
+          "negative_votes": {
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Negative Votes",
+            "type": "integer"
+          },
+          "positive_votes": {
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Positive Votes",
+            "type": "integer"
+          },
+          "rate_of_change": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Rate Of Change",
+            "type": "string"
+          },
+          "rsi": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Rsi",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "direction",
+          "positive_votes",
+          "negative_votes",
+          "rsi",
+          "macd_histogram",
+          "rate_of_change"
+        ],
+        "title": "MomentumOutput",
         "type": "object"
       },
       "Narrative": {
@@ -2331,6 +3395,79 @@
         "title": "NewsTimeline",
         "type": "object"
       },
+      "PeerMetricComparison": {
+        "additionalProperties": false,
+        "properties": {
+          "concept": {
+            "title": "Concept",
+            "type": "string"
+          },
+          "median": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median"
+          },
+          "values": {
+            "items": {
+              "$ref": "#/components/schemas/PeerMetricValue"
+            },
+            "title": "Values",
+            "type": "array"
+          }
+        },
+        "required": [
+          "concept",
+          "median",
+          "values"
+        ],
+        "title": "PeerMetricComparison",
+        "type": "object"
+      },
+      "PeerMetricValue": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "percentile": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percentile"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "instrument",
+          "value"
+        ],
+        "title": "PeerMetricValue",
+        "type": "object"
+      },
       "PerformanceMetrics": {
         "additionalProperties": false,
         "properties": {
@@ -2526,6 +3663,54 @@
           "series"
         ],
         "title": "PriceChart",
+        "type": "object"
+      },
+      "PriceLevel": {
+        "additionalProperties": false,
+        "properties": {
+          "distance_percent": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Distance Percent",
+            "type": "string"
+          },
+          "first_tested_at": {
+            "format": "date-time",
+            "title": "First Tested At",
+            "type": "string"
+          },
+          "last_tested_at": {
+            "format": "date-time",
+            "title": "Last Tested At",
+            "type": "string"
+          },
+          "level": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Level",
+            "type": "string"
+          },
+          "method": {
+            "enum": [
+              "rolling_extreme",
+              "pivot_cluster"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "touches": {
+            "minimum": 1.0,
+            "title": "Touches",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "method",
+          "level",
+          "touches",
+          "first_tested_at",
+          "last_tested_at",
+          "distance_percent"
+        ],
+        "title": "PriceLevel",
         "type": "object"
       },
       "ProviderMetadata": {
@@ -3274,6 +4459,27 @@
           "description"
         ],
         "title": "RiskItem",
+        "type": "object"
+      },
+      "RsiOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "series": {
+            "$ref": "#/components/schemas/IndicatorSeries"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "series"
+        ],
+        "title": "RsiOutput",
         "type": "object"
       },
       "RunMetadata": {
@@ -4059,6 +5265,28 @@
         "title": "ShiftDetectionInput",
         "type": "object"
       },
+      "SmaOutput": {
+        "additionalProperties": false,
+        "description": "Simple moving-average output.",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "series": {
+            "$ref": "#/components/schemas/IndicatorSeries"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "series"
+        ],
+        "title": "SmaOutput",
+        "type": "object"
+      },
       "SourceList": {
         "additionalProperties": false,
         "properties": {
@@ -4817,6 +6045,644 @@
         "title": "TableRow",
         "type": "object"
       },
+      "TechnicalAnalysisRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "adx_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Adx Period",
+            "type": "integer"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "atr_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Atr Period",
+            "type": "integer"
+          },
+          "ema_period": {
+            "default": 20,
+            "maximum": 400.0,
+            "minimum": 2.0,
+            "title": "Ema Period",
+            "type": "integer"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval",
+            "default": "1d"
+          },
+          "level_lookback": {
+            "default": 60,
+            "maximum": 500.0,
+            "minimum": 5.0,
+            "title": "Level Lookback",
+            "type": "integer"
+          },
+          "macd_fast_period": {
+            "default": 12,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Macd Fast Period",
+            "type": "integer"
+          },
+          "macd_signal_period": {
+            "default": 9,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Macd Signal Period",
+            "type": "integer"
+          },
+          "macd_slow_period": {
+            "default": 26,
+            "maximum": 400.0,
+            "minimum": 3.0,
+            "title": "Macd Slow Period",
+            "type": "integer"
+          },
+          "momentum_roc_period": {
+            "default": 10,
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Momentum Roc Period",
+            "type": "integer"
+          },
+          "momentum_rsi_lower": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "45",
+            "title": "Momentum Rsi Lower"
+          },
+          "momentum_rsi_upper": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "55",
+            "title": "Momentum Rsi Upper"
+          },
+          "pivot_atr_multiplier": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 5.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "0.5",
+            "title": "Pivot Atr Multiplier"
+          },
+          "pivot_max_levels": {
+            "default": 3,
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Pivot Max Levels",
+            "type": "integer"
+          },
+          "pivot_span": {
+            "default": 2,
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Pivot Span",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          },
+          "rsi_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Rsi Period",
+            "type": "integer"
+          },
+          "sma_period": {
+            "default": 20,
+            "maximum": 400.0,
+            "minimum": 2.0,
+            "title": "Sma Period",
+            "type": "integer"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "trend_fast_period": {
+            "default": 20,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Trend Fast Period",
+            "type": "integer"
+          },
+          "trend_slow_period": {
+            "default": 50,
+            "maximum": 400.0,
+            "minimum": 3.0,
+            "title": "Trend Slow Period",
+            "type": "integer"
+          },
+          "trend_spread_threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "0.005",
+            "title": "Trend Spread Threshold"
+          },
+          "volatility_high_percentile": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "0.75",
+            "title": "Volatility High Percentile"
+          },
+          "volatility_low_percentile": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "0.25",
+            "title": "Volatility Low Percentile"
+          },
+          "volatility_period": {
+            "default": 20,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Volatility Period",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "TechnicalAnalysisRequest",
+        "type": "object"
+      },
+      "TechnicalParameters": {
+        "additionalProperties": false,
+        "properties": {
+          "adx_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Adx Period",
+            "type": "integer"
+          },
+          "atr_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Atr Period",
+            "type": "integer"
+          },
+          "ema_period": {
+            "default": 20,
+            "maximum": 400.0,
+            "minimum": 2.0,
+            "title": "Ema Period",
+            "type": "integer"
+          },
+          "level_lookback": {
+            "default": 60,
+            "maximum": 500.0,
+            "minimum": 5.0,
+            "title": "Level Lookback",
+            "type": "integer"
+          },
+          "macd_fast_period": {
+            "default": 12,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Macd Fast Period",
+            "type": "integer"
+          },
+          "macd_signal_period": {
+            "default": 9,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Macd Signal Period",
+            "type": "integer"
+          },
+          "macd_slow_period": {
+            "default": 26,
+            "maximum": 400.0,
+            "minimum": 3.0,
+            "title": "Macd Slow Period",
+            "type": "integer"
+          },
+          "momentum_roc_period": {
+            "default": 10,
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Momentum Roc Period",
+            "type": "integer"
+          },
+          "momentum_rsi_lower": {
+            "default": "45",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Momentum Rsi Lower",
+            "type": "string"
+          },
+          "momentum_rsi_upper": {
+            "default": "55",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Momentum Rsi Upper",
+            "type": "string"
+          },
+          "pivot_atr_multiplier": {
+            "default": "0.5",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Pivot Atr Multiplier",
+            "type": "string"
+          },
+          "pivot_max_levels": {
+            "default": 3,
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Pivot Max Levels",
+            "type": "integer"
+          },
+          "pivot_span": {
+            "default": 2,
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Pivot Span",
+            "type": "integer"
+          },
+          "rsi_period": {
+            "default": 14,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Rsi Period",
+            "type": "integer"
+          },
+          "sma_period": {
+            "default": 20,
+            "maximum": 400.0,
+            "minimum": 2.0,
+            "title": "Sma Period",
+            "type": "integer"
+          },
+          "trend_fast_period": {
+            "default": 20,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Trend Fast Period",
+            "type": "integer"
+          },
+          "trend_slow_period": {
+            "default": 50,
+            "maximum": 400.0,
+            "minimum": 3.0,
+            "title": "Trend Slow Period",
+            "type": "integer"
+          },
+          "trend_spread_threshold": {
+            "default": "0.005",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Trend Spread Threshold",
+            "type": "string"
+          },
+          "volatility_high_percentile": {
+            "default": "0.75",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Volatility High Percentile",
+            "type": "string"
+          },
+          "volatility_low_percentile": {
+            "default": "0.25",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Volatility Low Percentile",
+            "type": "string"
+          },
+          "volatility_period": {
+            "default": 20,
+            "maximum": 200.0,
+            "minimum": 2.0,
+            "title": "Volatility Period",
+            "type": "integer"
+          }
+        },
+        "title": "TechnicalParameters",
+        "type": "object"
+      },
+      "TechnicalSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "adx": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AdxOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "atr": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AtrOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cache": {
+            "$ref": "#/components/schemas/CacheMetadata"
+          },
+          "calculation_version": {
+            "const": "technical-v1",
+            "default": "technical-v1",
+            "title": "Calculation Version",
+            "type": "string"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "ema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EmaOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "macd": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MacdOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "momentum": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MomentumOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "observation_count": {
+            "minimum": 0.0,
+            "title": "Observation Count",
+            "type": "integer"
+          },
+          "observed_end": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed End"
+          },
+          "observed_start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed Start"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/TechnicalParameters"
+          },
+          "price_basis": {
+            "const": "adjusted_ohlc",
+            "default": "adjusted_ohlc",
+            "title": "Price Basis",
+            "type": "string"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderMetadata"
+          },
+          "requested_end": {
+            "format": "date-time",
+            "title": "Requested End",
+            "type": "string"
+          },
+          "requested_start": {
+            "format": "date-time",
+            "title": "Requested Start",
+            "type": "string"
+          },
+          "resistance": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LevelOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rsi": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RsiOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sma": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SmaOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/TechnicalStatus"
+          },
+          "support": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LevelOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trend": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TrendOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "volatility": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VolatilityOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "status",
+          "interval",
+          "requested_start",
+          "requested_end",
+          "observation_count",
+          "parameters",
+          "provider",
+          "cache"
+        ],
+        "title": "TechnicalSnapshot",
+        "type": "object"
+      },
+      "TechnicalStatus": {
+        "enum": [
+          "completed",
+          "partial",
+          "empty"
+        ],
+        "title": "TechnicalStatus",
+        "type": "string"
+      },
       "TimelineItem": {
         "additionalProperties": false,
         "properties": {
@@ -4933,6 +6799,67 @@
         "title": "TrendDetectionInput",
         "type": "object"
       },
+      "TrendOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "adx": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Adx",
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "rising",
+              "falling",
+              "sideways"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "fast_ema": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Fast Ema",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "slow_ema": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Slow Ema",
+            "type": "string"
+          },
+          "spread_percent": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Spread Percent",
+            "type": "string"
+          },
+          "strength": {
+            "enum": [
+              "weak",
+              "developing",
+              "strong"
+            ],
+            "title": "Strength",
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "direction",
+          "strength",
+          "fast_ema",
+          "slow_ema",
+          "spread_percent",
+          "adx"
+        ],
+        "title": "TrendOutput",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -4971,6 +6898,117 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "ValuationMetric": {
+        "additionalProperties": false,
+        "properties": {
+          "calculated": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calculated"
+          },
+          "concept": {
+            "title": "Concept",
+            "type": "string"
+          },
+          "historical_reported": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FundamentalMetricPoint"
+            },
+            "title": "Historical Reported",
+            "type": "array"
+          },
+          "reported": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reported"
+          }
+        },
+        "required": [
+          "concept"
+        ],
+        "title": "ValuationMetric",
+        "type": "object"
+      },
+      "VolatilityOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "annualized_volatility": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Annualized Volatility",
+            "type": "string"
+          },
+          "atr_percent": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Atr Percent",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval"
+          },
+          "percentile_rank": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percentile Rank"
+          },
+          "period": {
+            "title": "Period",
+            "type": "integer"
+          },
+          "regime": {
+            "enum": [
+              "low",
+              "normal",
+              "high",
+              "unknown"
+            ],
+            "title": "Regime",
+            "type": "string"
+          },
+          "rolling": {
+            "items": {
+              "$ref": "#/components/schemas/IndicatorPoint"
+            },
+            "title": "Rolling",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "interval",
+          "regime",
+          "period",
+          "annualized_volatility",
+          "atr_percent",
+          "rolling"
+        ],
+        "title": "VolatilityOutput",
         "type": "object"
       },
       "WarningBanner": {
@@ -5936,6 +7974,457 @@
         "summary": "Event Stream",
         "tags": [
           "events"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/cash-flow": {
+      "post": {
+        "operationId": "fundamental_cash_flow_api_v1_fundamentals_cash_flow_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Cash Flow",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/debt": {
+      "post": {
+        "operationId": "fundamental_debt_api_v1_fundamentals_debt_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Debt",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/growth": {
+      "post": {
+        "operationId": "growth_api_v1_fundamentals_growth_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalGrowthOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Growth",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/margins": {
+      "post": {
+        "operationId": "fundamental_margins_api_v1_fundamentals_margins_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Margins",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/peer-comparison": {
+      "post": {
+        "operationId": "peer_comparison_api_v1_fundamentals_peer_comparison_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalPeerComparisonOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Peer Comparison",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/profit": {
+      "post": {
+        "operationId": "fundamental_profit_api_v1_fundamentals_profit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Profit",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/revenue": {
+      "post": {
+        "operationId": "fundamental_revenue_api_v1_fundamentals_revenue_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Revenue",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/roce": {
+      "post": {
+        "operationId": "fundamental_roce_api_v1_fundamentals_roce_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Roce",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/roe": {
+      "post": {
+        "operationId": "fundamental_roe_api_v1_fundamentals_roe_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSectionOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Fundamental Roe",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/snapshot": {
+      "post": {
+        "operationId": "snapshot_api_v1_fundamentals_snapshot_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalSnapshot"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Snapshot",
+        "tags": [
+          "fundamentals"
+        ]
+      }
+    },
+    "/api/v1/fundamentals/valuation": {
+      "post": {
+        "operationId": "valuation_api_v1_fundamentals_valuation_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundamentalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FundamentalValuationOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Valuation",
+        "tags": [
+          "fundamentals"
         ]
       }
     },
@@ -7383,6 +9872,498 @@
         "summary": "Trend",
         "tags": [
           "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/technical/adx": {
+      "post": {
+        "operationId": "adx_api_v1_technical_adx_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdxOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Adx",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/atr": {
+      "post": {
+        "operationId": "atr_api_v1_technical_atr_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtrOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Atr",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/ema": {
+      "post": {
+        "operationId": "ema_api_v1_technical_ema_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmaOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ema",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/macd": {
+      "post": {
+        "operationId": "macd_api_v1_technical_macd_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MacdOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Macd",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/momentum": {
+      "post": {
+        "operationId": "momentum_api_v1_technical_momentum_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MomentumOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Momentum",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/resistance": {
+      "post": {
+        "operationId": "resistance_api_v1_technical_resistance_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Resistance",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/rsi": {
+      "post": {
+        "operationId": "rsi_api_v1_technical_rsi_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RsiOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Rsi",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/sma": {
+      "post": {
+        "operationId": "sma_api_v1_technical_sma_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmaOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Sma",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/snapshot": {
+      "post": {
+        "operationId": "snapshot_api_v1_technical_snapshot_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnicalSnapshot"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Snapshot",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/support": {
+      "post": {
+        "operationId": "support_api_v1_technical_support_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Support",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/trend": {
+      "post": {
+        "operationId": "trend_api_v1_technical_trend_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrendOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Trend",
+        "tags": [
+          "technical analysis"
+        ]
+      }
+    },
+    "/api/v1/technical/volatility": {
+      "post": {
+        "operationId": "volatility_api_v1_technical_volatility_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnicalAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolatilityOutput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Volatility",
+        "tags": [
+          "technical analysis"
         ]
       }
     },

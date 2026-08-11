@@ -66,3 +66,6 @@ Market-data cache logs record only operation and hit/miss/invalid outcome. Cache
 
 Research lifecycle events report source, duplicate, event, persistence, and report counts with request/run correlation. Provider calls retain the standard safe metadata. Article titles, summaries, documents, excerpts, URLs, and query payloads are excluded from structured logs.
 Public-sentiment lifecycle events contain versioned event envelopes, request/run correlation, stage outcome, and counts only. They deliberately omit discussion bodies and author identifiers. Capability runs retain the platform's normal duration, attempt, failure-code, and correlation metadata.
+Technical capabilities publish versioned `technical.<indicator>.completed` events containing observation counts and standard request/run correlation. Snapshot results additionally expose calculation status and data cutoff through normal run metadata. Indicator values and complete histories are not written to logs.
+
+Fundamentals lifecycle events contain target identity, section/status, period counts, and request/run correlation. Provider calls and cache outcomes use standard safe metadata; statement bodies, fact payloads, quotes, and secrets are not logged.

@@ -4,7 +4,7 @@ from enum import StrEnum
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class InstrumentContract(BaseModel):
@@ -84,6 +84,41 @@ class InstrumentResolveOutput(InstrumentContract):
         if self.status == "ambiguous" and len(self.candidates) < 2:
             raise ValueError("ambiguous output requires at least two candidates")
         return self
+
+
+class InstrumentBatchQuery(InstrumentContract):
+    query: str = Field(min_length=1, max_length=200)
+    exchange: str | None = Field(default=None, min_length=1, max_length=20)
+
+
+class InstrumentResolveBatchInput(InstrumentContract):
+    queries: tuple[InstrumentBatchQuery, ...] = Field(default=(), max_length=9)
+
+    @field_validator("queries", mode="before")
+    @classmethod
+    def parse_queries(cls, value: object) -> object:
+        if value is None or value == "":
+            return ()
+        if isinstance(value, str):
+            parsed = []
+            for raw in value.split(","):
+                token = raw.strip()
+                if not token:
+                    continue
+                query, separator, exchange = token.rpartition("@")
+                parsed.append(
+                    {"query": query, "exchange": exchange}
+                    if separator and query and exchange
+                    else {"query": token}
+                )
+            return tuple(parsed)
+        return value
+
+
+class InstrumentResolveBatchOutput(InstrumentContract):
+    results: tuple[InstrumentResolveOutput, ...]
+    instruments: tuple[InstrumentRef, ...]
+    unresolved_queries: tuple[str, ...] = ()
 
 
 class InstrumentCatalogInput(InstrumentContract):

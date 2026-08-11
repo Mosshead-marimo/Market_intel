@@ -1,0 +1,11 @@
+name: test_fundamentals_provider
+version: 1.0.0
+description: Deterministic test-only normalized fundamentals provider
+providers:
+  - kind: fundamentals
+    name: test-fundamentals
+    class_path: support.fake_fundamentals_provider:DeterministicFundamentalsProvider
+capabilities:
+  - name: test.fundamentals_provider
+    class_path: support.fake_market_provider:ProviderFixtureCapability
+    description: Makes the test-only fundamentals provider manifest valid

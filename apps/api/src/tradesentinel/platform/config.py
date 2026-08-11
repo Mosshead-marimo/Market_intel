@@ -44,6 +44,8 @@ class Settings(BaseSettings):
     stock_quote_cache_ttl_seconds: int = Field(default=15, ge=1, le=3_600)
     stock_history_cache_ttl_seconds: int = Field(default=21_600, ge=1, le=604_800)
     stock_actions_cache_ttl_seconds: int = Field(default=86_400, ge=1, le=2_592_000)
+    fundamentals_profile_cache_ttl_seconds: int = Field(default=86_400, ge=60, le=2_592_000)
+    fundamentals_data_cache_ttl_seconds: int = Field(default=21_600, ge=60, le=604_800)
     research_document_fetch_limit: int = Field(default=10, ge=0, le=100)
     research_evidence_excerpt_length: int = Field(default=280, ge=40, le=2_000)
     research_extraction_version: str = Field(default="rules-v1", min_length=1, max_length=64)
