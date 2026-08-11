@@ -185,3 +185,9 @@ Each processing stage is a typed, independently executable service operation. Pr
 ## Deterministic fundamentals
 
 `fundamentals` depends on public provider/domain contracts, the cache port, and execution contracts. Its manifest composes public instrument resolution/catalog and batch quote capabilities; Python code never imports their private implementations. Provider normalization, deterministic accounting calculations, capability wrappers, and thin routes remain separate. Missing fundamentals configuration is an execution-time 503, while missing market data preserves a partial reported-only valuation. See ADR 0020.
+
+## YAML-driven stock overview
+
+`stock_overview` is a composition module rather than a new analysis engine. Its manifest owns the dependency DAG, required/optional policy, command, route, lifecycle event, and ordered presentation sections. The platform compiles dependencies into concurrent layers and renders presentation metadata generically; neither platform nor central API code names an overview target or section order.
+
+Instrument resolution, market retrieval, and technical calculation are required. Research, public sentiment, and fundamentals are optional branches whose typed failures become unavailable sections while usable core output is retained. Technical analysis consumes the same validated five-year history result, and fundamentals consumes the same quote result. See ADR 0021.

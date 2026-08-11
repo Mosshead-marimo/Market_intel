@@ -135,3 +135,7 @@ Research search accepts free-text `q`, optional UTC `start`/`end`, and a bounded
 ## Fundamentals
 
 Pipeline-backed POST routes under `/api/v1/fundamentals` expose snapshot, revenue, profit, cash-flow, debt, margins, ROE, ROCE, valuation, growth, and peer comparison. Bodies accept `query`, optional `exchange`/`as_of`, annual and quarterly limits, and explicit peers where applicable. Missing fundamentals providers return `503 PROVIDER_NOT_CONFIGURED`; missing quotes return successful partial valuation.
+
+## Stock overview
+
+`POST /api/v1/stock-overview` accepts `StockOverviewRequest` and returns the standard rendered response. The module-owned route delegates to `stock.overview`; it contains no analysis or execution-order logic. Missing optional news, sentiment, or fundamentals providers returns HTTP 200 with partial/error sections. Missing required market data returns `503 PROVIDER_NOT_CONFIGURED`; invalid or insufficient required core data returns a typed 422 error.

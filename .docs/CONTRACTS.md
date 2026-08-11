@@ -124,6 +124,10 @@ Backend Pydantic models are immutable, reject unknown fields, and version the AP
 
 The committed `packages/contracts/openapi.json` and generated TypeScript declarations are derived from FastAPI. Runtime Zod schemas validate every response component before presentation. `pnpm contracts:check` detects schema drift.
 
+`WorkflowPresentation` contains a title, optional completion-event name, and ordered sections whose step references must exist and may appear in only one section. It is retained on `WorkflowResult`. The renderer converts it into domain-neutral `response_section` components with ready, partial, empty, or error state. Sections contain validated leaf components only. `event_timeline` is the reusable dated-event leaf used by corporate actions and other structured event sources.
+
+`StockOverviewRequest` accepts a query, optional exchange and time-zone-aware `as_of`, interval, and bounded optional-branch limits. `StockOverviewWindow` records the exact five-calendar-year start/end range. Overview responses use the standard `RenderedResponse`; no stock-specific envelope or narrative contract is introduced.
+
 ## Execution Contracts
 
 `ExecutionRequest` is a discriminated union with `command`, `intent`, `capability`, and `workflow` variants. Each resolves to an `ExecutionTarget` and produces one `ExecutionOutcome` containing the raw capability/workflow result plus a `RenderedResponse`.

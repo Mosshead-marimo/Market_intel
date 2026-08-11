@@ -30,6 +30,8 @@
 - risk_card
 - source_list
 - warning_banner
+- event_timeline
+- response_section
 
 ## State Rules
 
@@ -51,3 +53,5 @@
 ## Foundation Console
 
 The App Router application uses a ChatGPT-style shell with a responsive session sidebar, transcript, fixed composer, slash-command discovery, typing state, execution progress, reconnect state, and validated streamed response components. API access, session credentials, SSE parsing, replay deduplication, and stream reduction remain under `lib` outside presentation components.
+
+The response registry implements reusable metric-grid, line-chart, timeline, table, source-list, summary, warning, and section renderers. `response_section` recursively composes validated leaf components but cannot nest another section. Zod validation occurs before dispatch; invalid values render the accessible unsupported-data state. Section status remains visible for partial, empty, stale, and error results.

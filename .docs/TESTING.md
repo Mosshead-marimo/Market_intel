@@ -1,5 +1,7 @@
 # Testing Strategy
 
+Stock-overview tests verify leap-day five-year windows, strict YAML presentation references, duplicate-section rejection, deterministic DAG layers, branch concurrency, one-time resolution, input reuse, required/optional failure behavior, command/API execution, ordered reusable components, completion-event metadata, and provider-free typed errors. Architecture tests reject overview names/order in platform and central API code and prohibit external I/O, AI libraries, persistence, and private cross-module imports in the composition module.
+
 ## Test Layers
 
 - Unit tests

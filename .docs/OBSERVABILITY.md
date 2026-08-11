@@ -68,4 +68,6 @@ Research lifecycle events report source, duplicate, event, persistence, and repo
 Public-sentiment lifecycle events contain versioned event envelopes, request/run correlation, stage outcome, and counts only. They deliberately omit discussion bodies and author identifiers. Capability runs retain the platform's normal duration, attempt, failure-code, and correlation metadata.
 Technical capabilities publish versioned `technical.<indicator>.completed` events containing observation counts and standard request/run correlation. Snapshot results additionally expose calculation status and data cutoff through normal run metadata. Indicator values and complete histories are not written to logs.
 
+Presented workflows may declare a completion-event name in YAML. The generic workflow executor emits it with workflow/run/request identifiers, overall status, per-section status, aggregate section counts, and the latest declared data cutoff. `stock.overview.completed` therefore carries operational shape without provider payloads, article bodies, discussion text, or financial series.
+
 Fundamentals lifecycle events contain target identity, section/status, period counts, and request/run correlation. Provider calls and cache outcomes use standard safe metadata; statement bodies, fact payloads, quotes, and secrets are not logged.

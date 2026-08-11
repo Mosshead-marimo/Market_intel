@@ -428,6 +428,98 @@ button {
   display: block;
   color: var(--muted);
 }
+.response-section {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+.response-section > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.response-section h3,
+.response-section p,
+.line-chart {
+  margin: 0;
+}
+.response-section header p,
+.component-state,
+.line-chart figcaption {
+  color: var(--muted);
+}
+.component-state {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.component-state.error {
+  color: var(--danger);
+  background: #fff0ee;
+}
+.response-section-content {
+  display: grid;
+  gap: 12px;
+}
+.line-chart {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  overflow: hidden;
+}
+.line-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.chart-series {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+.chart-series-1 {
+  stroke: var(--accent);
+}
+.chart-series-2 {
+  stroke: #6d63c7;
+}
+.chart-series-3 {
+  stroke: #b97135;
+}
+.line-chart figcaption {
+  margin-top: 8px;
+  font-size: 12px;
+}
+.event-timeline,
+.source-list,
+.risk-list {
+  margin: 0;
+  padding-left: 22px;
+}
+.event-timeline li,
+.source-list li,
+.risk-list li {
+  margin: 8px 0;
+}
+.event-timeline time {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.event-timeline strong {
+  display: block;
+}
+.component-empty {
+  margin: 0;
+  color: var(--muted);
+}
 .table-wrap {
   overflow: auto;
 }

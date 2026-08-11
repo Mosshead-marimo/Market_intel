@@ -1,5 +1,7 @@
 # Data Sources and Provider Ports
 
+The stock overview introduces no data source or provider adapter. It composes configured market-data, news, sentiment, and fundamentals facades through existing public capabilities. A provider-chain failure remains explicit in the affected section; data is never substituted across categories or synthesized by the overview.
+
 ## Boundaries
 
 - Capabilities and services call typed provider interfaces; they never call external APIs directly.

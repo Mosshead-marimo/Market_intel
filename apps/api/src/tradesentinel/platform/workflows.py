@@ -145,8 +145,50 @@ class WorkflowExecutor:
             warnings=tuple(warnings),
             started_at=started,
             completed_at=datetime.now(UTC),
+            presentation=definition.presentation,
         )
         await self._runs.save_workflow(outcome)
+        if (
+            definition.presentation is not None
+            and definition.presentation.completion_event is not None
+        ):
+            section_statuses: dict[str, JsonValue] = {}
+            section_counts: dict[str, JsonValue] = {}
+            for section in definition.presentation.sections:
+                section_results = tuple(outcome.steps[step_id] for step_id in section.steps)
+                section_statuses[section.id] = (
+                    "error"
+                    if any(
+                        item.status in {RunStatus.FAILED, RunStatus.SKIPPED}
+                        for item in section_results
+                    )
+                    else "partial"
+                    if any(item.status == RunStatus.PARTIAL for item in section_results)
+                    else "ready"
+                )
+                section_counts[section.id] = sum(
+                    item.status in {RunStatus.COMPLETED, RunStatus.PARTIAL}
+                    for item in section_results
+                )
+            cutoffs = tuple(
+                item.metadata.data_cutoff
+                for item in outcome.steps.values()
+                if item.metadata.data_cutoff is not None
+            )
+            await self._contexts.emit(
+                workflow_context,
+                definition.presentation.completion_event,
+                "platform.workflow",
+                {
+                    "workflow": name,
+                    "run_id": str(run_id),
+                    "request_id": str(workflow_context.request_id),
+                    "status": status.value,
+                    "sections": {key: value for key, value in section_statuses.items()},
+                    "section_counts": {key: value for key, value in section_counts.items()},
+                    "data_cutoff": max(cutoffs).isoformat() if cutoffs else None,
+                },
+            )
         return outcome
 
     async def _execute_step(

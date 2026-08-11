@@ -44,64 +44,98 @@ const tableSchema = z.object({
   rows: z.array(z.object({ cells: z.array(z.string()) })),
 });
 
-export const responseComponentSchema = z.discriminatedUnion("type", [
+export const priceChartSchema = componentBase.extend({
+  type: z.literal("price_chart"),
+  ...chartSchema.shape,
+});
+export const sentimentChartSchema = componentBase.extend({
+  type: z.literal("sentiment_chart"),
+  ...chartSchema.shape,
+});
+export const newsTimelineSchema = componentBase.extend({
+  type: z.literal("news_timeline"),
+  items: z.array(
+    z.object({
+      occurred_at: z.string(),
+      headline: z.string(),
+      description: z.string().nullable().optional(),
+      source_id: z.string().nullable().optional(),
+    }),
+  ),
+});
+export const eventTimelineSchema = componentBase.extend({
+  type: z.literal("event_timeline"),
+  items: z.array(
+    z.object({
+      occurred_at: z.string(),
+      label: z.string(),
+      description: z.string().nullable().optional(),
+      category: z.string().nullable().optional(),
+      source_id: z.string().nullable().optional(),
+    }),
+  ),
+});
+const predictionCardSchema = componentBase.extend({
+  type: z.literal("prediction_card"),
+  direction: z.enum(["rise", "sideways", "decline", "uncertain"]),
+  confidence: z.number().min(0).max(1),
+  horizon: z.string(),
+  generated_at: z.string(),
+  data_cutoff: z.string(),
+  model_version: z.string(),
+});
+const scenarioTableSchema = componentBase.extend({
+  type: z.literal("scenario_table"),
+  ...tableSchema.shape,
+});
+const comparisonTableSchema = componentBase.extend({
+  type: z.literal("comparison_table"),
+  ...tableSchema.shape,
+});
+const riskCardSchema = componentBase.extend({
+  type: z.literal("risk_card"),
+  risks: z.array(
+    z.object({
+      label: z.string(),
+      severity: z.enum(["low", "medium", "high", "unknown"]),
+      description: z.string(),
+    }),
+  ),
+});
+const sourceListSchema = componentBase.extend({
+  type: z.literal("source_list"),
+  sources: z.array(z.record(z.unknown())),
+});
+const warningBannerSchema = componentBase.extend({
+  type: z.literal("warning_banner"),
+  code: z.string(),
+  message: z.string(),
+});
+
+export const leafResponseComponentSchema = z.discriminatedUnion("type", [
   summaryCardSchema,
   metricGridSchema,
-  componentBase.extend({
-    type: z.literal("price_chart"),
-    ...chartSchema.shape,
-  }),
-  componentBase.extend({
-    type: z.literal("sentiment_chart"),
-    ...chartSchema.shape,
-  }),
-  componentBase.extend({
-    type: z.literal("news_timeline"),
-    items: z.array(
-      z.object({
-        occurred_at: z.string(),
-        headline: z.string(),
-        description: z.string().nullable().optional(),
-        source_id: z.string().nullable().optional(),
-      }),
-    ),
-  }),
-  componentBase.extend({
-    type: z.literal("prediction_card"),
-    direction: z.enum(["rise", "sideways", "decline", "uncertain"]),
-    confidence: z.number().min(0).max(1),
-    horizon: z.string(),
-    generated_at: z.string(),
-    data_cutoff: z.string(),
-    model_version: z.string(),
-  }),
-  componentBase.extend({
-    type: z.literal("scenario_table"),
-    ...tableSchema.shape,
-  }),
-  componentBase.extend({
-    type: z.literal("comparison_table"),
-    ...tableSchema.shape,
-  }),
-  componentBase.extend({
-    type: z.literal("risk_card"),
-    risks: z.array(
-      z.object({
-        label: z.string(),
-        severity: z.enum(["low", "medium", "high", "unknown"]),
-        description: z.string(),
-      }),
-    ),
-  }),
-  componentBase.extend({
-    type: z.literal("source_list"),
-    sources: z.array(z.record(z.unknown())),
-  }),
-  componentBase.extend({
-    type: z.literal("warning_banner"),
-    code: z.string(),
-    message: z.string(),
-  }),
+  priceChartSchema,
+  sentimentChartSchema,
+  newsTimelineSchema,
+  eventTimelineSchema,
+  predictionCardSchema,
+  scenarioTableSchema,
+  comparisonTableSchema,
+  riskCardSchema,
+  sourceListSchema,
+  warningBannerSchema,
+]);
+
+export const responseSectionSchema = componentBase.extend({
+  type: z.literal("response_section"),
+  description: z.string().nullable().optional(),
+  items: z.array(leafResponseComponentSchema),
+});
+
+export const responseComponentSchema = z.discriminatedUnion("type", [
+  ...leafResponseComponentSchema.options,
+  responseSectionSchema,
 ]);
 
 export const capabilityDescriptorSchema = z.object({
@@ -172,6 +206,20 @@ export const capabilityResultSchema = z.object({
   metadata: z.record(z.unknown()),
 });
 
+export const workflowPresentationSectionSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  steps: z.array(z.string()).min(1),
+  empty_message: z.string().nullable().optional(),
+  error_message: z.string().nullable().optional(),
+});
+
+export const workflowPresentationSchema = z.object({
+  title: z.string(),
+  completion_event: z.string().nullable().optional(),
+  sections: z.array(workflowPresentationSectionSchema).min(1),
+});
+
 export const workflowResultSchema = z.object({
   workflow: z.string(),
   run_id: z.string().uuid(),
@@ -192,6 +240,7 @@ export const workflowResultSchema = z.object({
       details: z.record(z.unknown()),
     }),
   ),
+  presentation: workflowPresentationSchema.nullable().optional(),
   started_at: z.string(),
   completed_at: z.string(),
 });

@@ -416,10 +416,12 @@
               "discriminator": {
                 "mapping": {
                   "comparison_table": "#/components/schemas/ComparisonTable",
+                  "event_timeline": "#/components/schemas/EventTimeline",
                   "metric_grid": "#/components/schemas/MetricGrid",
                   "news_timeline": "#/components/schemas/NewsTimeline",
                   "prediction_card": "#/components/schemas/PredictionCard",
                   "price_chart": "#/components/schemas/PriceChart",
+                  "response_section": "#/components/schemas/ResponseSection",
                   "risk_card": "#/components/schemas/RiskCard",
                   "scenario_table": "#/components/schemas/ScenarioTable",
                   "sentiment_chart": "#/components/schemas/SentimentChart",
@@ -446,6 +448,9 @@
                   "$ref": "#/components/schemas/NewsTimeline"
                 },
                 {
+                  "$ref": "#/components/schemas/EventTimeline"
+                },
+                {
                   "$ref": "#/components/schemas/PredictionCard"
                 },
                 {
@@ -462,6 +467,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/WarningBanner"
+                },
+                {
+                  "$ref": "#/components/schemas/ResponseSection"
                 }
               ]
             },
@@ -1797,6 +1805,110 @@
           "series"
         ],
         "title": "EmaOutput",
+        "type": "object"
+      },
+      "EventTimeline": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/EventTimelineItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "event_timeline",
+            "default": "event_timeline",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "items"
+        ],
+        "title": "EventTimeline",
+        "type": "object"
+      },
+      "EventTimelineItem": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          }
+        },
+        "required": [
+          "occurred_at",
+          "label"
+        ],
+        "title": "EventTimelineItem",
         "type": "object"
       },
       "EvidenceSource": {
@@ -3826,10 +3938,12 @@
               "discriminator": {
                 "mapping": {
                   "comparison_table": "#/components/schemas/ComparisonTable",
+                  "event_timeline": "#/components/schemas/EventTimeline",
                   "metric_grid": "#/components/schemas/MetricGrid",
                   "news_timeline": "#/components/schemas/NewsTimeline",
                   "prediction_card": "#/components/schemas/PredictionCard",
                   "price_chart": "#/components/schemas/PriceChart",
+                  "response_section": "#/components/schemas/ResponseSection",
                   "risk_card": "#/components/schemas/RiskCard",
                   "scenario_table": "#/components/schemas/ScenarioTable",
                   "sentiment_chart": "#/components/schemas/SentimentChart",
@@ -3856,6 +3970,9 @@
                   "$ref": "#/components/schemas/NewsTimeline"
                 },
                 {
+                  "$ref": "#/components/schemas/EventTimeline"
+                },
+                {
                   "$ref": "#/components/schemas/PredictionCard"
                 },
                 {
@@ -3872,6 +3989,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/WarningBanner"
+                },
+                {
+                  "$ref": "#/components/schemas/ResponseSection"
                 }
               ]
             },
@@ -4378,6 +4498,122 @@
           "events"
         ],
         "title": "ResearchTimelineOutput",
+        "type": "object"
+      },
+      "ResponseSection": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "default": [],
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "comparison_table": "#/components/schemas/ComparisonTable",
+                  "event_timeline": "#/components/schemas/EventTimeline",
+                  "metric_grid": "#/components/schemas/MetricGrid",
+                  "news_timeline": "#/components/schemas/NewsTimeline",
+                  "prediction_card": "#/components/schemas/PredictionCard",
+                  "price_chart": "#/components/schemas/PriceChart",
+                  "risk_card": "#/components/schemas/RiskCard",
+                  "scenario_table": "#/components/schemas/ScenarioTable",
+                  "sentiment_chart": "#/components/schemas/SentimentChart",
+                  "source_list": "#/components/schemas/SourceList",
+                  "summary_card": "#/components/schemas/SummaryCard",
+                  "warning_banner": "#/components/schemas/WarningBanner"
+                },
+                "propertyName": "type"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/SummaryCard"
+                },
+                {
+                  "$ref": "#/components/schemas/MetricGrid"
+                },
+                {
+                  "$ref": "#/components/schemas/PriceChart"
+                },
+                {
+                  "$ref": "#/components/schemas/SentimentChart"
+                },
+                {
+                  "$ref": "#/components/schemas/NewsTimeline"
+                },
+                {
+                  "$ref": "#/components/schemas/EventTimeline"
+                },
+                {
+                  "$ref": "#/components/schemas/PredictionCard"
+                },
+                {
+                  "$ref": "#/components/schemas/ScenarioTable"
+                },
+                {
+                  "$ref": "#/components/schemas/ComparisonTable"
+                },
+                {
+                  "$ref": "#/components/schemas/RiskCard"
+                },
+                {
+                  "$ref": "#/components/schemas/SourceList"
+                },
+                {
+                  "$ref": "#/components/schemas/WarningBanner"
+                }
+              ]
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "source_ids": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComponentStatus",
+            "default": "ready"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "type": {
+            "const": "response_section",
+            "default": "response_section",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "ResponseSection",
         "type": "object"
       },
       "RiskCard": {
@@ -5756,6 +5992,85 @@
           "cache"
         ],
         "title": "StockHistoryOutput",
+        "type": "object"
+      },
+      "StockOverviewRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "annual_periods": {
+            "default": 5,
+            "maximum": 20.0,
+            "minimum": 2.0,
+            "title": "Annual Periods",
+            "type": "integer"
+          },
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "interval": {
+            "$ref": "#/components/schemas/MarketInterval",
+            "default": "1d"
+          },
+          "quarterly_periods": {
+            "default": 8,
+            "maximum": 40.0,
+            "minimum": 4.0,
+            "title": "Quarterly Periods",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          },
+          "research_limit": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Research Limit"
+          },
+          "sentiment_limit": {
+            "default": 100,
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Sentiment Limit",
+            "type": "integer"
+          },
+          "sentiment_window_days": {
+            "default": 7,
+            "maximum": 30.0,
+            "minimum": 1.0,
+            "title": "Sentiment Window Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "StockOverviewRequest",
         "type": "object"
       },
       "StockPerformanceInput": {
@@ -7427,6 +7742,100 @@
         "title": "WindowMetrics",
         "type": "object"
       },
+      "WorkflowPresentation": {
+        "additionalProperties": false,
+        "properties": {
+          "completion_event": {
+            "anyOf": [
+              {
+                "pattern": "^[a-z][a-z0-9_.-]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completion Event"
+          },
+          "sections": {
+            "items": {
+              "$ref": "#/components/schemas/WorkflowPresentationSection"
+            },
+            "minItems": 1,
+            "title": "Sections",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "sections"
+        ],
+        "title": "WorkflowPresentation",
+        "type": "object"
+      },
+      "WorkflowPresentationSection": {
+        "additionalProperties": false,
+        "properties": {
+          "empty_message": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Empty Message"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          },
+          "id": {
+            "pattern": "^[a-z][a-z0-9_-]*$",
+            "title": "Id",
+            "type": "string"
+          },
+          "steps": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Steps",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "steps"
+        ],
+        "title": "WorkflowPresentationSection",
+        "type": "object"
+      },
       "WorkflowRequest": {
         "additionalProperties": false,
         "properties": {
@@ -7483,6 +7892,16 @@
             "format": "date-time",
             "title": "Completed At",
             "type": "string"
+          },
+          "presentation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkflowPresentation"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "run_id": {
             "format": "uuid",
@@ -9872,6 +10291,47 @@
         "summary": "Trend",
         "tags": [
           "public sentiment"
+        ]
+      }
+    },
+    "/api/v1/stock-overview": {
+      "post": {
+        "operationId": "stock_overview_api_v1_stock_overview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockOverviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RenderedResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stock Overview",
+        "tags": [
+          "stock-overview"
         ]
       }
     },

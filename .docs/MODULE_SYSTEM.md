@@ -168,3 +168,7 @@ Intent declarations use `match: exact` with examples or declare the single appli
 ## Fundamentals discovery
 
 `fundamentals/manifest.yaml` owns fourteen capabilities, eleven commands, eleven workflows, events, and its router. Collection and peer-selection targets are internal composition units; public accounting sections remain independently executable. Provider injection is lazy, and no central API or composition-root conditional names the module.
+
+## Overview composition discovery
+
+`stock_overview/manifest.yaml` contributes one pure window capability, `/overview`, the `stock.overview` workflow, a completion event, an API router, and presentation metadata. It imports no feature implementation. All cross-module calls use public capability names and explicit input bindings, so changing dependencies or section order is a YAML change validated during atomic loading.

@@ -152,3 +152,38 @@ def test_fundamentals_is_provider_bound_and_transport_neutral() -> None:
     )
     assert "fundamental.snapshot" not in shared_api
     assert "modules.fundamentals" not in shared_api
+
+
+def test_stock_overview_order_and_targets_are_not_hardcoded_in_core() -> None:
+    core_roots = (
+        Path("apps/api/src/tradesentinel/platform"),
+        Path("apps/api/src/tradesentinel/api"),
+    )
+    source = "\n".join(
+        path.read_text(encoding="utf-8") for root in core_roots for path in root.rglob("*.py")
+    )
+    assert "stock.overview" not in source
+    assert "stock_overview" not in source
+
+
+def test_stock_overview_is_pipeline_bound_and_has_no_external_io() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/stock_overview")
+    forbidden = (
+        "httpx",
+        "requests",
+        "aiohttp",
+        "openai",
+        "anthropic",
+        "langchain",
+        "sqlalchemy",
+        "tradesentinel.modules.instrument_resolution",
+        "tradesentinel.modules.stock_market_data",
+        "tradesentinel.modules.research",
+        "tradesentinel.modules.public_sentiment",
+        "tradesentinel.modules.technical_analysis",
+        "tradesentinel.modules.fundamentals",
+    )
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8").casefold()
+        assert not any(name in source for name in forbidden), path
+    assert "container.pipeline.execute" in (module / "api.py").read_text(encoding="utf-8")

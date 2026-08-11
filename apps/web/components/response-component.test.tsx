@@ -23,4 +23,40 @@ describe("ResponseComponentView", () => {
       "Unsupported response data",
     );
   });
+
+  it("renders a validated section with metrics and a timeline", () => {
+    render(
+      <ResponseComponentView
+        value={{
+          id: "market",
+          type: "response_section",
+          title: "Market data",
+          status: "partial",
+          items: [
+            {
+              id: "quote",
+              type: "metric_grid",
+              metrics: [{ label: "Price", value: "100.00", detail: "USD" }],
+            },
+            {
+              id: "actions",
+              type: "event_timeline",
+              items: [
+                {
+                  occurred_at: "2026-08-08T00:00:00Z",
+                  label: "Dividend",
+                },
+              ],
+            },
+          ],
+        }}
+      />,
+    );
+    expect(
+      screen.getByRole("heading", { name: "Market data" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("100.00")).toBeInTheDocument();
+    expect(screen.getByText("Dividend")).toBeInTheDocument();
+    expect(screen.getByText("partial")).toBeInTheDocument();
+  });
 });

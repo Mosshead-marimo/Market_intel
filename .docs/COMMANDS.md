@@ -175,4 +175,8 @@ All accept `--exchange`, `--as-of`, `--window-days`, and `--limit`. The manifest
 ## Fundamentals
 
 - `/fundamentals`, `/revenue`, `/profit`, `/cash-flow`, `/debt`, `/margins`, `/roe`, `/roce`, `/valuation`, and `/growth` accept query, exchange, as-of, and period-limit options.
+
+### `/overview`
+
+Runs the YAML-composed stock overview for one unambiguously resolved instrument. Syntax: `/overview <query> [--exchange CODE] [--as-of TIMESTAMP]`. Example: `/overview TCS --exchange NSE`. The command is discovered from the module manifest and uses the same pipeline and rendered response as the HTTP endpoint.
 - `/peer-compare` also accepts one quoted comma-separated `--peers` value with optional `@EXCHANGE` qualifiers. Explicit peers replace automatic industry/sector selection.

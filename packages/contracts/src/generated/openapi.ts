@@ -856,6 +856,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/stock-overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stock Overview */
+        post: operations["stock_overview_api_v1_stock_overview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/technical/adx": {
         parameters: {
             query?: never;
@@ -1304,7 +1321,7 @@ export interface components {
              * Components
              * @default []
              */
-            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"])[];
+            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["ResponseSection"])[];
             /** Data */
             data?: {
                 [key: string]: components["schemas"]["JsonValue"];
@@ -1814,6 +1831,43 @@ export interface components {
             instrument: components["schemas"]["InstrumentRef"];
             interval: components["schemas"]["MarketInterval"];
             series: components["schemas"]["IndicatorSeries"];
+        };
+        /** EventTimeline */
+        EventTimeline: {
+            /** Id */
+            id: string;
+            /** Items */
+            items: components["schemas"]["EventTimelineItem"][];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "event_timeline";
+        };
+        /** EventTimelineItem */
+        EventTimelineItem: {
+            /** Category */
+            category?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Label */
+            label: string;
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+            /** Source Id */
+            source_id?: string | null;
         };
         /** EvidenceSource */
         EvidenceSource: {
@@ -2592,7 +2646,7 @@ export interface components {
              * Components
              * @default []
              */
-            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"])[];
+            components: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"] | components["schemas"]["ResponseSection"])[];
             /**
              * Generated At
              * Format: date-time
@@ -2789,6 +2843,32 @@ export interface components {
             events: components["schemas"]["ResearchEvent"][];
             /** Query */
             query: string;
+        };
+        /** ResponseSection */
+        ResponseSection: {
+            /** Description */
+            description?: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Items
+             * @default []
+             */
+            items: (components["schemas"]["SummaryCard"] | components["schemas"]["MetricGrid"] | components["schemas"]["PriceChart"] | components["schemas"]["SentimentChart"] | components["schemas"]["NewsTimeline"] | components["schemas"]["EventTimeline"] | components["schemas"]["PredictionCard"] | components["schemas"]["ScenarioTable"] | components["schemas"]["ComparisonTable"] | components["schemas"]["RiskCard"] | components["schemas"]["SourceList"] | components["schemas"]["WarningBanner"])[];
+            /**
+             * Source Ids
+             * @default []
+             */
+            source_ids: string[];
+            /** @default ready */
+            status: components["schemas"]["ComponentStatus"];
+            /** Title */
+            title?: string | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "response_section";
         };
         /** RiskCard */
         RiskCard: {
@@ -3310,6 +3390,42 @@ export interface components {
              */
             price_basis: "adjusted";
             provider: components["schemas"]["ProviderMetadata"];
+        };
+        /** StockOverviewRequest */
+        StockOverviewRequest: {
+            /**
+             * Annual Periods
+             * @default 5
+             */
+            annual_periods: number;
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of?: string;
+            /** Exchange */
+            exchange?: string | null;
+            /** @default 1d */
+            interval: components["schemas"]["MarketInterval"];
+            /**
+             * Quarterly Periods
+             * @default 8
+             */
+            quarterly_periods: number;
+            /** Query */
+            query: string;
+            /** Research Limit */
+            research_limit?: number | null;
+            /**
+             * Sentiment Limit
+             * @default 100
+             */
+            sentiment_limit: number;
+            /**
+             * Sentiment Window Days
+             * @default 7
+             */
+            sentiment_window_days: number;
         };
         /** StockPerformanceInput */
         StockPerformanceInput: {
@@ -3916,6 +4032,28 @@ export interface components {
             /** Usable Count */
             usable_count: number;
         };
+        /** WorkflowPresentation */
+        WorkflowPresentation: {
+            /** Completion Event */
+            completion_event?: string | null;
+            /** Sections */
+            sections: components["schemas"]["WorkflowPresentationSection"][];
+            /** Title */
+            title: string;
+        };
+        /** WorkflowPresentationSection */
+        WorkflowPresentationSection: {
+            /** Empty Message */
+            empty_message?: string | null;
+            /** Error Message */
+            error_message?: string | null;
+            /** Id */
+            id: string;
+            /** Steps */
+            steps: string[];
+            /** Title */
+            title: string;
+        };
         /** WorkflowRequest */
         WorkflowRequest: {
             /** Input */
@@ -3942,6 +4080,7 @@ export interface components {
              * Format: date-time
              */
             completed_at: string;
+            presentation?: components["schemas"]["WorkflowPresentation"] | null;
             /**
              * Run Id
              * Format: uuid
@@ -5619,6 +5758,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SentimentTrend"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stock_overview_api_v1_stock_overview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockOverviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RenderedResponse"];
                 };
             };
             /** @description Validation Error */

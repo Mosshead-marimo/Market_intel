@@ -24,6 +24,7 @@ from tradesentinel.platform.contracts import (
     CapabilityWarning,
     ChartPoint,
     ChartSeries,
+    ComparisonTable,
     ComponentStatus,
     EventEnvelope,
     ExecutionContext,
@@ -33,6 +34,7 @@ from tradesentinel.platform.contracts import (
     RunMetadata,
     RunStatus,
     SentimentChart,
+    TableRow,
 )
 from tradesentinel.platform.events import EventBus
 
@@ -200,7 +202,24 @@ class ExtractNarrativesCapability(_Base, Capability[NarrativeExtractionInput]):
         output = self._service.narratives(payload)
         await self._persistence.narratives(output)
         await self._emit("sentiment.narratives.extracted", context, count=len(output.narratives))
-        return _result(output, started)
+        table = ComparisonTable(
+            id="sentiment-narratives",
+            title="Public narratives",
+            status=ComponentStatus.EMPTY if not output.narratives else ComponentStatus.READY,
+            columns=("Narrative", "Sentiment", "Weighted share", "Confidence"),
+            rows=tuple(
+                TableRow(
+                    cells=(
+                        item.topic,
+                        item.sentiment.value,
+                        str(item.weighted_share),
+                        str(item.confidence),
+                    )
+                )
+                for item in output.narratives
+            ),
+        )
+        return _result(output, started, (table,))
 
 
 class DetectTrendCapability(_Base, Capability[TrendDetectionInput]):
@@ -243,4 +262,16 @@ class DetectShiftCapability(_Base, Capability[ShiftDetectionInput]):
         output = self._service.shift(payload)
         await self._persistence.shift(output)
         await self._emit("sentiment.shift.detected", context, status=output.status.value)
-        return _result(output, started)
+        component = MetricGrid(
+            id="sentiment-shift",
+            title="Observed sentiment shift",
+            status=ComponentStatus.PARTIAL if output.shift_score is None else ComponentStatus.READY,
+            metrics=(
+                MetricItem(
+                    label="Shift score",
+                    value="unavailable" if output.shift_score is None else str(output.shift_score),
+                    detail="descriptive, not predictive",
+                ),
+            ),
+        )
+        return _result(output, started, (component,))

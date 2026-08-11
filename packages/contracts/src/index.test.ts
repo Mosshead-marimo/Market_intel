@@ -33,6 +33,30 @@ describe("response component contract", () => {
       responseComponentSchema.parse({ id: "x", type: "unknown" }),
     ).toThrow();
   });
+
+  it("validates reusable sections and event timelines", () => {
+    const component = responseComponentSchema.parse({
+      id: "market",
+      type: "response_section",
+      title: "Market data",
+      status: "partial",
+      items: [
+        {
+          id: "actions",
+          type: "event_timeline",
+          title: "Corporate actions",
+          items: [
+            {
+              occurred_at: "2026-08-08T00:00:00Z",
+              label: "Dividend",
+              category: "dividend",
+            },
+          ],
+        },
+      ],
+    });
+    expect(component.type).toBe("response_section");
+  });
 });
 
 describe("stock market data contracts", () => {

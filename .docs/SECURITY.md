@@ -1,5 +1,7 @@
 # Security
 
+Overview composition does not log or emit provider payloads. Completion events contain identifiers, section status/counts, and cutoff metadata only. Research articles and public discussions retain their existing untrusted-content handling, and the response renderer consumes validated capability contracts rather than raw provider values.
+
 ## Authentication and Authorization
 
 - Use secure session or token-based authentication.

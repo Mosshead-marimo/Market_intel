@@ -93,3 +93,9 @@ Workflow steps may declare `input_bindings`. Sources use `input.<path>` or `step
 ## Fundamentals workflow
 
 Section workflows resolve, collect cached normalized statements/facts, and calculate one section. Valuation and snapshot request an optional cached quote. Peer comparison resolves explicit peers or loads the public catalog, selects peers deterministically, batch-collects fundamentals and optional quotes, then produces descriptive comparisons. All cross-module data moves through explicit manifest bindings.
+
+## Stock overview workflow
+
+`stock.overview` resolves the instrument once and computes a five-calendar-year window. Quote, adjusted history, five-year performance, corporate actions, research search, sentiment collection, and fundamentals collection become ready from YAML dependencies rather than Python sequencing. Technical analysis waits for retrieved history; fundamentals assembly waits for its dataset and the shared quote.
+
+Resolution, market, and technical steps are required. Research, sentiment, and fundamentals steps are optional. Required failure fails the workflow; optional failure skips only its dependents, preserves other sections, and returns partial status with typed warnings. YAML presentation order is independent of completion order and is validated against the workflow step graph at startup.
