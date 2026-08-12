@@ -20,6 +20,5 @@ test-results/
 !.gitignore
 !.dockerignore
 !.env.example
-!.docs/
-!.docs/**
+
 docs/*

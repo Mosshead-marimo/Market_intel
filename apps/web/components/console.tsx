@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import type {
   ChatMessage,
   ChatSession,
@@ -300,6 +301,9 @@ export function PlatformConsole() {
               </button>
             </div>
           )}
+          <Link className="header-workspace-link" href="/workspace">
+            Workspace
+          </Link>
         </header>
 
         <div className="transcript" aria-live="polite">

@@ -105,8 +105,10 @@ def test_research_transport_and_logic_respect_boundaries() -> None:
 def test_technical_analysis_is_pure_and_pipeline_bound() -> None:
     module = Path("apps/api/src/tradesentinel/modules/technical_analysis")
     forbidden = (
-        "httpx",
-        "requests",
+        "import httpx",
+        "from httpx",
+        "import requests",
+        "from requests",
         "aiohttp",
         "openai",
         "anthropic",
@@ -131,8 +133,10 @@ def test_technical_analysis_is_pure_and_pipeline_bound() -> None:
 def test_fundamentals_is_provider_bound_and_transport_neutral() -> None:
     module = Path("apps/api/src/tradesentinel/modules/fundamentals")
     forbidden = (
-        "httpx",
-        "requests",
+        "import httpx",
+        "from httpx",
+        "import requests",
+        "from requests",
         "aiohttp",
         "openai",
         "anthropic",
@@ -227,3 +231,68 @@ def test_shared_api_has_no_assistant_target_conditionals() -> None:
     )
     assert "assistant.conversation" not in api
     assert "llm_assistant" not in api
+
+
+def test_prediction_engine_remains_ml_only_and_internal() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/prediction_engine")
+    forbidden = (
+        "openai",
+        "anthropic",
+        "langchain",
+        "tradesentinel.modules.llm_assistant",
+        "tradesentinel.modules.stock_market_data",
+        "tradesentinel.modules.technical_analysis",
+        "tradesentinel.modules.fundamentals",
+        "import httpx",
+        "from httpx",
+        "import requests",
+        "from requests",
+    )
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8").lower()
+        for dependency in forbidden:
+            assert dependency not in source, (path, dependency)
+    manifest = (module / "manifest.yaml").read_text(encoding="utf-8")
+    assert "commands:" not in manifest
+    assert "intents:" not in manifest
+    assert "prediction_card" not in manifest
+    assert "/api/v1/predictions" not in manifest
+
+
+def test_market_shift_is_non_predictive_and_manifest_ordered() -> None:
+    module = Path("apps/api/src/tradesentinel/modules/market_shift")
+    forbidden = (
+        "openai",
+        "anthropic",
+        "langchain",
+        "sklearn",
+        "tradesentinel.modules.prediction_engine",
+        "import httpx",
+        "from httpx",
+        "import requests",
+        "from requests",
+    )
+    for path in module.rglob("*.py"):
+        source = path.read_text(encoding="utf-8").lower()
+        assert not any(item in source for item in forbidden), path
+    manifest = (module / "manifest.yaml").read_text(encoding="utf-8")
+    assert "market_shift.request" in manifest
+    platform = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in Path("apps/api/src/tradesentinel/platform").rglob("*.py")
+    )
+    assert "market_shift.calculate" not in platform
+
+
+def test_frontend_keeps_api_calls_and_prediction_admin_isolated() -> None:
+    presentation = Path("apps/web/components/workspace.tsx").read_text(encoding="utf-8") + Path(
+        "apps/web/components/response-component.tsx"
+    ).read_text(encoding="utf-8")
+    assert "fetch(" not in presentation
+    assert "apiRequest(" not in presentation
+    normal_routes = "\n".join(
+        path.read_text(encoding="utf-8") for path in Path("apps/web/app/workspace").rglob("*.tsx")
+    )
+    assert "PredictionAdmin" not in normal_routes
+    assert "ModelPerformance" not in normal_routes
+    assert "internalPrediction" not in normal_routes

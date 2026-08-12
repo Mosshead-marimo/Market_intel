@@ -1,0 +1,30 @@
+name: prediction_engine
+version: 1.0.0
+description: Internal versioned point-in-time machine-learning prediction engine
+api_router: tradesentinel.modules.prediction_engine.api:router
+background_workers:
+  - name: prediction.jobs
+    class_path: tradesentinel.modules.prediction_engine.worker:PredictionBackgroundWorker
+capabilities:
+  - {name: prediction.observations.ingest, class_path: tradesentinel.modules.prediction_engine.capability:IngestObservationsCapability, description: Ingest bounded point-in-time observations, permissions: [prediction.admin], provides: [observation_receipt], idempotent: true}
+  - {name: prediction.dataset.enqueue, class_path: tradesentinel.modules.prediction_engine.capability:EnqueueDatasetCapability, description: Queue immutable dataset construction, permissions: [prediction.admin], provides: [prediction_job], idempotent: true}
+  - {name: prediction.training.enqueue, class_path: tradesentinel.modules.prediction_engine.capability:EnqueueTrainingCapability, description: Queue deterministic model training, permissions: [prediction.admin], provides: [prediction_job], idempotent: true}
+  - {name: prediction.evaluation.enqueue, class_path: tradesentinel.modules.prediction_engine.capability:EnqueueEvaluationCapability, description: Queue matured outcome evaluation, permissions: [prediction.admin], provides: [prediction_job], idempotent: true}
+  - {name: prediction.job.read, class_path: tradesentinel.modules.prediction_engine.capability:JobReadCapability, description: Read authoritative job status, permissions: [prediction.admin], provides: [prediction_job]}
+  - {name: prediction.job.execute, class_path: tradesentinel.modules.prediction_engine.capability:JobExecuteCapability, description: Execute a queued prediction job idempotently, provides: [prediction_job], idempotent: true}
+  - {name: prediction.model.list, class_path: tradesentinel.modules.prediction_engine.capability:ModelListCapability, description: List immutable model versions, permissions: [prediction.admin], provides: [model_versions]}
+  - {name: prediction.model.read, class_path: tradesentinel.modules.prediction_engine.capability:ModelReadCapability, description: Read an immutable model version, permissions: [prediction.admin], provides: [model_version]}
+  - {name: prediction.model.activate, class_path: tradesentinel.modules.prediction_engine.capability:ActivateModelCapability, description: Activate a quality-gated model, permissions: [prediction.admin], provides: [model_version]}
+  - {name: prediction.predict, class_path: tradesentinel.modules.prediction_engine.capability:PredictCapability, description: Produce and persist an internal ML prediction, permissions: [prediction.admin], provides: [prediction_result]}
+  - {name: prediction.history.read, class_path: tradesentinel.modules.prediction_engine.capability:PredictionHistoryCapability, description: Read internal prediction history, permissions: [prediction.admin], provides: [prediction_history]}
+  - {name: prediction.read, class_path: tradesentinel.modules.prediction_engine.capability:PredictionReadCapability, description: Read one persisted internal prediction, permissions: [prediction.admin], provides: [prediction_result]}
+  - {name: prediction.evaluation.collect, class_path: tradesentinel.modules.prediction_engine.capability:EvaluationCollectCapability, description: Collect all due prediction outcomes, permissions: [prediction.admin], provides: [evaluation_collection], idempotent: true}
+  - {name: prediction.evaluation.schedules, class_path: tradesentinel.modules.prediction_engine.capability:EvaluationScheduleListCapability, description: Inspect durable prediction evaluation schedules, permissions: [prediction.admin], provides: [evaluation_schedules]}
+  - {name: prediction.evaluation.read, class_path: tradesentinel.modules.prediction_engine.capability:PredictionEvaluationReadCapability, description: Read one prediction evaluation, permissions: [prediction.admin], provides: [prediction_evaluation]}
+  - {name: prediction.performance.read, class_path: tradesentinel.modules.prediction_engine.capability:ModelPerformanceCapability, description: Read aggregate model performance, permissions: [prediction.admin], provides: [model_performance]}
+  - {name: prediction.performance.rebuild, class_path: tradesentinel.modules.prediction_engine.capability:PerformanceRebuildCapability, description: Rebuild model metrics from immutable outcomes, permissions: [prediction.admin], provides: [performance_rebuild], idempotent: true}
+events:
+  consumes:
+    - name: prediction.job.queued
+      target: {kind: capability, name: prediction.job.execute}
+  produces: [prediction.observations.ingested, prediction.job.queued, prediction.job.completed, prediction.model.activated, prediction.completed, prediction.evaluated, prediction.evaluations.collected]

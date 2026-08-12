@@ -8,6 +8,7 @@ from tradesentinel.platform.contracts import (
     CommandExecutionRequest,
     ExecutionContext,
     ExecutionOutcome,
+    ExecutionRequest,
 )
 from tradesentinel.platform.errors import CommandSyntaxError, InternalExecutionError
 from tradesentinel.platform.registries import CommandRegistry
@@ -50,3 +51,11 @@ class ExecutionGateway:
         if self._pipeline is None:
             raise InternalExecutionError()
         return await self._pipeline.execute(CommandExecutionRequest(command=command), context)
+
+    async def execute_request(
+        self, request: ExecutionRequest, context: ExecutionContext
+    ) -> ExecutionOutcome:
+        """Execute an already typed registered request for module-owned workers."""
+        if self._pipeline is None:
+            raise InternalExecutionError()
+        return await self._pipeline.execute(request, context)
