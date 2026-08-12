@@ -1,6 +1,10 @@
 # TradeSentinel
 
-TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, structured stock market data, deterministic evidence-first news research, public-sentiment analysis, technical analysis, fundamentals, a YAML-composed stock overview, and an evidence-grounded LLM explanation layer. It ships no credentials, recommendations, price targets, or prediction implementation.
+TradeSentinel is a modular, capability-driven market-intelligence platform. This repository contains the domain-neutral platform foundation, typed provider ports, canonical instrument resolution, structured stock market data, deterministic evidence-first news research, public-sentiment analysis, technical analysis, fundamentals, a YAML-composed stock overview, an evidence-grounded LLM explanation layer, and an internal versioned ML prediction engine. It ships no credentials, recommendations, or price targets.
+
+The web application keeps chat at `/` and adds a routed analysis workspace at `/workspace`. Resolve a canonical listing there to inspect market data, research, sentiment, technical analysis, fundamentals, stock overview, Market Shift, evidence, and history. Operator-only Market Shift and prediction tools live under `/admin` and never expose predictions to ordinary users.
+
+Market Shift is a deterministic, backward-looking measure of evidence-backed narrative change. It requires all seven evidence categories and never predicts prices. Configure `TRADESENTINEL_MARKET_SHIFT_ADMIN_TOKEN_HASH` with a SHA-256 digest before using normalized observation ingestion or watchlist administration.
 
 ## Foundation
 
@@ -49,6 +53,8 @@ The technical-analysis manifest exposes `/technical`, `/rsi`, `/macd`, `/ema`, `
 `/overview TCS --exchange NSE` runs the manifest-declared `stock.overview` workflow. It resolves the instrument once, starts independent market, research, sentiment, and fundamentals branches concurrently, runs technical analysis from the already retrieved adjusted history, and renders sections in the order declared by YAML. Market data and technical analysis are required; unavailable research, sentiment, or fundamentals providers produce explicit partial sections.
 
 Run the stack with `docker compose up --build`. The migration service upgrades PostgreSQL before the API and worker start. Market-data, research, and public-sentiment execution remain unavailable until their external provider modules are selected, but the API, worker, web application, and provider-free capabilities start normally.
+
+The `prediction_engine` module is operationally internal. It stores point-in-time observations, builds immutable feature datasets, trains calibrated scikit-learn models, stores `skops` artifacts, and evaluates matured outcomes. It adds no command, intent, chat integration, response component, or public prediction route. Existing `/api/v1/predictions` routes intentionally remain HTTP 501. Administrators configure a SHA-256 bearer-token hash with `TRADESENTINEL_PREDICTION_ADMIN_TOKEN_HASH` and use `/api/v1/admin/prediction`; without that setting the entire admin surface returns 404.
 
 ## Quality checks
 
@@ -170,3 +176,5 @@ The `.docs/` directory contains the source of truth for product, architecture, c
 ## Fundamentals
 
 The manifest-discovered `fundamentals` module exposes deterministic revenue, profit, cash-flow, debt, margins, ROE, ROCE, valuation, growth, peer comparison, and aggregate snapshot capabilities. Annual and quarterly trends remain separate. Current calculated valuation is distinct from provider-reported multiples; missing quotes yield partial reported-only valuation. Example commands are `/fundamentals TCS --exchange NSE`, `/growth MSFT --exchange NASDAQ`, and `/peer-compare TCS --exchange NSE --peers "INFY@NSE,RELIANCE@NSE"`.
+
+Automatic prediction evaluation schedules every internal prediction, retrieves matured adjusted-close outcomes through configured market-data providers, and exposes protected aggregate monitoring at `/model-performance`. Forecasts remain absent from chat and user workspaces.

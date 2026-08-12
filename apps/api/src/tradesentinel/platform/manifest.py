@@ -90,6 +90,11 @@ class EventsManifest(ManifestModel):
     produces: tuple[str, ...] = ()
 
 
+class BackgroundWorkerManifest(ManifestModel):
+    name: str = Field(pattern=r"^[a-z][a-z0-9_.-]*$")
+    class_path: str
+
+
 class ModuleManifest(ManifestModel):
     name: str
     version: str = Field(pattern=r"^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
@@ -101,6 +106,7 @@ class ModuleManifest(ManifestModel):
     intents: tuple[IntentManifest, ...] = ()
     workflows: tuple[WorkflowDefinition, ...] = ()
     events: EventsManifest = Field(default_factory=EventsManifest)
+    background_workers: tuple[BackgroundWorkerManifest, ...] = ()
 
     @model_validator(mode="after")
     def validate_local_names(self) -> ModuleManifest:
@@ -110,6 +116,7 @@ class ModuleManifest(ManifestModel):
             "command": [item.name for item in self.commands],
             "intent": [item.name for item in self.intents],
             "workflow": [item.name for item in self.workflows],
+            "background_worker": [item.name for item in self.background_workers],
         }
         for kind, names in groups.items():
             if len(names) != len(set(names)):

@@ -20,6 +20,8 @@ async def run() -> None:
                 )
             )
             group.create_task(container.chat.dispatch_forever())
+            for background_worker in container.loader.background_workers:
+                group.create_task(background_worker.run_forever())
     finally:
         await container.close()
 

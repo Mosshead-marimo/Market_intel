@@ -42,6 +42,9 @@ services:
       TRADESENTINEL_ANTHROPIC_API_KEY: ${TRADESENTINEL_ANTHROPIC_API_KEY:-}
       TRADESENTINEL_OPENAI_MODEL: ${TRADESENTINEL_OPENAI_MODEL:-gpt-5-mini}
       TRADESENTINEL_ANTHROPIC_MODEL: ${TRADESENTINEL_ANTHROPIC_MODEL:-claude-sonnet-5}
+      TRADESENTINEL_OBJECT_STORE_BACKEND: filesystem
+      TRADESENTINEL_OBJECT_STORE_ROOT: /app/artifacts
+      TRADESENTINEL_PREDICTION_ADMIN_TOKEN_HASH: ${TRADESENTINEL_PREDICTION_ADMIN_TOKEN_HASH:-}
     depends_on:
       postgres:
         condition: service_healthy
@@ -63,6 +66,8 @@ services:
         condition: service_completed_successfully
       redis:
         condition: service_healthy
+    volumes:
+      - prediction-artifacts:/app/artifacts
 
   worker:
     build:
@@ -75,6 +80,8 @@ services:
         condition: service_completed_successfully
       redis:
         condition: service_healthy
+    volumes:
+      - prediction-artifacts:/app/artifacts
 
   web:
     build:
@@ -91,3 +98,4 @@ services:
 volumes:
   postgres-data:
   redis-data:
+  prediction-artifacts:

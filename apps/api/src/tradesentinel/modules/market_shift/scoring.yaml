@@ -1,0 +1,20 @@
+version: market-shift-rules-v1
+confidence_threshold: 0.50
+direction_thresholds: {improving: 15, deteriorating: -15}
+confidence_weights: {coverage: 0.40, freshness: 0.25, agreement: 0.20, temporal_alignment: 0.15}
+categories:
+  news: {weight: 0.20, maximum_age_hours: 24}
+  public_sentiment: {weight: 0.20, maximum_age_hours: 24}
+  technical_trend: {weight: 0.15, maximum_age_hours: 24}
+  fundamentals: {weight: 0.15, maximum_age_hours: 2880}
+  sector: {weight: 0.10, maximum_age_hours: 168}
+  macro: {weight: 0.10, maximum_age_hours: 1080}
+  institutional_activity: {weight: 0.10, maximum_age_hours: 168}
+metrics:
+  positive_news_share: {category: news, unit: ratio, scale: 1, polarity: positive_when_rising, weight: 1}
+  sentiment_mean: {category: public_sentiment, unit: score, scale: 2, polarity: positive_when_rising, weight: 1}
+  technical_trend_score: {category: technical_trend, unit: score, scale: 2, polarity: positive_when_rising, weight: 1}
+  fundamental_quality_score: {category: fundamentals, unit: score, scale: 2, polarity: positive_when_rising, weight: 1}
+  sector_breadth: {category: sector, unit: ratio, scale: 1, polarity: positive_when_rising, weight: 1}
+  macro_conditions: {category: macro, unit: score, scale: 2, polarity: positive_when_rising, weight: 1}
+  institutional_net_flow: {category: institutional_activity, unit: ratio, scale: 1, polarity: positive_when_rising, weight: 1}

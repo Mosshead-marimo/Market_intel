@@ -1,0 +1,60 @@
+name: market_shift
+version: 1.0.0
+description: Deterministic evidence-backed measurement of observed market narrative change
+api_router: tradesentinel.modules.market_shift.api:router
+capabilities:
+  - {name: market_shift.observations.ingest, class_path: tradesentinel.modules.market_shift.capability:IngestObservationsCapability, description: Ingests normalized point-in-time Market Shift observations, permissions: [market_shift.admin], provides: [market_shift_observation_receipt], idempotent: true}
+  - {name: market_shift.observations.load, class_path: tradesentinel.modules.market_shift.capability:LoadObservationsCapability, description: Loads current and prior Market Shift evidence windows, provides: [market_shift_observations], idempotent: true}
+  - {name: market_shift.calculate, class_path: tradesentinel.modules.market_shift.capability:CalculateMarketShiftCapability, description: Calculates a deterministic evidence-backed Market Shift score, provides: [market_shift_snapshot], idempotent: true}
+  - {name: market_shift.read, class_path: tradesentinel.modules.market_shift.capability:ReadMarketShiftCapability, description: Reads an immutable Market Shift attempt, provides: [market_shift_attempt], idempotent: true}
+  - {name: market_shift.history, class_path: tradesentinel.modules.market_shift.capability:ReadHistoryCapability, description: Reads historical Market Shift changes, provides: [market_shift_history], idempotent: true}
+  - {name: market_shift.watchlist.save, class_path: tradesentinel.modules.market_shift.capability:SaveWatchlistCapability, description: Adds or updates a scheduled Market Shift instrument, permissions: [market_shift.admin], provides: [market_shift_watchlist], idempotent: true}
+  - {name: market_shift.watchlist.remove, class_path: tradesentinel.modules.market_shift.capability:RemoveWatchlistCapability, description: Removes a scheduled Market Shift instrument, permissions: [market_shift.admin], provides: [market_shift_watchlist], idempotent: true}
+  - {name: market_shift.watchlist.list, class_path: tradesentinel.modules.market_shift.capability:ListWatchlistCapability, description: Lists scheduled Market Shift instruments, permissions: [market_shift.admin], provides: [market_shift_watchlist], idempotent: true}
+  - {name: market_shift.schedule.run, class_path: tradesentinel.modules.market_shift.capability:RunScheduleCapability, description: Runs due Market Shift watchlist calculations, permissions: [market_shift.admin], provides: [market_shift_schedule_result], idempotent: false}
+commands:
+  - name: /market-shift
+    description: Measure observed evidence-backed market narrative change
+    target: {kind: workflow, name: market_shift.request}
+    arguments: [{name: query}]
+    options:
+      - {name: exchange, destination: exchange}
+      - {name: as-of, destination: as_of}
+      - {name: window-days, destination: window_days}
+    examples: ['/market-shift TCS --exchange NSE', '/market-shift "Microsoft" --exchange NASDAQ']
+workflows:
+  - name: market_shift.request
+    version: 1.0.0
+    description: Resolve an instrument load point-in-time evidence and calculate narrative shift
+    presentation:
+      title: Market Shift
+      completion_event: market_shift.workflow.completed
+      sections:
+        - {id: instrument, title: Instrument, steps: [resolve], error_message: The instrument could not be resolved unambiguously.}
+        - {id: shift, title: Market narrative shift, steps: [calculate], error_message: All seven evidence categories are required.}
+    steps:
+      - id: resolve
+        capability: instrument.resolve
+        input_bindings:
+          query: {source: input.query}
+          exchange: {source: input.exchange, required: false}
+      - id: load
+        capability: market_shift.observations.load
+        depends_on: [resolve]
+        input_bindings:
+          instrument: {source: steps.resolve.data.match.instrument}
+          as_of: {source: input.as_of, required: false}
+          window_days: {source: input.window_days, required: false}
+          idempotency_key: {source: input.idempotency_key, required: false}
+      - id: calculate
+        capability: market_shift.calculate
+        depends_on: [load]
+        input_bindings:
+          instrument: {source: steps.load.data.instrument}
+          window: {source: steps.load.data.window}
+          observations: {source: steps.load.data.observations}
+          idempotency_key: {source: steps.load.data.idempotency_key}
+events:
+  produces: [market_shift.observations.ingested, market_shift.completed, market_shift.workflow.completed, market_shift.schedule.completed]
+background_workers:
+  - {name: market_shift.daily, class_path: tradesentinel.modules.market_shift.worker:MarketShiftBackgroundWorker}

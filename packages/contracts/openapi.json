@@ -82,13 +82,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "instrument",
-          "interval",
-          "period",
-          "latest",
-          "points"
-        ],
+        "required": ["instrument", "interval", "period", "latest", "points"],
         "title": "AdxOutput",
         "type": "object"
       },
@@ -116,12 +110,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "timestamp",
-          "adx",
-          "positive_di",
-          "negative_di"
-        ],
+        "required": ["timestamp", "adx", "positive_di", "negative_di"],
         "title": "AdxPoint",
         "type": "object"
       },
@@ -173,12 +162,7 @@
         "type": "object"
       },
       "AnalysisStatus": {
-        "enum": [
-          "completed",
-          "partial",
-          "empty",
-          "insufficient"
-        ],
+        "enum": ["completed", "partial", "empty", "insufficient"],
         "title": "AnalysisStatus",
         "type": "string"
       },
@@ -206,10 +190,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "code",
-          "message"
-        ],
+        "required": ["code", "message"],
         "title": "ApiErrorDetail",
         "type": "object"
       },
@@ -241,11 +222,7 @@
             "$ref": "#/components/schemas/IndicatorSeries"
           }
         },
-        "required": [
-          "instrument",
-          "interval",
-          "series"
-        ],
+        "required": ["instrument", "interval", "series"],
         "title": "AtrOutput",
         "type": "object"
       },
@@ -273,12 +250,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "instrument",
-          "benchmark",
-          "start",
-          "end"
-        ],
+        "required": ["instrument", "benchmark", "start", "end"],
         "title": "BenchmarkComparisonInput",
         "type": "object"
       },
@@ -318,10 +290,7 @@
         "type": "object"
       },
       "CacheDisposition": {
-        "enum": [
-          "hit",
-          "miss"
-        ],
+        "enum": ["hit", "miss"],
         "title": "CacheDisposition",
         "type": "string"
       },
@@ -342,12 +311,60 @@
             "type": "string"
           }
         },
-        "required": [
-          "disposition",
-          "cached_at",
-          "expires_at"
-        ],
+        "required": ["disposition", "cached_at", "expires_at"],
         "title": "CacheMetadata",
+        "type": "object"
+      },
+      "CalibrationBin": {
+        "additionalProperties": false,
+        "properties": {
+          "class_name": {
+            "enum": ["rise", "sideways", "decline"],
+            "title": "Class Name",
+            "type": "string"
+          },
+          "lower_bound": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Lower Bound",
+            "type": "string"
+          },
+          "mean_probability": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Probability"
+          },
+          "observed_frequency": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed Frequency"
+          },
+          "samples": {
+            "minimum": 0.0,
+            "title": "Samples",
+            "type": "integer"
+          },
+          "upper_bound": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Upper Bound",
+            "type": "string"
+          }
+        },
+        "required": ["class_name", "lower_bound", "upper_bound", "samples"],
+        "title": "CalibrationBin",
         "type": "object"
       },
       "CapabilityDescriptor": {
@@ -395,11 +412,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "name",
-          "version",
-          "description"
-        ],
+        "required": ["name", "version", "description"],
         "title": "CapabilityDescriptor",
         "type": "object"
       },
@@ -537,11 +550,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "capability",
-          "status",
-          "metadata"
-        ],
+        "required": ["capability", "status", "metadata"],
         "title": "CapabilityResult",
         "type": "object"
       },
@@ -569,10 +578,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "code",
-          "message"
-        ],
+        "required": ["code", "message"],
         "title": "CapabilityWarning",
         "type": "object"
       },
@@ -589,10 +595,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "timestamp",
-          "value"
-        ],
+        "required": ["timestamp", "value"],
         "title": "ChartPoint",
         "type": "object"
       },
@@ -611,10 +614,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "name",
-          "points"
-        ],
+        "required": ["name", "points"],
         "title": "ChartSeries",
         "type": "object"
       },
@@ -697,13 +697,7 @@
         "type": "object"
       },
       "ChatMessageStatus": {
-        "enum": [
-          "accepted",
-          "streaming",
-          "completed",
-          "partial",
-          "failed"
-        ],
+        "enum": ["accepted", "streaming", "completed", "partial", "failed"],
         "title": "ChatMessageStatus",
         "type": "string"
       },
@@ -734,18 +728,12 @@
             "title": "Session Id"
           }
         },
-        "required": [
-          "message",
-          "client_message_id"
-        ],
+        "required": ["message", "client_message_id"],
         "title": "ChatRequest",
         "type": "object"
       },
       "ChatRole": {
-        "enum": [
-          "user",
-          "assistant"
-        ],
+        "enum": ["user", "assistant"],
         "title": "ChatRole",
         "type": "string"
       },
@@ -787,13 +775,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "title",
-          "status",
-          "created_at",
-          "updated_at"
-        ],
+        "required": ["id", "title", "status", "created_at", "updated_at"],
         "title": "ChatSession",
         "type": "object"
       },
@@ -836,9 +818,7 @@
             "$ref": "#/components/schemas/ChatSession"
           }
         },
-        "required": [
-          "session"
-        ],
+        "required": ["session"],
         "title": "ChatSessionDetail",
         "type": "object"
       },
@@ -869,10 +849,7 @@
         "type": "object"
       },
       "ChatSessionStatus": {
-        "enum": [
-          "active",
-          "archived"
-        ],
+        "enum": ["active", "archived"],
         "title": "ChatSessionStatus",
         "type": "string"
       },
@@ -1131,11 +1108,36 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "claims"
-        ],
+        "required": ["id", "claims"],
         "title": "CitedNarrative",
+        "type": "object"
+      },
+      "CohortPerformance": {
+        "additionalProperties": false,
+        "properties": {
+          "dimension": {
+            "enum": [
+              "overall",
+              "model",
+              "market",
+              "sector",
+              "horizon",
+              "calendar",
+              "count"
+            ],
+            "title": "Dimension",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/tradesentinel__domain__prediction__PerformanceMetrics"
+          }
+        },
+        "required": ["dimension", "key", "metrics"],
+        "title": "CohortPerformance",
         "type": "object"
       },
       "CollectDiscussionsInput": {
@@ -1171,9 +1173,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "target"
-        ],
+        "required": ["target"],
         "title": "CollectDiscussionsInput",
         "type": "object"
       },
@@ -1238,9 +1238,7 @@
             "title": "Session Id"
           }
         },
-        "required": [
-          "command"
-        ],
+        "required": ["command"],
         "title": "CommandRequest",
         "type": "object"
       },
@@ -1267,11 +1265,7 @@
             "title": "Result"
           }
         },
-        "required": [
-          "request_id",
-          "result",
-          "response"
-        ],
+        "required": ["request_id", "result", "response"],
         "title": "CommandResponse",
         "type": "object"
       },
@@ -1296,11 +1290,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           }
         },
-        "required": [
-          "target",
-          "catalog",
-          "discussions"
-        ],
+        "required": ["target", "catalog", "discussions"],
         "title": "CompanyDetectionInput",
         "type": "object"
       },
@@ -1332,12 +1322,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           }
         },
-        "required": [
-          "target",
-          "discussions",
-          "relevant",
-          "co_mentions"
-        ],
+        "required": ["target", "discussions", "relevant", "co_mentions"],
         "title": "CompanyDetectionOutput",
         "type": "object"
       },
@@ -1366,22 +1351,12 @@
             "type": "string"
           },
           "method": {
-            "enum": [
-              "cashtag",
-              "symbol",
-              "name",
-              "alias"
-            ],
+            "enum": ["cashtag", "symbol", "name", "alias"],
             "title": "Method",
             "type": "string"
           }
         },
-        "required": [
-          "instrument",
-          "matched_value",
-          "method",
-          "confidence"
-        ],
+        "required": ["instrument", "matched_value", "method", "confidence"],
         "title": "CompanyMention",
         "type": "object"
       },
@@ -1401,22 +1376,12 @@
             "type": "string"
           },
           "method": {
-            "enum": [
-              "cashtag",
-              "symbol",
-              "name",
-              "alias"
-            ],
+            "enum": ["cashtag", "symbol", "name", "alias"],
             "title": "Method",
             "type": "string"
           }
         },
-        "required": [
-          "instrument",
-          "matched_value",
-          "method",
-          "confidence"
-        ],
+        "required": ["instrument", "matched_value", "method", "confidence"],
         "title": "CompanyMention",
         "type": "object"
       },
@@ -1478,11 +1443,7 @@
             "title": "Sector"
           }
         },
-        "required": [
-          "instrument",
-          "legal_name",
-          "metadata"
-        ],
+        "required": ["instrument", "legal_name", "metadata"],
         "title": "CompanyProfile",
         "type": "object"
       },
@@ -1537,22 +1498,12 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "columns",
-          "rows"
-        ],
+        "required": ["id", "columns", "rows"],
         "title": "ComparisonTable",
         "type": "object"
       },
       "ComponentStatus": {
-        "enum": [
-          "ready",
-          "partial",
-          "empty",
-          "stale",
-          "error"
-        ],
+        "enum": ["ready", "partial", "empty", "stale", "error"],
         "title": "ComponentStatus",
         "type": "string"
       },
@@ -1566,6 +1517,50 @@
         "title": "ConfidenceBasis",
         "type": "string"
       },
+      "ConfusionMatrix": {
+        "additionalProperties": false,
+        "properties": {
+          "actual_labels": {
+            "default": ["rise", "sideways", "decline"],
+            "items": {
+              "type": "string"
+            },
+            "title": "Actual Labels",
+            "type": "array"
+          },
+          "counts": {
+            "items": {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "type": "array"
+            },
+            "title": "Counts",
+            "type": "array"
+          },
+          "predicted_labels": {
+            "default": ["rise", "sideways", "decline", "uncertain"],
+            "items": {
+              "type": "string"
+            },
+            "title": "Predicted Labels",
+            "type": "array"
+          }
+        },
+        "required": ["counts"],
+        "title": "ConfusionMatrix",
+        "type": "object"
+      },
       "CorporateActionType": {
         "enum": [
           "dividend",
@@ -1577,6 +1572,55 @@
         ],
         "title": "CorporateActionType",
         "type": "string"
+      },
+      "DatasetBuildRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "cutoff_end": {
+            "format": "date-time",
+            "title": "Cutoff End",
+            "type": "string"
+          },
+          "cutoff_start": {
+            "format": "date-time",
+            "title": "Cutoff Start",
+            "type": "string"
+          },
+          "horizon_sessions": {
+            "enum": [5, 20],
+            "title": "Horizon Sessions",
+            "type": "integer"
+          },
+          "idempotency_key": {
+            "maxLength": 160,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "profile": {
+            "default": ["market", "technical"],
+            "items": {
+              "$ref": "#/components/schemas/FeatureGroup"
+            },
+            "title": "Profile",
+            "type": "array"
+          },
+          "universe": {
+            "default": "all-equities",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Universe",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key",
+          "horizon_sessions",
+          "cutoff_start",
+          "cutoff_end"
+        ],
+        "title": "DatasetBuildRequest",
+        "type": "object"
       },
       "DependencyHealth": {
         "additionalProperties": false,
@@ -1609,19 +1653,12 @@
             "type": "string"
           },
           "status": {
-            "enum": [
-              "healthy",
-              "unhealthy",
-              "disabled"
-            ],
+            "enum": ["healthy", "unhealthy", "disabled"],
             "title": "Status",
             "type": "string"
           }
         },
-        "required": [
-          "name",
-          "status"
-        ],
+        "required": ["name", "status"],
         "title": "DependencyHealth",
         "type": "object"
       },
@@ -1643,11 +1680,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "discussion",
-          "mentions",
-          "target_relevant"
-        ],
+        "required": ["discussion", "mentions", "target_relevant"],
         "title": "DetectedDiscussion",
         "type": "object"
       },
@@ -1669,13 +1702,14 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "discussion",
-          "mentions",
-          "target_relevant"
-        ],
+        "required": ["discussion", "mentions", "target_relevant"],
         "title": "DetectedDiscussion",
         "type": "object"
+      },
+      "Direction": {
+        "enum": ["rise", "sideways", "decline", "uncertain"],
+        "title": "Direction",
+        "type": "string"
       },
       "Discussion-Input": {
         "additionalProperties": false,
@@ -1870,13 +1904,178 @@
             "$ref": "#/components/schemas/IndicatorSeries"
           }
         },
-        "required": [
-          "instrument",
-          "interval",
-          "series"
-        ],
+        "required": ["instrument", "interval", "series"],
         "title": "EmaOutput",
         "type": "object"
+      },
+      "EvaluationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "idempotency_key": {
+            "maxLength": 160,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": ["idempotency_key"],
+        "title": "EvaluationRequest",
+        "type": "object"
+      },
+      "EvaluationSchedule": {
+        "additionalProperties": false,
+        "properties": {
+          "attempts": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "dataset_version": {
+            "title": "Dataset Version",
+            "type": "string"
+          },
+          "expected_maturity_at": {
+            "format": "date-time",
+            "title": "Expected Maturity At",
+            "type": "string"
+          },
+          "horizon_sessions": {
+            "enum": [5, 20],
+            "title": "Horizon Sessions",
+            "type": "integer"
+          },
+          "idempotency_key": {
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "last_error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error Code"
+          },
+          "lease_expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lease Expires At"
+          },
+          "lease_owner": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lease Owner"
+          },
+          "market_key": {
+            "title": "Market Key",
+            "type": "string"
+          },
+          "model_version": {
+            "title": "Model Version",
+            "type": "string"
+          },
+          "next_check_at": {
+            "format": "date-time",
+            "title": "Next Check At",
+            "type": "string"
+          },
+          "prediction_id": {
+            "format": "uuid",
+            "title": "Prediction Id",
+            "type": "string"
+          },
+          "schedule_id": {
+            "format": "uuid",
+            "title": "Schedule Id",
+            "type": "string"
+          },
+          "schedule_version": {
+            "default": "prediction-evaluation-schedule-v1",
+            "title": "Schedule Version",
+            "type": "string"
+          },
+          "sector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector"
+          },
+          "state": {
+            "$ref": "#/components/schemas/EvaluationState",
+            "default": "scheduled"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prediction_id",
+          "idempotency_key",
+          "model_version",
+          "dataset_version",
+          "horizon_sessions",
+          "market_key",
+          "expected_maturity_at",
+          "next_check_at"
+        ],
+        "title": "EvaluationSchedule",
+        "type": "object"
+      },
+      "EvaluationScheduleList": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/EvaluationSchedule"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": ["items"],
+        "title": "EvaluationScheduleList",
+        "type": "object"
+      },
+      "EvaluationState": {
+        "enum": [
+          "scheduled",
+          "waiting",
+          "collecting",
+          "evaluated",
+          "retrying",
+          "overdue"
+        ],
+        "title": "EvaluationState",
+        "type": "string"
       },
       "EventTimeline": {
         "additionalProperties": false,
@@ -1922,10 +2121,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "items"
-        ],
+        "required": ["id", "items"],
         "title": "EventTimeline",
         "type": "object"
       },
@@ -1975,10 +2171,7 @@
             "title": "Source Id"
           }
         },
-        "required": [
-          "occurred_at",
-          "label"
-        ],
+        "required": ["occurred_at", "label"],
         "title": "EventTimelineItem",
         "type": "object"
       },
@@ -2027,11 +2220,7 @@
           },
           "freshness": {
             "default": "unknown",
-            "enum": [
-              "fresh",
-              "stale",
-              "unknown"
-            ],
+            "enum": ["fresh", "stale", "unknown"],
             "title": "Freshness",
             "type": "string"
           },
@@ -2188,11 +2377,19 @@
         "title": "EvidenceSource",
         "type": "object"
       },
-      "FinancialPeriodType": {
+      "FeatureGroup": {
         "enum": [
-          "annual",
-          "quarterly"
+          "market",
+          "technical",
+          "sentiment",
+          "research",
+          "fundamentals"
         ],
+        "title": "FeatureGroup",
+        "type": "string"
+      },
+      "FinancialPeriodType": {
+        "enum": ["annual", "quarterly"],
         "title": "FinancialPeriodType",
         "type": "string"
       },
@@ -2208,9 +2405,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           }
         },
-        "required": [
-          "instrument"
-        ],
+        "required": ["instrument"],
         "title": "FiveYearPerformanceInput",
         "type": "object"
       },
@@ -2231,11 +2426,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "requested_as_of",
-          "effective_start",
-          "performance"
-        ],
+        "required": ["requested_as_of", "effective_start", "performance"],
         "title": "FiveYearPerformanceOutput",
         "type": "object"
       },
@@ -2260,11 +2451,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "label",
-          "prompt"
-        ],
+        "required": ["id", "label", "prompt"],
         "title": "FollowUpQuestion",
         "type": "object"
       },
@@ -2313,19 +2500,12 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "questions"
-        ],
+        "required": ["id", "questions"],
         "title": "FollowUpQuestions",
         "type": "object"
       },
       "FreshnessStatus": {
-        "enum": [
-          "fresh",
-          "stale",
-          "unknown"
-        ],
+        "enum": ["fresh", "stale", "unknown"],
         "title": "FreshnessStatus",
         "type": "string"
       },
@@ -2380,9 +2560,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "query"
-        ],
+        "required": ["query"],
         "title": "FundamentalAnalysisRequest",
         "type": "object"
       },
@@ -2428,12 +2606,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "instrument",
-          "status",
-          "as_of",
-          "metrics"
-        ],
+        "required": ["instrument", "status", "as_of", "metrics"],
         "title": "FundamentalGrowthOutput",
         "type": "object"
       },
@@ -2481,11 +2654,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "concept",
-          "label",
-          "unit"
-        ],
+        "required": ["concept", "label", "unit"],
         "title": "FundamentalMetric",
         "type": "object"
       },
@@ -2555,13 +2724,7 @@
             "title": "Value"
           }
         },
-        "required": [
-          "period_type",
-          "period_end",
-          "value",
-          "unit",
-          "provider"
-        ],
+        "required": ["period_type", "period_end", "value", "unit", "provider"],
         "title": "FundamentalMetricPoint",
         "type": "object"
       },
@@ -2602,13 +2765,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "target",
-          "peers",
-          "status",
-          "as_of",
-          "comparisons"
-        ],
+        "required": ["target", "peers", "status", "as_of", "comparisons"],
         "title": "FundamentalPeerComparisonOutput",
         "type": "object"
       },
@@ -2667,13 +2824,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "instrument",
-          "section",
-          "status",
-          "as_of",
-          "metrics"
-        ],
+        "required": ["instrument", "section", "status", "as_of", "metrics"],
         "title": "FundamentalSectionOutput",
         "type": "object"
       },
@@ -2767,11 +2918,7 @@
         "type": "object"
       },
       "FundamentalStatus": {
-        "enum": [
-          "completed",
-          "partial",
-          "empty"
-        ],
+        "enum": ["completed", "partial", "empty"],
         "title": "FundamentalStatus",
         "type": "string"
       },
@@ -2828,12 +2975,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "instrument",
-          "status",
-          "as_of",
-          "metrics"
-        ],
+        "required": ["instrument", "status", "as_of", "metrics"],
         "title": "FundamentalValuationOutput",
         "type": "object"
       },
@@ -2860,11 +3002,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "claim_id",
-          "text",
-          "evidence_ids"
-        ],
+        "required": ["claim_id", "text", "evidence_ids"],
         "title": "GroundedClaim",
         "type": "object"
       },
@@ -2912,9 +3050,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "concept"
-        ],
+        "required": ["concept"],
         "title": "GrowthMetric",
         "type": "object"
       },
@@ -2934,10 +3070,7 @@
             "title": "Absolute Change"
           },
           "comparison": {
-            "enum": [
-              "yoy",
-              "qoq"
-            ],
+            "enum": ["yoy", "qoq"],
             "title": "Comparison",
             "type": "string"
           },
@@ -3007,11 +3140,7 @@
             "type": "string"
           },
           "status": {
-            "enum": [
-              "healthy",
-              "degraded",
-              "unhealthy"
-            ],
+            "enum": ["healthy", "degraded", "unhealthy"],
             "title": "Status",
             "type": "string"
           },
@@ -3020,11 +3149,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "version",
-          "status",
-          "checked_at"
-        ],
+        "required": ["version", "status", "checked_at"],
         "title": "HealthResult",
         "type": "object"
       },
@@ -3042,10 +3167,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "timestamp",
-          "value"
-        ],
+        "required": ["timestamp", "value"],
         "title": "IndicatorPoint",
         "type": "object"
       },
@@ -3069,11 +3191,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "period",
-          "latest",
-          "points"
-        ],
+        "required": ["period", "latest", "points"],
         "title": "IndicatorSeries",
         "type": "object"
       },
@@ -3092,10 +3210,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "query",
-          "matches"
-        ],
+        "required": ["query", "matches"],
         "title": "InstrumentAutocompleteOutput",
         "type": "object"
       },
@@ -3112,11 +3227,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           },
           "matched_on": {
-            "enum": [
-              "ticker",
-              "name",
-              "alias"
-            ],
+            "enum": ["ticker", "name", "alias"],
             "title": "Matched On",
             "type": "string"
           },
@@ -3125,12 +3236,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "instrument",
-          "confidence",
-          "matched_on",
-          "matched_value"
-        ],
+        "required": ["instrument", "confidence", "matched_on", "matched_value"],
         "title": "InstrumentMatch",
         "type": "object"
       },
@@ -3216,9 +3322,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "symbol"
-        ],
+        "required": ["symbol"],
         "title": "InstrumentReference",
         "type": "object"
       },
@@ -3248,19 +3352,12 @@
             "type": "string"
           },
           "status": {
-            "enum": [
-              "resolved",
-              "ambiguous",
-              "not_found"
-            ],
+            "enum": ["resolved", "ambiguous", "not_found"],
             "title": "Status",
             "type": "string"
           }
         },
-        "required": [
-          "query",
-          "status"
-        ],
+        "required": ["query", "status"],
         "title": "InstrumentResolveOutput",
         "type": "object"
       },
@@ -3279,12 +3376,14 @@
             "type": "string"
           }
         },
-        "required": [
-          "query",
-          "matches"
-        ],
+        "required": ["query", "matches"],
         "title": "InstrumentSearchOutput",
         "type": "object"
+      },
+      "JobStatus": {
+        "enum": ["queued", "running", "completed", "failed", "dead_letter"],
+        "title": "JobStatus",
+        "type": "string"
       },
       "JsonValue": {},
       "LevelOutput": {
@@ -3313,10 +3412,7 @@
             "type": "integer"
           },
           "side": {
-            "enum": [
-              "support",
-              "resistance"
-            ],
+            "enum": ["support", "resistance"],
             "title": "Side",
             "type": "string"
           }
@@ -3333,12 +3429,7 @@
         "type": "object"
       },
       "LicenseClassification": {
-        "enum": [
-          "internal",
-          "redistributable",
-          "restricted",
-          "unknown"
-        ],
+        "enum": ["internal", "redistributable", "restricted", "unknown"],
         "title": "LicenseClassification",
         "type": "string"
       },
@@ -3410,23 +3501,912 @@
             "type": "string"
           }
         },
-        "required": [
-          "timestamp",
-          "macd",
-          "signal",
-          "histogram"
-        ],
+        "required": ["timestamp", "macd", "signal", "histogram"],
         "title": "MacdPoint",
         "type": "object"
       },
       "MarketInterval": {
-        "enum": [
-          "1d",
-          "1wk",
-          "1mo"
-        ],
+        "enum": ["1d", "1wk", "1mo"],
         "title": "MarketInterval",
         "type": "string"
+      },
+      "MarketShiftAttempt": {
+        "additionalProperties": false,
+        "properties": {
+          "calculation_id": {
+            "format": "uuid",
+            "title": "Calculation Id",
+            "type": "string"
+          },
+          "completed_at": {
+            "format": "date-time",
+            "title": "Completed At",
+            "type": "string"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          },
+          "idempotency_key": {
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "instrument_id": {
+            "format": "uuid",
+            "title": "Instrument Id",
+            "type": "string"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "title": "Requested At",
+            "type": "string"
+          },
+          "snapshot": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MarketShiftSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/MarketShiftStatus"
+          }
+        },
+        "required": [
+          "calculation_id",
+          "status",
+          "instrument_id",
+          "requested_at",
+          "completed_at",
+          "idempotency_key"
+        ],
+        "title": "MarketShiftAttempt",
+        "type": "object"
+      },
+      "MarketShiftCategory": {
+        "enum": [
+          "news",
+          "public_sentiment",
+          "technical_trend",
+          "fundamentals",
+          "sector",
+          "macro",
+          "institutional_activity"
+        ],
+        "title": "MarketShiftCategory",
+        "type": "string"
+      },
+      "MarketShiftCategorySignal": {
+        "additionalProperties": false,
+        "properties": {
+          "agreement": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Agreement",
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/MarketShiftCategory"
+          },
+          "confidence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "coverage": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Coverage",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "freshness": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Freshness",
+            "type": "string"
+          },
+          "score": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Score",
+            "type": "string"
+          },
+          "temporal_alignment": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Temporal Alignment",
+            "type": "string"
+          },
+          "weight": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Weight",
+            "type": "string"
+          },
+          "weighted_contribution": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Weighted Contribution",
+            "type": "string"
+          }
+        },
+        "required": [
+          "category",
+          "score",
+          "weight",
+          "weighted_contribution",
+          "coverage",
+          "freshness",
+          "agreement",
+          "temporal_alignment",
+          "confidence",
+          "evidence_ids"
+        ],
+        "title": "MarketShiftCategorySignal",
+        "type": "object"
+      },
+      "MarketShiftDirection": {
+        "enum": ["improving", "stable", "deteriorating", "uncertain"],
+        "title": "MarketShiftDirection",
+        "type": "string"
+      },
+      "MarketShiftDriver": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/MarketShiftCategory"
+          },
+          "confidence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "contribution": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Contribution",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "label": {
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "category",
+          "contribution",
+          "confidence",
+          "observed_at",
+          "evidence_ids"
+        ],
+        "title": "MarketShiftDriver",
+        "type": "object"
+      },
+      "MarketShiftEvidence": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/MarketShiftCategory"
+          },
+          "current_value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Current Value",
+            "type": "string"
+          },
+          "evidence_id": {
+            "pattern": "^mse_[a-f0-9]{16}$",
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "metric": {
+            "title": "Metric",
+            "type": "string"
+          },
+          "normalized_delta": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Normalized Delta",
+            "type": "string"
+          },
+          "previous_value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Previous Value",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "category",
+          "metric",
+          "source_id",
+          "provider",
+          "timestamp",
+          "current_value",
+          "previous_value",
+          "normalized_delta"
+        ],
+        "title": "MarketShiftEvidence",
+        "type": "object"
+      },
+      "MarketShiftHistoryItem": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence_change": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence Change"
+          },
+          "direction_changed": {
+            "default": false,
+            "title": "Direction Changed",
+            "type": "boolean"
+          },
+          "new_narratives": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "New Narratives",
+            "type": "array"
+          },
+          "retired_narratives": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Retired Narratives",
+            "type": "array"
+          },
+          "score_change": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Change"
+          },
+          "snapshot": {
+            "$ref": "#/components/schemas/MarketShiftSnapshot"
+          }
+        },
+        "required": ["snapshot"],
+        "title": "MarketShiftHistoryItem",
+        "type": "object"
+      },
+      "MarketShiftHistoryPage": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MarketShiftHistoryItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": ["items"],
+        "title": "MarketShiftHistoryPage",
+        "type": "object"
+      },
+      "MarketShiftNarrative": {
+        "additionalProperties": false,
+        "properties": {
+          "change": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Change",
+            "type": "string"
+          },
+          "current_prevalence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Current Prevalence",
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "emerging",
+              "strengthening",
+              "stable",
+              "weakening",
+              "retired"
+            ],
+            "title": "Direction",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "label": {
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "narrative_id": {
+            "pattern": "^msn_[a-f0-9]{16}$",
+            "title": "Narrative Id",
+            "type": "string"
+          },
+          "previous_prevalence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Previous Prevalence",
+            "type": "string"
+          }
+        },
+        "required": [
+          "narrative_id",
+          "label",
+          "direction",
+          "current_prevalence",
+          "previous_prevalence",
+          "change",
+          "evidence_ids"
+        ],
+        "title": "MarketShiftNarrative",
+        "type": "object"
+      },
+      "MarketShiftObservation": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/MarketShiftCategory"
+          },
+          "idempotency_key": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "instrument_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Instrument Id"
+          },
+          "known_at": {
+            "format": "date-time",
+            "title": "Known At",
+            "type": "string"
+          },
+          "metric": {
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "title": "Metric",
+            "type": "string"
+          },
+          "observation_id": {
+            "format": "uuid",
+            "title": "Observation Id",
+            "type": "string"
+          },
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          },
+          "provider": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "retrieved_at": {
+            "format": "date-time",
+            "title": "Retrieved At",
+            "type": "string"
+          },
+          "scope": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Scope",
+            "type": "string"
+          },
+          "source_id": {
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Source Id",
+            "type": "string"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "source_version": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Source Version",
+            "type": "string"
+          },
+          "unit": {
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "idempotency_key",
+          "category",
+          "scope",
+          "metric",
+          "value",
+          "unit",
+          "observed_at",
+          "known_at",
+          "retrieved_at",
+          "source_id",
+          "provider",
+          "source_version"
+        ],
+        "title": "MarketShiftObservation",
+        "type": "object"
+      },
+      "MarketShiftObservationBatch": {
+        "additionalProperties": false,
+        "properties": {
+          "idempotency_key": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/MarketShiftObservation"
+            },
+            "maxItems": 10000,
+            "minItems": 1,
+            "title": "Observations",
+            "type": "array"
+          }
+        },
+        "required": ["idempotency_key", "observations"],
+        "title": "MarketShiftObservationBatch",
+        "type": "object"
+      },
+      "MarketShiftObservationReceipt": {
+        "additionalProperties": false,
+        "properties": {
+          "accepted": {
+            "minimum": 0.0,
+            "title": "Accepted",
+            "type": "integer"
+          },
+          "batch_id": {
+            "format": "uuid",
+            "title": "Batch Id",
+            "type": "string"
+          },
+          "duplicate": {
+            "default": false,
+            "title": "Duplicate",
+            "type": "boolean"
+          }
+        },
+        "required": ["batch_id", "accepted"],
+        "title": "MarketShiftObservationReceipt",
+        "type": "object"
+      },
+      "MarketShiftRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "idempotency_key": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Idempotency Key"
+          },
+          "query": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          },
+          "window_days": {
+            "default": 90,
+            "maximum": 365.0,
+            "minimum": 7.0,
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": ["query"],
+        "title": "MarketShiftRequest",
+        "type": "object"
+      },
+      "MarketShiftScheduleResult": {
+        "additionalProperties": false,
+        "properties": {
+          "processed": {
+            "minimum": 0.0,
+            "title": "Processed",
+            "type": "integer"
+          }
+        },
+        "required": ["processed"],
+        "title": "MarketShiftScheduleResult",
+        "type": "object"
+      },
+      "MarketShiftSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "calculation_id": {
+            "format": "uuid",
+            "title": "Calculation Id",
+            "type": "string"
+          },
+          "calculation_version": {
+            "const": "market-shift-v1",
+            "default": "market-shift-v1",
+            "title": "Calculation Version",
+            "type": "string"
+          },
+          "catalysts": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/MarketShiftDriver"
+            },
+            "title": "Catalysts",
+            "type": "array"
+          },
+          "category_signals": {
+            "items": {
+              "$ref": "#/components/schemas/MarketShiftCategorySignal"
+            },
+            "maxItems": 7,
+            "minItems": 7,
+            "title": "Category Signals",
+            "type": "array"
+          },
+          "confidence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "configuration_fingerprint": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Configuration Fingerprint",
+            "type": "string"
+          },
+          "data_cutoff": {
+            "format": "date-time",
+            "title": "Data Cutoff",
+            "type": "string"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/MarketShiftDirection"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/MarketShiftEvidence"
+            },
+            "minItems": 7,
+            "title": "Evidence",
+            "type": "array"
+          },
+          "evidence_schema_version": {
+            "const": "market-shift-evidence-v1",
+            "default": "market-shift-evidence-v1",
+            "title": "Evidence Schema Version",
+            "type": "string"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "title": "Generated At",
+            "type": "string"
+          },
+          "input_fingerprint": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Input Fingerprint",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "narratives": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/MarketShiftNarrative"
+            },
+            "title": "Narratives",
+            "type": "array"
+          },
+          "risks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/MarketShiftDriver"
+            },
+            "title": "Risks",
+            "type": "array"
+          },
+          "score": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Score",
+            "type": "string"
+          },
+          "scoring_rule_version": {
+            "title": "Scoring Rule Version",
+            "type": "string"
+          },
+          "status": {
+            "const": "completed",
+            "default": "completed",
+            "title": "Status",
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/MarketShiftWindow"
+          }
+        },
+        "required": [
+          "calculation_id",
+          "instrument",
+          "generated_at",
+          "data_cutoff",
+          "window",
+          "score",
+          "direction",
+          "confidence",
+          "category_signals",
+          "evidence",
+          "scoring_rule_version",
+          "configuration_fingerprint",
+          "input_fingerprint"
+        ],
+        "title": "MarketShiftSnapshot",
+        "type": "object"
+      },
+      "MarketShiftStatus": {
+        "enum": ["completed", "failed"],
+        "title": "MarketShiftStatus",
+        "type": "string"
+      },
+      "MarketShiftWatchlist": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MarketShiftWatchlistEntry"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": ["items"],
+        "title": "MarketShiftWatchlist",
+        "type": "object"
+      },
+      "MarketShiftWatchlistEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "next_run_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Run At"
+          },
+          "run_time": {
+            "default": "02:00",
+            "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Run Time",
+            "type": "string"
+          },
+          "timezone": {
+            "default": "UTC",
+            "title": "Timezone",
+            "type": "string"
+          },
+          "watchlist_id": {
+            "format": "uuid",
+            "title": "Watchlist Id",
+            "type": "string"
+          },
+          "window_days": {
+            "default": 90,
+            "maximum": 365.0,
+            "minimum": 7.0,
+            "title": "Window Days",
+            "type": "integer"
+          }
+        },
+        "required": ["instrument"],
+        "title": "MarketShiftWatchlistEntry",
+        "type": "object"
+      },
+      "MarketShiftWindow": {
+        "additionalProperties": false,
+        "properties": {
+          "current_start": {
+            "format": "date-time",
+            "title": "Current Start",
+            "type": "string"
+          },
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "previous_start": {
+            "format": "date-time",
+            "title": "Previous Start",
+            "type": "string"
+          }
+        },
+        "required": ["previous_start", "current_start", "end"],
+        "title": "MarketShiftWindow",
+        "type": "object"
       },
       "MarketThesisComponent": {
         "additionalProperties": false,
@@ -3489,9 +4469,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "title": "MarketThesisComponent",
         "type": "object"
       },
@@ -3539,10 +4517,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "metrics"
-        ],
+        "required": ["id", "metrics"],
         "title": "MetricGrid",
         "type": "object"
       },
@@ -3569,22 +4544,286 @@
             "type": "string"
           }
         },
-        "required": [
-          "label",
-          "value"
-        ],
+        "required": ["label", "value"],
         "title": "MetricItem",
+        "type": "object"
+      },
+      "ModelMetrics": {
+        "additionalProperties": false,
+        "properties": {
+          "class_samples": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Class Samples",
+            "type": "object"
+          },
+          "expected_calibration_error": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Expected Calibration Error",
+            "type": "string"
+          },
+          "leakage_checks_passed": {
+            "title": "Leakage Checks Passed",
+            "type": "boolean"
+          },
+          "log_loss": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Log Loss",
+            "type": "string"
+          },
+          "multiclass_brier": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Multiclass Brier",
+            "type": "string"
+          },
+          "range_coverage": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Range Coverage",
+            "type": "string"
+          },
+          "total_samples": {
+            "title": "Total Samples",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "multiclass_brier",
+          "log_loss",
+          "expected_calibration_error",
+          "range_coverage",
+          "total_samples",
+          "class_samples",
+          "leakage_checks_passed"
+        ],
+        "title": "ModelMetrics",
+        "type": "object"
+      },
+      "ModelPerformanceReport": {
+        "additionalProperties": false,
+        "properties": {
+          "calibration": {
+            "items": {
+              "$ref": "#/components/schemas/CalibrationBin"
+            },
+            "title": "Calibration",
+            "type": "array"
+          },
+          "cohorts": {
+            "items": {
+              "$ref": "#/components/schemas/CohortPerformance"
+            },
+            "title": "Cohorts",
+            "type": "array"
+          },
+          "confusion_matrix": {
+            "$ref": "#/components/schemas/ConfusionMatrix"
+          },
+          "data_cutoff": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Cutoff"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/PerformanceFilter"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "title": "Generated At",
+            "type": "string"
+          },
+          "metrics_version": {
+            "default": "prediction-performance-v1",
+            "title": "Metrics Version",
+            "type": "string"
+          },
+          "overall": {
+            "$ref": "#/components/schemas/tradesentinel__domain__prediction__PerformanceMetrics"
+          },
+          "overdue": {
+            "minimum": 0.0,
+            "title": "Overdue",
+            "type": "integer"
+          },
+          "retrying": {
+            "minimum": 0.0,
+            "title": "Retrying",
+            "type": "integer"
+          },
+          "scheduled": {
+            "minimum": 0.0,
+            "title": "Scheduled",
+            "type": "integer"
+          },
+          "waiting": {
+            "minimum": 0.0,
+            "title": "Waiting",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data_cutoff",
+          "filters",
+          "overall",
+          "confusion_matrix",
+          "calibration",
+          "cohorts",
+          "scheduled",
+          "waiting",
+          "retrying",
+          "overdue"
+        ],
+        "title": "ModelPerformanceReport",
+        "type": "object"
+      },
+      "ModelVersion": {
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "default": false,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "artifact_key": {
+            "title": "Artifact Key",
+            "type": "string"
+          },
+          "artifact_schema_version": {
+            "title": "Artifact Schema Version",
+            "type": "string"
+          },
+          "artifact_sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Artifact Sha256",
+            "type": "string"
+          },
+          "artifact_size": {
+            "exclusiveMinimum": 0.0,
+            "title": "Artifact Size",
+            "type": "integer"
+          },
+          "asset_type": {
+            "title": "Asset Type",
+            "type": "string"
+          },
+          "calibration_version": {
+            "title": "Calibration Version",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "dataset_version": {
+            "title": "Dataset Version",
+            "type": "string"
+          },
+          "family": {
+            "enum": ["logistic_regression", "hist_gradient_boosting"],
+            "title": "Family",
+            "type": "string"
+          },
+          "feature_schema_version": {
+            "title": "Feature Schema Version",
+            "type": "string"
+          },
+          "horizon_sessions": {
+            "enum": [5, 20],
+            "title": "Horizon Sessions",
+            "type": "integer"
+          },
+          "library_versions": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Library Versions",
+            "type": "object"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/ModelMetrics"
+          },
+          "model_version": {
+            "title": "Model Version",
+            "type": "string"
+          },
+          "preprocessing_version": {
+            "title": "Preprocessing Version",
+            "type": "string"
+          },
+          "profile": {
+            "items": {
+              "$ref": "#/components/schemas/FeatureGroup"
+            },
+            "title": "Profile",
+            "type": "array"
+          },
+          "training_code_version": {
+            "title": "Training Code Version",
+            "type": "string"
+          },
+          "trusted_types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Trusted Types",
+            "type": "array"
+          },
+          "universe": {
+            "title": "Universe",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model_version",
+          "dataset_version",
+          "feature_schema_version",
+          "profile",
+          "horizon_sessions",
+          "asset_type",
+          "universe",
+          "family",
+          "calibration_version",
+          "preprocessing_version",
+          "training_code_version",
+          "artifact_schema_version",
+          "artifact_key",
+          "artifact_sha256",
+          "artifact_size",
+          "library_versions",
+          "trusted_types",
+          "metrics"
+        ],
+        "title": "ModelVersion",
+        "type": "object"
+      },
+      "ModelVersionList": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ModelVersion"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": ["items"],
+        "title": "ModelVersionList",
         "type": "object"
       },
       "MomentumOutput": {
         "additionalProperties": false,
         "properties": {
           "direction": {
-            "enum": [
-              "positive",
-              "neutral",
-              "negative"
-            ],
+            "enum": ["positive", "neutral", "negative"],
             "title": "Direction",
             "type": "string"
           },
@@ -3657,10 +4896,7 @@
             "type": "integer"
           },
           "method": {
-            "enum": [
-              "taxonomy",
-              "ngram"
-            ],
+            "enum": ["taxonomy", "ngram"],
             "title": "Method",
             "type": "string"
           },
@@ -3736,12 +4972,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           }
         },
-        "required": [
-          "target",
-          "observations",
-          "current_start",
-          "end"
-        ],
+        "required": ["target", "observations", "current_start", "end"],
         "title": "NarrativeExtractionInput",
         "type": "object"
       },
@@ -3762,11 +4993,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           }
         },
-        "required": [
-          "target",
-          "status",
-          "narratives"
-        ],
+        "required": ["target", "status", "narratives"],
         "title": "NarrativeList",
         "type": "object"
       },
@@ -3817,9 +5044,7 @@
             "title": "Start"
           }
         },
-        "required": [
-          "query"
-        ],
+        "required": ["query"],
         "title": "NewsSearchInput",
         "type": "object"
       },
@@ -3838,10 +5063,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "query",
-          "sources"
-        ],
+        "required": ["query", "sources"],
         "title": "NewsSearchOutput",
         "type": "object"
       },
@@ -3889,11 +5111,103 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "items"
-        ],
+        "required": ["id", "items"],
         "title": "NewsTimeline",
+        "type": "object"
+      },
+      "NumericRange": {
+        "additionalProperties": false,
+        "properties": {
+          "high": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "High",
+            "type": "string"
+          },
+          "low": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Low",
+            "type": "string"
+          }
+        },
+        "required": ["low", "high"],
+        "title": "NumericRange",
+        "type": "object"
+      },
+      "ObservationBatch": {
+        "additionalProperties": false,
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/FeatureGroup"
+          },
+          "idempotency_key": {
+            "maxLength": 160,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/PointInTimeValue"
+            },
+            "maxItems": 10000,
+            "minItems": 1,
+            "title": "Observations",
+            "type": "array"
+          }
+        },
+        "required": ["idempotency_key", "instrument", "group", "observations"],
+        "title": "ObservationBatch",
+        "type": "object"
+      },
+      "ObservationReceipt": {
+        "additionalProperties": false,
+        "properties": {
+          "accepted": {
+            "title": "Accepted",
+            "type": "integer"
+          },
+          "batch_id": {
+            "format": "uuid",
+            "title": "Batch Id",
+            "type": "string"
+          },
+          "duplicate": {
+            "default": false,
+            "title": "Duplicate",
+            "type": "boolean"
+          }
+        },
+        "required": ["batch_id", "accepted"],
+        "title": "ObservationReceipt",
+        "type": "object"
+      },
+      "PaginatedPredictions": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PredictionResult"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": ["items"],
+        "title": "PaginatedPredictions",
         "type": "object"
       },
       "PeerMetricComparison": {
@@ -3923,11 +5237,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "concept",
-          "median",
-          "values"
-        ],
+        "required": ["concept", "median", "values"],
         "title": "PeerMetricComparison",
         "type": "object"
       },
@@ -3962,74 +5272,171 @@
             "title": "Value"
           }
         },
-        "required": [
-          "instrument",
-          "value"
-        ],
+        "required": ["instrument", "value"],
         "title": "PeerMetricValue",
         "type": "object"
       },
-      "PerformanceMetrics": {
+      "PerformanceFilter": {
         "additionalProperties": false,
         "properties": {
-          "annualized_volatility": {
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "Annualized Volatility",
-            "type": "string"
+          "asset_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Type"
           },
-          "cagr": {
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "Cagr",
-            "type": "string"
+          "end": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
           },
-          "end_at": {
-            "format": "date-time",
-            "title": "End At",
-            "type": "string"
+          "exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
           },
-          "end_value": {
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "End Value",
-            "type": "string"
+          "horizon_sessions": {
+            "anyOf": [
+              {
+                "enum": [5, 20],
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Horizon Sessions"
           },
-          "maximum_drawdown": {
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "Maximum Drawdown",
-            "type": "string"
+          "model_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Version"
           },
-          "observations": {
-            "minimum": 2.0,
-            "title": "Observations",
+          "sector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          }
+        },
+        "title": "PerformanceFilter",
+        "type": "object"
+      },
+      "PerformanceRebuildResult": {
+        "additionalProperties": false,
+        "properties": {
+          "aggregates_written": {
+            "minimum": 0.0,
+            "title": "Aggregates Written",
             "type": "integer"
           },
-          "start_at": {
+          "metrics_version": {
+            "default": "prediction-performance-v1",
+            "title": "Metrics Version",
+            "type": "string"
+          },
+          "outcomes_processed": {
+            "minimum": 0.0,
+            "title": "Outcomes Processed",
+            "type": "integer"
+          }
+        },
+        "required": ["outcomes_processed", "aggregates_written"],
+        "title": "PerformanceRebuildResult",
+        "type": "object"
+      },
+      "PointInTimeValue": {
+        "additionalProperties": false,
+        "properties": {
+          "known_at": {
             "format": "date-time",
-            "title": "Start At",
+            "title": "Known At",
             "type": "string"
           },
-          "start_value": {
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "Start Value",
+          "name": {
+            "pattern": "^[a-z][a-z0-9_.]*$",
+            "title": "Name",
             "type": "string"
           },
-          "total_return": {
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "Total Return",
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
             "type": "string"
+          },
+          "source_version": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Source Version",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
           }
         },
         "required": [
-          "start_at",
-          "end_at",
-          "start_value",
-          "end_value",
-          "observations",
-          "total_return",
-          "cagr",
-          "annualized_volatility",
-          "maximum_drawdown"
+          "name",
+          "value",
+          "observed_at",
+          "known_at",
+          "source_version"
         ],
-        "title": "PerformanceMetrics",
+        "title": "PointInTimeValue",
         "type": "object"
       },
       "PredictionCard": {
@@ -4047,12 +5454,7 @@
             "type": "string"
           },
           "direction": {
-            "enum": [
-              "rise",
-              "sideways",
-              "decline",
-              "uncertain"
-            ],
+            "enum": ["rise", "sideways", "decline", "uncertain"],
             "title": "Direction",
             "type": "string"
           },
@@ -4115,6 +5517,523 @@
         "title": "PredictionCard",
         "type": "object"
       },
+      "PredictionEvaluation": {
+        "additionalProperties": false,
+        "properties": {
+          "outcome": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PredictionOutcome"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "prediction": {
+            "$ref": "#/components/schemas/PredictionResult"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/EvaluationSchedule"
+          }
+        },
+        "required": ["prediction", "schedule"],
+        "title": "PredictionEvaluation",
+        "type": "object"
+      },
+      "PredictionJob": {
+        "additionalProperties": false,
+        "properties": {
+          "attempts": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "idempotency_key": {
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "job_id": {
+            "format": "uuid",
+            "title": "Job Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": ["dataset", "training", "evaluation"],
+            "title": "Kind",
+            "type": "string"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus",
+            "default": "queued"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": ["kind", "idempotency_key", "payload"],
+        "title": "PredictionJob",
+        "type": "object"
+      },
+      "PredictionOutcome": {
+        "additionalProperties": false,
+        "properties": {
+          "brier_score": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Brier Score",
+            "type": "string"
+          },
+          "evaluated_at": {
+            "format": "date-time",
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "evaluation_data_cutoff": {
+            "format": "date-time",
+            "title": "Evaluation Data Cutoff",
+            "type": "string"
+          },
+          "evaluation_version": {
+            "default": "prediction-evaluation-v2",
+            "title": "Evaluation Version",
+            "type": "string"
+          },
+          "horizon_sessions": {
+            "enum": [5, 20],
+            "title": "Horizon Sessions",
+            "type": "integer"
+          },
+          "log_loss": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Log Loss",
+            "type": "string"
+          },
+          "market_key": {
+            "title": "Market Key",
+            "type": "string"
+          },
+          "model_version": {
+            "title": "Model Version",
+            "type": "string"
+          },
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          },
+          "predicted_direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "prediction_id": {
+            "format": "uuid",
+            "title": "Prediction Id",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "realized_adjusted_close": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Realized Adjusted Close",
+            "type": "string"
+          },
+          "realized_direction": {
+            "enum": ["rise", "sideways", "decline"],
+            "title": "Realized Direction",
+            "type": "string"
+          },
+          "realized_return": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Realized Return",
+            "type": "string"
+          },
+          "retrieved_at": {
+            "format": "date-time",
+            "title": "Retrieved At",
+            "type": "string"
+          },
+          "sector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector"
+          },
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "within_modeled_price_range": {
+            "title": "Within Modeled Price Range",
+            "type": "boolean"
+          },
+          "within_modeled_range": {
+            "title": "Within Modeled Range",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "prediction_id",
+          "evaluated_at",
+          "evaluation_data_cutoff",
+          "realized_return",
+          "realized_adjusted_close",
+          "realized_direction",
+          "brier_score",
+          "log_loss",
+          "within_modeled_range",
+          "within_modeled_price_range",
+          "provider",
+          "source_id",
+          "observed_at",
+          "retrieved_at",
+          "market_key",
+          "model_version",
+          "horizon_sessions",
+          "predicted_direction"
+        ],
+        "title": "PredictionOutcome",
+        "type": "object"
+      },
+      "PredictionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "currency": {
+            "maxLength": 3,
+            "minLength": 3,
+            "title": "Currency",
+            "type": "string"
+          },
+          "cutoff": {
+            "format": "date-time",
+            "title": "Cutoff",
+            "type": "string"
+          },
+          "cutoff_adjusted_close": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Cutoff Adjusted Close"
+          },
+          "feature_profile": {
+            "default": ["market", "technical"],
+            "items": {
+              "$ref": "#/components/schemas/FeatureGroup"
+            },
+            "title": "Feature Profile",
+            "type": "array"
+          },
+          "horizon_sessions": {
+            "enum": [5, 20],
+            "title": "Horizon Sessions",
+            "type": "integer"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "sector": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector"
+          },
+          "sector_known_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector Known At"
+          },
+          "sector_source": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector Source"
+          }
+        },
+        "required": [
+          "instrument",
+          "cutoff",
+          "horizon_sessions",
+          "cutoff_adjusted_close",
+          "currency"
+        ],
+        "title": "PredictionRequest",
+        "type": "object"
+      },
+      "PredictionResult": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_version": {
+            "title": "Artifact Version",
+            "type": "string"
+          },
+          "calibration_version": {
+            "title": "Calibration Version",
+            "type": "string"
+          },
+          "confidence": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "confidence_version": {
+            "default": "entropy-v1",
+            "title": "Confidence Version",
+            "type": "string"
+          },
+          "contract_version": {
+            "default": "prediction-result-v2",
+            "title": "Contract Version",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "cutoff_adjusted_close": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cutoff Adjusted Close",
+            "type": "string"
+          },
+          "data_cutoff": {
+            "format": "date-time",
+            "title": "Data Cutoff",
+            "type": "string"
+          },
+          "dataset_version": {
+            "title": "Dataset Version",
+            "type": "string"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "feature_fingerprint": {
+            "title": "Feature Fingerprint",
+            "type": "string"
+          },
+          "feature_profile": {
+            "items": {
+              "$ref": "#/components/schemas/FeatureGroup"
+            },
+            "title": "Feature Profile",
+            "type": "array"
+          },
+          "feature_schema_version": {
+            "title": "Feature Schema Version",
+            "type": "string"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "title": "Generated At",
+            "type": "string"
+          },
+          "horizon_sessions": {
+            "enum": [5, 20],
+            "title": "Horizon Sessions",
+            "type": "integer"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/InstrumentRef"
+          },
+          "label_threshold": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Label Threshold",
+            "type": "string"
+          },
+          "label_version": {
+            "title": "Label Version",
+            "type": "string"
+          },
+          "limitations": {
+            "default": [
+              "Probabilities describe a historical statistical model, not certainty.",
+              "Scenario ranges are not price targets or recommendations."
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "market_key": {
+            "title": "Market Key",
+            "type": "string"
+          },
+          "model_version": {
+            "title": "Model Version",
+            "type": "string"
+          },
+          "modeled_price_range": {
+            "$ref": "#/components/schemas/NumericRange"
+          },
+          "modeled_return_range": {
+            "$ref": "#/components/schemas/NumericRange"
+          },
+          "prediction_id": {
+            "format": "uuid",
+            "title": "Prediction Id",
+            "type": "string"
+          },
+          "preprocessing_version": {
+            "title": "Preprocessing Version",
+            "type": "string"
+          },
+          "probabilities": {
+            "$ref": "#/components/schemas/ProbabilitySet"
+          },
+          "scenario_version": {
+            "default": "quantile-scenarios-v1",
+            "title": "Scenario Version",
+            "type": "string"
+          },
+          "scenarios": {
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "$ref": "#/components/schemas/Scenario"
+              },
+              {
+                "$ref": "#/components/schemas/Scenario"
+              },
+              {
+                "$ref": "#/components/schemas/Scenario"
+              }
+            ],
+            "title": "Scenarios",
+            "type": "array"
+          },
+          "sector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector"
+          },
+          "sector_known_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector Known At"
+          },
+          "sector_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sector Source"
+          },
+          "training_code_version": {
+            "title": "Training Code Version",
+            "type": "string"
+          },
+          "warnings": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "instrument",
+          "data_cutoff",
+          "horizon_sessions",
+          "label_threshold",
+          "direction",
+          "probabilities",
+          "confidence",
+          "cutoff_adjusted_close",
+          "currency",
+          "modeled_return_range",
+          "modeled_price_range",
+          "scenarios",
+          "model_version",
+          "dataset_version",
+          "feature_schema_version",
+          "feature_profile",
+          "feature_fingerprint",
+          "label_version",
+          "preprocessing_version",
+          "calibration_version",
+          "training_code_version",
+          "artifact_version",
+          "market_key"
+        ],
+        "title": "PredictionResult",
+        "type": "object"
+      },
       "PriceChart": {
         "additionalProperties": false,
         "properties": {
@@ -4159,10 +6078,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "series"
-        ],
+        "required": ["id", "series"],
         "title": "PriceChart",
         "type": "object"
       },
@@ -4190,10 +6106,7 @@
             "type": "string"
           },
           "method": {
-            "enum": [
-              "rolling_extreme",
-              "pivot_cluster"
-            ],
+            "enum": ["rolling_extreme", "pivot_cluster"],
             "title": "Method",
             "type": "string"
           },
@@ -4212,6 +6125,29 @@
           "distance_percent"
         ],
         "title": "PriceLevel",
+        "type": "object"
+      },
+      "ProbabilitySet": {
+        "additionalProperties": false,
+        "properties": {
+          "decline": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Decline",
+            "type": "string"
+          },
+          "rise": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Rise",
+            "type": "string"
+          },
+          "sideways": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Sideways",
+            "type": "string"
+          }
+        },
+        "required": ["rise", "sideways", "decline"],
+        "title": "ProbabilitySet",
         "type": "object"
       },
       "ProviderMetadata": {
@@ -4264,11 +6200,7 @@
             "title": "Timezone"
           }
         },
-        "required": [
-          "provider",
-          "source_id",
-          "retrieved_at"
-        ],
+        "required": ["provider", "source_id", "retrieved_at"],
         "title": "ProviderMetadata",
         "type": "object"
       },
@@ -4288,12 +6220,7 @@
             "$ref": "#/components/schemas/SentimentTrend"
           }
         },
-        "required": [
-          "snapshot",
-          "narratives",
-          "trend",
-          "shift"
-        ],
+        "required": ["snapshot", "narratives", "trend", "shift"],
         "title": "PublicSentimentAnalysis",
         "type": "object"
       },
@@ -4311,10 +6238,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "timestamp",
-          "value"
-        ],
+        "required": ["timestamp", "value"],
         "title": "RebasedPoint",
         "type": "object"
       },
@@ -4456,11 +6380,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "status",
-          "text",
-          "generated_at"
-        ],
+        "required": ["status", "text", "generated_at"],
         "title": "RenderedResponse",
         "type": "object"
       },
@@ -4688,11 +6608,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "event",
-          "sources",
-          "claims"
-        ],
+        "required": ["event", "sources", "claims"],
         "title": "ResearchEvidenceOutput",
         "type": "object"
       },
@@ -4728,11 +6644,7 @@
             "type": "array"
           },
           "status": {
-            "enum": [
-              "completed",
-              "partial",
-              "empty"
-            ],
+            "enum": ["completed", "partial", "empty"],
             "title": "Status",
             "type": "string"
           },
@@ -4880,10 +6792,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "query",
-          "events"
-        ],
+        "required": ["query", "events"],
         "title": "ResearchTimelineInput",
         "type": "object"
       },
@@ -4902,10 +6811,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "query",
-          "events"
-        ],
+        "required": ["query", "events"],
         "title": "ResearchTimelineOutput",
         "type": "object"
       },
@@ -5031,9 +6937,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "title": "ResponseSection",
         "type": "object"
       },
@@ -5081,10 +6985,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "risks"
-        ],
+        "required": ["id", "risks"],
         "title": "RiskCard",
         "type": "object"
       },
@@ -5100,21 +7001,12 @@
             "type": "string"
           },
           "severity": {
-            "enum": [
-              "low",
-              "medium",
-              "high",
-              "unknown"
-            ],
+            "enum": ["low", "medium", "high", "unknown"],
             "title": "Severity",
             "type": "string"
           }
         },
-        "required": [
-          "label",
-          "severity",
-          "description"
-        ],
+        "required": ["label", "severity", "description"],
         "title": "RiskItem",
         "type": "object"
       },
@@ -5131,11 +7023,7 @@
             "$ref": "#/components/schemas/IndicatorSeries"
           }
         },
-        "required": [
-          "instrument",
-          "interval",
-          "series"
-        ],
+        "required": ["instrument", "interval", "series"],
         "title": "RsiOutput",
         "type": "object"
       },
@@ -5186,11 +7074,7 @@
           },
           "freshness": {
             "default": "unknown",
-            "enum": [
-              "fresh",
-              "stale",
-              "unknown"
-            ],
+            "enum": ["fresh", "stale", "unknown"],
             "title": "Freshness",
             "type": "string"
           },
@@ -5212,9 +7096,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "started_at"
-        ],
+        "required": ["started_at"],
         "title": "RunMetadata",
         "type": "object"
       },
@@ -5233,9 +7115,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "run_id"
-        ],
+        "required": ["run_id"],
         "title": "RunSourcesResponse",
         "type": "object"
       },
@@ -5250,6 +7130,46 @@
         ],
         "title": "RunStatus",
         "type": "string"
+      },
+      "Scenario": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "default": "Model-implied scenario; not a price target",
+            "title": "Label",
+            "type": "string"
+          },
+          "name": {
+            "enum": ["bear", "base", "bull"],
+            "title": "Name",
+            "type": "string"
+          },
+          "price_range": {
+            "$ref": "#/components/schemas/NumericRange"
+          },
+          "probability": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Probability",
+            "type": "string"
+          },
+          "representative_return": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Representative Return",
+            "type": "string"
+          },
+          "return_range": {
+            "$ref": "#/components/schemas/NumericRange"
+          }
+        },
+        "required": [
+          "name",
+          "probability",
+          "return_range",
+          "price_range",
+          "representative_return"
+        ],
+        "title": "Scenario",
+        "type": "object"
       },
       "ScenarioTable": {
         "additionalProperties": false,
@@ -5302,11 +7222,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "columns",
-          "rows"
-        ],
+        "required": ["id", "columns", "rows"],
         "title": "ScenarioTable",
         "type": "object"
       },
@@ -5359,9 +7275,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "query"
-        ],
+        "required": ["query"],
         "title": "SentimentAnalysisInput",
         "type": "object"
       },
@@ -5409,10 +7323,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "series"
-        ],
+        "required": ["id", "series"],
         "title": "SentimentChart",
         "type": "object"
       },
@@ -5472,12 +7383,7 @@
         "type": "object"
       },
       "SentimentLabel": {
-        "enum": [
-          "positive",
-          "neutral",
-          "negative",
-          "unknown"
-        ],
+        "enum": ["positive", "neutral", "negative", "unknown"],
         "title": "SentimentLabel",
         "type": "string"
       },
@@ -5531,11 +7437,7 @@
             "title": "Volume Component"
           }
         },
-        "required": [
-          "target",
-          "status",
-          "description"
-        ],
+        "required": ["target", "status", "description"],
         "title": "SentimentShift",
         "type": "object"
       },
@@ -5563,11 +7465,7 @@
             "$ref": "#/components/schemas/SentimentLabel"
           },
           "method": {
-            "enum": [
-              "provider",
-              "lexicon",
-              "none"
-            ],
+            "enum": ["provider", "lexicon", "none"],
             "title": "Method",
             "type": "string"
           },
@@ -5605,11 +7503,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "label",
-          "method",
-          "version"
-        ],
+        "required": ["label", "method", "version"],
         "title": "SentimentSignal",
         "type": "object"
       },
@@ -5632,11 +7526,7 @@
             "$ref": "#/components/schemas/SentimentLabel"
           },
           "method": {
-            "enum": [
-              "provider",
-              "lexicon",
-              "none"
-            ],
+            "enum": ["provider", "lexicon", "none"],
             "title": "Method",
             "type": "string"
           },
@@ -5669,11 +7559,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "label",
-          "method",
-          "version"
-        ],
+        "required": ["label", "method", "version"],
         "title": "SentimentSignal",
         "type": "object"
       },
@@ -5872,12 +7758,7 @@
             "type": "array"
           },
           "direction": {
-            "enum": [
-              "improving",
-              "stable",
-              "deteriorating",
-              "insufficient"
-            ],
+            "enum": ["improving", "stable", "deteriorating", "insufficient"],
             "title": "Direction",
             "type": "string"
           },
@@ -5900,12 +7781,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           }
         },
-        "required": [
-          "target",
-          "status",
-          "direction",
-          "buckets"
-        ],
+        "required": ["target", "status", "direction", "buckets"],
         "title": "SentimentTrend",
         "type": "object"
       },
@@ -5916,9 +7792,7 @@
             "$ref": "#/components/schemas/SentimentSnapshot-Input"
           }
         },
-        "required": [
-          "snapshot"
-        ],
+        "required": ["snapshot"],
         "title": "ShiftDetectionInput",
         "type": "object"
       },
@@ -5936,11 +7810,7 @@
             "$ref": "#/components/schemas/IndicatorSeries"
           }
         },
-        "required": [
-          "instrument",
-          "interval",
-          "series"
-        ],
+        "required": ["instrument", "interval", "series"],
         "title": "SmaOutput",
         "type": "object"
       },
@@ -5988,10 +7858,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "sources"
-        ],
+        "required": ["id", "sources"],
         "title": "SourceList",
         "type": "object"
       },
@@ -6006,9 +7873,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "discussions"
-        ],
+        "required": ["discussions"],
         "title": "SourceWeightInput",
         "type": "object"
       },
@@ -6023,9 +7888,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "observations"
-        ],
+        "required": ["observations"],
         "title": "SourceWeightOutput",
         "type": "object"
       },
@@ -6059,10 +7922,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "discussion_id",
-          "spam"
-        ],
+        "required": ["discussion_id", "spam"],
         "title": "SpamDecision",
         "type": "object"
       },
@@ -6077,9 +7937,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "discussions"
-        ],
+        "required": ["discussions"],
         "title": "SpamRemovalInput",
         "type": "object"
       },
@@ -6101,10 +7959,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "retained",
-          "decisions"
-        ],
+        "required": ["retained", "decisions"],
         "title": "SpamRemovalOutput",
         "type": "object"
       },
@@ -6135,11 +7990,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "instruments",
-          "start",
-          "end"
-        ],
+        "required": ["instruments", "start", "end"],
         "title": "StockComparisonInput",
         "type": "object"
       },
@@ -6157,7 +8008,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           },
           "metrics": {
-            "$ref": "#/components/schemas/PerformanceMetrics"
+            "$ref": "#/components/schemas/tradesentinel__domain__market_data__PerformanceMetrics"
           },
           "provider": {
             "$ref": "#/components/schemas/ProviderMetadata"
@@ -6205,12 +8056,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "start",
-          "end",
-          "interval",
-          "items"
-        ],
+        "required": ["start", "end", "interval", "items"],
         "title": "StockComparisonOutput",
         "type": "object"
       },
@@ -6267,12 +8113,7 @@
             "title": "Ratio"
           }
         },
-        "required": [
-          "instrument",
-          "action_type",
-          "effective_at",
-          "provider"
-        ],
+        "required": ["instrument", "action_type", "effective_at", "provider"],
         "title": "StockCorporateAction",
         "type": "object"
       },
@@ -6293,11 +8134,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "instrument",
-          "start",
-          "end"
-        ],
+        "required": ["instrument", "start", "end"],
         "title": "StockCorporateActionsInput",
         "type": "object"
       },
@@ -6363,11 +8200,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "instrument",
-          "start",
-          "end"
-        ],
+        "required": ["instrument", "start", "end"],
         "title": "StockHistoryInput",
         "type": "object"
       },
@@ -6488,9 +8321,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "query"
-        ],
+        "required": ["query"],
         "title": "StockOverviewRequest",
         "type": "object"
       },
@@ -6515,11 +8346,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "instrument",
-          "start",
-          "end"
-        ],
+        "required": ["instrument", "start", "end"],
         "title": "StockPerformanceInput",
         "type": "object"
       },
@@ -6540,7 +8367,7 @@
             "$ref": "#/components/schemas/MarketInterval"
           },
           "metrics": {
-            "$ref": "#/components/schemas/PerformanceMetrics"
+            "$ref": "#/components/schemas/tradesentinel__domain__market_data__PerformanceMetrics"
           },
           "provider": {
             "$ref": "#/components/schemas/ProviderMetadata"
@@ -6572,9 +8399,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           }
         },
-        "required": [
-          "instrument"
-        ],
+        "required": ["instrument"],
         "title": "StockQuoteInput",
         "type": "object"
       },
@@ -6756,11 +8581,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "heading",
-          "body"
-        ],
+        "required": ["id", "heading", "body"],
         "title": "SummaryCard",
         "type": "object"
       },
@@ -6775,9 +8596,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "cells"
-        ],
+        "required": ["cells"],
         "title": "TableRow",
         "type": "object"
       },
@@ -7039,9 +8858,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "query"
-        ],
+        "required": ["query"],
         "title": "TechnicalAnalysisRequest",
         "type": "object"
       },
@@ -7411,11 +9228,7 @@
         "type": "object"
       },
       "TechnicalStatus": {
-        "enum": [
-          "completed",
-          "partial",
-          "empty"
-        ],
+        "enum": ["completed", "partial", "empty"],
         "title": "TechnicalStatus",
         "type": "string"
       },
@@ -7454,20 +9267,37 @@
             "title": "Source Id"
           }
         },
-        "required": [
-          "occurred_at",
-          "headline"
-        ],
+        "required": ["occurred_at", "headline"],
         "title": "TimelineItem",
         "type": "object"
       },
       "TimestampBasis": {
-        "enum": [
-          "published",
-          "retrieved"
-        ],
+        "enum": ["published", "retrieved"],
         "title": "TimestampBasis",
         "type": "string"
+      },
+      "TrainingRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset_version": {
+            "title": "Dataset Version",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "maxLength": 160,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "random_seed": {
+            "default": 42,
+            "title": "Random Seed",
+            "type": "integer"
+          }
+        },
+        "required": ["idempotency_key", "dataset_version"],
+        "title": "TrainingRequest",
+        "type": "object"
       },
       "TrendBucket": {
         "additionalProperties": false,
@@ -7495,10 +9325,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "day",
-          "mention_count"
-        ],
+        "required": ["day", "mention_count"],
         "title": "TrendBucket",
         "type": "object"
       },
@@ -7526,12 +9353,7 @@
             "$ref": "#/components/schemas/InstrumentRef"
           }
         },
-        "required": [
-          "target",
-          "observations",
-          "start",
-          "end"
-        ],
+        "required": ["target", "observations", "start", "end"],
         "title": "TrendDetectionInput",
         "type": "object"
       },
@@ -7544,11 +9366,7 @@
             "type": "string"
           },
           "direction": {
-            "enum": [
-              "rising",
-              "falling",
-              "sideways"
-            ],
+            "enum": ["rising", "falling", "sideways"],
             "title": "Direction",
             "type": "string"
           },
@@ -7574,11 +9392,7 @@
             "type": "string"
           },
           "strength": {
-            "enum": [
-              "weak",
-              "developing",
-              "strong"
-            ],
+            "enum": ["weak", "developing", "strong"],
             "title": "Strength",
             "type": "string"
           }
@@ -7628,11 +9442,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError",
         "type": "object"
       },
@@ -7676,9 +9486,7 @@
             "title": "Reported"
           }
         },
-        "required": [
-          "concept"
-        ],
+        "required": ["concept"],
         "title": "ValuationMetric",
         "type": "object"
       },
@@ -7718,12 +9526,7 @@
             "type": "integer"
           },
           "regime": {
-            "enum": [
-              "low",
-              "normal",
-              "high",
-              "unknown"
-            ],
+            "enum": ["low", "normal", "high", "unknown"],
             "title": "Regime",
             "type": "string"
           },
@@ -7792,11 +9595,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "code",
-          "message"
-        ],
+        "required": ["id", "code", "message"],
         "title": "WarningBanner",
         "type": "object"
       },
@@ -8049,12 +9848,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "start",
-          "end",
-          "mention_count",
-          "usable_count"
-        ],
+        "required": ["start", "end", "mention_count", "usable_count"],
         "title": "WindowMetrics",
         "type": "object"
       },
@@ -8154,12 +9948,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "start",
-          "end",
-          "mention_count",
-          "usable_count"
-        ],
+        "required": ["start", "end", "mention_count", "usable_count"],
         "title": "WindowMetrics",
         "type": "object"
       },
@@ -8193,10 +9982,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "title",
-          "sections"
-        ],
+        "required": ["title", "sections"],
         "title": "WorkflowPresentation",
         "type": "object"
       },
@@ -8249,11 +10035,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "title",
-          "steps"
-        ],
+        "required": ["id", "title", "steps"],
         "title": "WorkflowPresentationSection",
         "type": "object"
       },
@@ -8298,11 +10080,7 @@
             "$ref": "#/components/schemas/WorkflowResult"
           }
         },
-        "required": [
-          "request_id",
-          "result",
-          "response"
-        ],
+        "required": ["request_id", "result", "response"],
         "title": "WorkflowResponse",
         "type": "object"
       },
@@ -8367,6 +10145,183 @@
         ],
         "title": "WorkflowResult",
         "type": "object"
+      },
+      "tradesentinel__domain__market_data__PerformanceMetrics": {
+        "additionalProperties": false,
+        "properties": {
+          "annualized_volatility": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Annualized Volatility",
+            "type": "string"
+          },
+          "cagr": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Cagr",
+            "type": "string"
+          },
+          "end_at": {
+            "format": "date-time",
+            "title": "End At",
+            "type": "string"
+          },
+          "end_value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "End Value",
+            "type": "string"
+          },
+          "maximum_drawdown": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Maximum Drawdown",
+            "type": "string"
+          },
+          "observations": {
+            "minimum": 2.0,
+            "title": "Observations",
+            "type": "integer"
+          },
+          "start_at": {
+            "format": "date-time",
+            "title": "Start At",
+            "type": "string"
+          },
+          "start_value": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Start Value",
+            "type": "string"
+          },
+          "total_return": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Total Return",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_at",
+          "end_at",
+          "start_value",
+          "end_value",
+          "observations",
+          "total_return",
+          "cagr",
+          "annualized_volatility",
+          "maximum_drawdown"
+        ],
+        "title": "PerformanceMetrics",
+        "type": "object"
+      },
+      "tradesentinel__domain__prediction__PerformanceMetrics": {
+        "additionalProperties": false,
+        "properties": {
+          "directional_accuracy": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Directional Accuracy"
+          },
+          "directional_calls": {
+            "minimum": 0.0,
+            "title": "Directional Calls",
+            "type": "integer"
+          },
+          "directional_coverage": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Directional Coverage"
+          },
+          "expected_calibration_error": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Calibration Error"
+          },
+          "log_loss": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Log Loss"
+          },
+          "multiclass_brier": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Multiclass Brier"
+          },
+          "normalized_interval_width": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Normalized Interval Width"
+          },
+          "price_range_accuracy": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Range Accuracy"
+          },
+          "return_range_accuracy": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Return Range Accuracy"
+          },
+          "sample_count": {
+            "minimum": 0.0,
+            "title": "Sample Count",
+            "type": "integer"
+          }
+        },
+        "required": ["sample_count", "directional_calls"],
+        "title": "PerformanceMetrics",
+        "type": "object"
       }
     }
   },
@@ -8377,6 +10332,1283 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/admin/market-shift/observations": {
+      "post": {
+        "operationId": "ingest_api_v1_admin_market_shift_observations_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarketShiftObservationBatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketShiftObservationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ingest",
+        "tags": ["market shift"]
+      }
+    },
+    "/api/v1/admin/market-shift/run": {
+      "post": {
+        "operationId": "run_schedule_api_v1_admin_market_shift_run_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketShiftScheduleResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Run Schedule",
+        "tags": ["market shift"]
+      }
+    },
+    "/api/v1/admin/market-shift/watchlist": {
+      "get": {
+        "operationId": "list_watchlist_api_v1_admin_market_shift_watchlist_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketShiftWatchlist"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Watchlist",
+        "tags": ["market shift"]
+      }
+    },
+    "/api/v1/admin/market-shift/watchlist/{watchlist_id}": {
+      "delete": {
+        "operationId": "remove_watchlist_api_v1_admin_market_shift_watchlist__watchlist_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "watchlist_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Watchlist Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Remove Watchlist Api V1 Admin Market Shift Watchlist  Watchlist Id  Delete",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Watchlist",
+        "tags": ["market shift"]
+      },
+      "put": {
+        "operationId": "save_watchlist_api_v1_admin_market_shift_watchlist__watchlist_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "watchlist_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Watchlist Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarketShiftWatchlistEntry"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketShiftWatchlistEntry"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Watchlist",
+        "tags": ["market shift"]
+      }
+    },
+    "/api/v1/admin/prediction/datasets/build": {
+      "post": {
+        "operationId": "build_dataset_api_v1_admin_prediction_datasets_build_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatasetBuildRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionJob"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Build Dataset",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/evaluations": {
+      "get": {
+        "operationId": "list_evaluations_api_v1_admin_prediction_evaluations_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationScheduleList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Evaluations",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/evaluations/run": {
+      "post": {
+        "operationId": "evaluate_predictions_api_v1_admin_prediction_evaluations_run_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionJob"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Evaluate Predictions",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/jobs/{job_id}": {
+      "get": {
+        "operationId": "get_job_api_v1_admin_prediction_jobs__job_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Job Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionJob"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Job",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/model-performance": {
+      "get": {
+        "operationId": "model_performance_api_v1_admin_prediction_model_performance_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "model_version",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Model Version"
+            }
+          },
+          {
+            "in": "query",
+            "name": "horizon_sessions",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [5, 20],
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horizon Sessions"
+            }
+          },
+          {
+            "in": "query",
+            "name": "asset_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Asset Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "exchange",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Exchange"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sector",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sector"
+            }
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelPerformanceReport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Model Performance",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/model-performance/calibration": {
+      "get": {
+        "operationId": "model_calibration_api_v1_admin_prediction_model_performance_calibration_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "model_version",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Model Version"
+            }
+          },
+          {
+            "in": "query",
+            "name": "horizon_sessions",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [5, 20],
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horizon Sessions"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CalibrationBin"
+                  },
+                  "title": "Response Model Calibration Api V1 Admin Prediction Model Performance Calibration Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Model Calibration",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/model-performance/rebuild": {
+      "post": {
+        "operationId": "rebuild_model_performance_api_v1_admin_prediction_model_performance_rebuild_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerformanceRebuildResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Rebuild Model Performance",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/models": {
+      "get": {
+        "operationId": "list_models_api_v1_admin_prediction_models_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelVersionList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Models",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/models/train": {
+      "post": {
+        "operationId": "train_model_api_v1_admin_prediction_models_train_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrainingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionJob"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Train Model",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/models/{model_version}": {
+      "get": {
+        "operationId": "get_model_api_v1_admin_prediction_models__model_version__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "model_version",
+            "required": true,
+            "schema": {
+              "title": "Model Version",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelVersion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Model",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/models/{model_version}/activate": {
+      "post": {
+        "operationId": "activate_model_api_v1_admin_prediction_models__model_version__activate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "model_version",
+            "required": true,
+            "schema": {
+              "title": "Model Version",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelVersion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Activate Model",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/observations/batches": {
+      "post": {
+        "operationId": "ingest_observations_api_v1_admin_prediction_observations_batches_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ObservationBatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObservationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ingest Observations",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/predictions": {
+      "get": {
+        "operationId": "list_predictions_api_v1_admin_prediction_predictions_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPredictions"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Predictions",
+        "tags": ["prediction-admin"]
+      },
+      "post": {
+        "operationId": "create_prediction_api_v1_admin_prediction_predictions_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PredictionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Prediction",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/predictions/{prediction_id}": {
+      "get": {
+        "operationId": "get_prediction_api_v1_admin_prediction_predictions__prediction_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "prediction_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Prediction Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Prediction",
+        "tags": ["prediction-admin"]
+      }
+    },
+    "/api/v1/admin/prediction/predictions/{prediction_id}/evaluation": {
+      "get": {
+        "operationId": "get_prediction_evaluation_api_v1_admin_prediction_predictions__prediction_id__evaluation_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "prediction_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Prediction Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictionEvaluation"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Prediction Evaluation",
+        "tags": ["prediction-admin"]
+      }
+    },
     "/api/v1/capabilities": {
       "get": {
         "operationId": "list_capabilities_api_v1_capabilities_get",
@@ -8397,9 +11629,7 @@
           }
         },
         "summary": "List Capabilities",
-        "tags": [
-          "registry"
-        ]
+        "tags": ["registry"]
       }
     },
     "/api/v1/chat": {
@@ -8438,9 +11668,7 @@
           }
         },
         "summary": "Chat",
-        "tags": [
-          "chat"
-        ]
+        "tags": ["chat"]
       }
     },
     "/api/v1/chat/sessions": {
@@ -8507,9 +11735,7 @@
           }
         },
         "summary": "Chat Sessions",
-        "tags": [
-          "chat"
-        ]
+        "tags": ["chat"]
       },
       "post": {
         "operationId": "create_chat_session_api_v1_chat_sessions_post",
@@ -8546,9 +11772,7 @@
           }
         },
         "summary": "Create Chat Session",
-        "tags": [
-          "chat"
-        ]
+        "tags": ["chat"]
       }
     },
     "/api/v1/chat/sessions/{session_id}": {
@@ -8589,9 +11813,7 @@
           }
         },
         "summary": "Chat Session",
-        "tags": [
-          "chat"
-        ]
+        "tags": ["chat"]
       },
       "patch": {
         "operationId": "update_chat_session_api_v1_chat_sessions__session_id__patch",
@@ -8640,9 +11862,7 @@
           }
         },
         "summary": "Update Chat Session",
-        "tags": [
-          "chat"
-        ]
+        "tags": ["chat"]
       }
     },
     "/api/v1/chat/turns/{turn_id}": {
@@ -8683,9 +11903,7 @@
           }
         },
         "summary": "Get Chat Turn",
-        "tags": [
-          "chat"
-        ]
+        "tags": ["chat"]
       }
     },
     "/api/v1/chat/turns/{turn_id}/events": {
@@ -8724,9 +11942,7 @@
           }
         },
         "summary": "Chat Turn Events",
-        "tags": [
-          "chat"
-        ]
+        "tags": ["chat"]
       }
     },
     "/api/v1/commands": {
@@ -8752,9 +11968,7 @@
           }
         },
         "summary": "List Commands",
-        "tags": [
-          "registry"
-        ]
+        "tags": ["registry"]
       }
     },
     "/api/v1/commands/execute": {
@@ -8793,9 +12007,7 @@
           }
         },
         "summary": "Execute Command",
-        "tags": [
-          "commands"
-        ]
+        "tags": ["commands"]
       }
     },
     "/api/v1/events/stream": {
@@ -8812,9 +12024,7 @@
           }
         },
         "summary": "Event Stream",
-        "tags": [
-          "events"
-        ]
+        "tags": ["events"]
       }
     },
     "/api/v1/fundamentals/cash-flow": {
@@ -8853,9 +12063,7 @@
           }
         },
         "summary": "Fundamental Cash Flow",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/debt": {
@@ -8894,9 +12102,7 @@
           }
         },
         "summary": "Fundamental Debt",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/growth": {
@@ -8935,9 +12141,7 @@
           }
         },
         "summary": "Growth",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/margins": {
@@ -8976,9 +12180,7 @@
           }
         },
         "summary": "Fundamental Margins",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/peer-comparison": {
@@ -9017,9 +12219,7 @@
           }
         },
         "summary": "Peer Comparison",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/profit": {
@@ -9058,9 +12258,7 @@
           }
         },
         "summary": "Fundamental Profit",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/revenue": {
@@ -9099,9 +12297,7 @@
           }
         },
         "summary": "Fundamental Revenue",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/roce": {
@@ -9140,9 +12336,7 @@
           }
         },
         "summary": "Fundamental Roce",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/roe": {
@@ -9181,9 +12375,7 @@
           }
         },
         "summary": "Fundamental Roe",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/snapshot": {
@@ -9222,9 +12414,7 @@
           }
         },
         "summary": "Snapshot",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/fundamentals/valuation": {
@@ -9263,9 +12453,7 @@
           }
         },
         "summary": "Valuation",
-        "tags": [
-          "fundamentals"
-        ]
+        "tags": ["fundamentals"]
       }
     },
     "/api/v1/instruments/autocomplete": {
@@ -9347,9 +12535,7 @@
           }
         },
         "summary": "Autocomplete Instruments",
-        "tags": [
-          "instruments"
-        ]
+        "tags": ["instruments"]
       }
     },
     "/api/v1/instruments/resolve": {
@@ -9421,9 +12607,7 @@
           }
         },
         "summary": "Resolve Instrument",
-        "tags": [
-          "instruments"
-        ]
+        "tags": ["instruments"]
       }
     },
     "/api/v1/instruments/search": {
@@ -9505,9 +12689,7 @@
           }
         },
         "summary": "Search Instruments",
-        "tags": [
-          "instruments"
-        ]
+        "tags": ["instruments"]
       }
     },
     "/api/v1/instruments/{symbol}/history": {
@@ -9592,9 +12774,7 @@
           }
         },
         "summary": "History By Symbol",
-        "tags": [
-          "market-data"
-        ]
+        "tags": ["market-data"]
       }
     },
     "/api/v1/instruments/{symbol}/quote": {
@@ -9650,9 +12830,7 @@
           }
         },
         "summary": "Quote By Symbol",
-        "tags": [
-          "market-data"
-        ]
+        "tags": ["market-data"]
       }
     },
     "/api/v1/market-data/benchmark-comparison": {
@@ -9691,9 +12869,7 @@
           }
         },
         "summary": "Benchmark Comparison",
-        "tags": [
-          "market-data"
-        ]
+        "tags": ["market-data"]
       }
     },
     "/api/v1/market-data/comparison": {
@@ -9732,9 +12908,7 @@
           }
         },
         "summary": "Comparison",
-        "tags": [
-          "market-data"
-        ]
+        "tags": ["market-data"]
       }
     },
     "/api/v1/market-data/corporate-actions": {
@@ -9773,9 +12947,7 @@
           }
         },
         "summary": "Corporate Actions",
-        "tags": [
-          "market-data"
-        ]
+        "tags": ["market-data"]
       }
     },
     "/api/v1/market-data/five-year-performance": {
@@ -9814,9 +12986,7 @@
           }
         },
         "summary": "Five Year Performance",
-        "tags": [
-          "market-data"
-        ]
+        "tags": ["market-data"]
       }
     },
     "/api/v1/market-data/history": {
@@ -9855,9 +13025,7 @@
           }
         },
         "summary": "History",
-        "tags": [
-          "market-data"
-        ]
+        "tags": ["market-data"]
       }
     },
     "/api/v1/market-data/performance": {
@@ -9896,9 +13064,7 @@
           }
         },
         "summary": "Performance",
-        "tags": [
-          "market-data"
-        ]
+        "tags": ["market-data"]
       }
     },
     "/api/v1/market-data/quote": {
@@ -9937,9 +13103,140 @@
           }
         },
         "summary": "Quote",
-        "tags": [
-          "market-data"
-        ]
+        "tags": ["market-data"]
+      }
+    },
+    "/api/v1/market-shift": {
+      "post": {
+        "operationId": "calculate_api_v1_market_shift_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarketShiftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketShiftSnapshot"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Calculate",
+        "tags": ["market shift"]
+      }
+    },
+    "/api/v1/market-shift/instruments/{instrument_id}/history": {
+      "get": {
+        "operationId": "history_api_v1_market_shift_instruments__instrument_id__history_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "instrument_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Instrument Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 25,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketShiftHistoryPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "History",
+        "tags": ["market shift"]
+      }
+    },
+    "/api/v1/market-shift/{calculation_id}": {
+      "get": {
+        "operationId": "read_calculation_api_v1_market_shift__calculation_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "calculation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Calculation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketShiftAttempt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Read Calculation",
+        "tags": ["market shift"]
       }
     },
     "/api/v1/predictions": {
@@ -9956,9 +13253,7 @@
           }
         },
         "summary": "Create Prediction",
-        "tags": [
-          "future"
-        ]
+        "tags": ["future"]
       }
     },
     "/api/v1/predictions/{prediction_id}": {
@@ -9997,9 +13292,7 @@
           }
         },
         "summary": "Get Prediction",
-        "tags": [
-          "future"
-        ]
+        "tags": ["future"]
       }
     },
     "/api/v1/predictions/{prediction_id}/evaluation": {
@@ -10038,9 +13331,7 @@
           }
         },
         "summary": "Get Prediction Evaluation",
-        "tags": [
-          "future"
-        ]
+        "tags": ["future"]
       }
     },
     "/api/v1/research/events/{event_id}/evidence": {
@@ -10081,9 +13372,7 @@
           }
         },
         "summary": "Get Event Evidence",
-        "tags": [
-          "research"
-        ]
+        "tags": ["research"]
       }
     },
     "/api/v1/research/news": {
@@ -10173,9 +13462,7 @@
           }
         },
         "summary": "Search News",
-        "tags": [
-          "research"
-        ]
+        "tags": ["research"]
       }
     },
     "/api/v1/research/reports": {
@@ -10214,9 +13501,7 @@
           }
         },
         "summary": "Create Report",
-        "tags": [
-          "research"
-        ]
+        "tags": ["research"]
       }
     },
     "/api/v1/research/timeline": {
@@ -10255,9 +13540,7 @@
           }
         },
         "summary": "Create Timeline",
-        "tags": [
-          "research"
-        ]
+        "tags": ["research"]
       }
     },
     "/api/v1/runs/{run_id}": {
@@ -10298,9 +13581,7 @@
           }
         },
         "summary": "Get Run",
-        "tags": [
-          "runs"
-        ]
+        "tags": ["runs"]
       }
     },
     "/api/v1/runs/{run_id}/sources": {
@@ -10341,9 +13622,7 @@
           }
         },
         "summary": "Get Run Sources",
-        "tags": [
-          "runs"
-        ]
+        "tags": ["runs"]
       }
     },
     "/api/v1/sentiment/aggregate": {
@@ -10382,9 +13661,7 @@
           }
         },
         "summary": "Aggregate",
-        "tags": [
-          "public sentiment"
-        ]
+        "tags": ["public sentiment"]
       }
     },
     "/api/v1/sentiment/analyze": {
@@ -10423,9 +13700,7 @@
           }
         },
         "summary": "Analyze",
-        "tags": [
-          "public sentiment"
-        ]
+        "tags": ["public sentiment"]
       }
     },
     "/api/v1/sentiment/companies/detect": {
@@ -10464,9 +13739,7 @@
           }
         },
         "summary": "Detect",
-        "tags": [
-          "public sentiment"
-        ]
+        "tags": ["public sentiment"]
       }
     },
     "/api/v1/sentiment/discussions/collect": {
@@ -10505,9 +13778,7 @@
           }
         },
         "summary": "Collect",
-        "tags": [
-          "public sentiment"
-        ]
+        "tags": ["public sentiment"]
       }
     },
     "/api/v1/sentiment/narratives": {
@@ -10546,9 +13817,7 @@
           }
         },
         "summary": "Narratives",
-        "tags": [
-          "public sentiment"
-        ]
+        "tags": ["public sentiment"]
       }
     },
     "/api/v1/sentiment/shift": {
@@ -10587,9 +13856,7 @@
           }
         },
         "summary": "Shift",
-        "tags": [
-          "public sentiment"
-        ]
+        "tags": ["public sentiment"]
       }
     },
     "/api/v1/sentiment/sources/weight": {
@@ -10628,9 +13895,7 @@
           }
         },
         "summary": "Weight",
-        "tags": [
-          "public sentiment"
-        ]
+        "tags": ["public sentiment"]
       }
     },
     "/api/v1/sentiment/spam/remove": {
@@ -10669,9 +13934,7 @@
           }
         },
         "summary": "Remove Spam",
-        "tags": [
-          "public sentiment"
-        ]
+        "tags": ["public sentiment"]
       }
     },
     "/api/v1/sentiment/trend": {
@@ -10710,9 +13973,7 @@
           }
         },
         "summary": "Trend",
-        "tags": [
-          "public sentiment"
-        ]
+        "tags": ["public sentiment"]
       }
     },
     "/api/v1/stock-overview": {
@@ -10751,9 +14012,7 @@
           }
         },
         "summary": "Stock Overview",
-        "tags": [
-          "stock-overview"
-        ]
+        "tags": ["stock-overview"]
       }
     },
     "/api/v1/technical/adx": {
@@ -10792,9 +14051,7 @@
           }
         },
         "summary": "Adx",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/atr": {
@@ -10833,9 +14090,7 @@
           }
         },
         "summary": "Atr",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/ema": {
@@ -10874,9 +14129,7 @@
           }
         },
         "summary": "Ema",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/macd": {
@@ -10915,9 +14168,7 @@
           }
         },
         "summary": "Macd",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/momentum": {
@@ -10956,9 +14207,7 @@
           }
         },
         "summary": "Momentum",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/resistance": {
@@ -10997,9 +14246,7 @@
           }
         },
         "summary": "Resistance",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/rsi": {
@@ -11038,9 +14285,7 @@
           }
         },
         "summary": "Rsi",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/sma": {
@@ -11079,9 +14324,7 @@
           }
         },
         "summary": "Sma",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/snapshot": {
@@ -11120,9 +14363,7 @@
           }
         },
         "summary": "Snapshot",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/support": {
@@ -11161,9 +14402,7 @@
           }
         },
         "summary": "Support",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/trend": {
@@ -11202,9 +14441,7 @@
           }
         },
         "summary": "Trend",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/technical/volatility": {
@@ -11243,9 +14480,7 @@
           }
         },
         "summary": "Volatility",
-        "tags": [
-          "technical analysis"
-        ]
+        "tags": ["technical analysis"]
       }
     },
     "/api/v1/workflows/{workflow_name}/execute": {
@@ -11295,9 +14530,7 @@
           }
         },
         "summary": "Execute Workflow",
-        "tags": [
-          "workflows"
-        ]
+        "tags": ["workflows"]
       }
     },
     "/health/live": {
@@ -11316,9 +14549,7 @@
           }
         },
         "summary": "Liveness",
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     },
     "/health/ready": {
@@ -11337,9 +14568,7 @@
           }
         },
         "summary": "Readiness",
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     }
   }

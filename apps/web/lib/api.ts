@@ -19,7 +19,10 @@ import {
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
-async function request(path: string, init?: RequestInit): Promise<unknown> {
+export async function apiRequest(
+  path: string,
+  init?: RequestInit,
+): Promise<unknown> {
   const response = await fetch(`${apiUrl}${path}`, {
     cache: "no-store",
     credentials: "include",
@@ -41,30 +44,30 @@ async function request(path: string, init?: RequestInit): Promise<unknown> {
 }
 
 export async function getHealth(): Promise<Health> {
-  return healthSchema.parse(await request("/health/ready"));
+  return healthSchema.parse(await apiRequest("/health/ready"));
 }
 
 export async function getCapabilities(): Promise<CapabilityDescriptor[]> {
   return capabilityDescriptorSchema
     .array()
-    .parse(await request("/api/v1/capabilities"));
+    .parse(await apiRequest("/api/v1/capabilities"));
 }
 
 export async function getCommands(): Promise<CommandDescriptor[]> {
   return commandDescriptorSchema
     .array()
-    .parse(await request("/api/v1/commands"));
+    .parse(await apiRequest("/api/v1/commands"));
 }
 
 export async function listSessions(archived = false): Promise<ChatSessionPage> {
   return chatSessionPageSchema.parse(
-    await request(`/api/v1/chat/sessions?archived=${archived}`),
+    await apiRequest(`/api/v1/chat/sessions?archived=${archived}`),
   );
 }
 
 export async function createSession(title = "New chat"): Promise<ChatSession> {
   return chatSessionSchema.parse(
-    await request("/api/v1/chat/sessions", {
+    await apiRequest("/api/v1/chat/sessions", {
       method: "POST",
       body: JSON.stringify({ title }),
     }),
@@ -73,7 +76,7 @@ export async function createSession(title = "New chat"): Promise<ChatSession> {
 
 export async function getSession(id: string): Promise<ChatSessionDetail> {
   return chatSessionDetailSchema.parse(
-    await request(`/api/v1/chat/sessions/${id}`),
+    await apiRequest(`/api/v1/chat/sessions/${id}`),
   );
 }
 
@@ -82,7 +85,7 @@ export async function updateSession(
   change: { title?: string; archived?: boolean },
 ): Promise<ChatSession> {
   return chatSessionSchema.parse(
-    await request(`/api/v1/chat/sessions/${id}`, {
+    await apiRequest(`/api/v1/chat/sessions/${id}`, {
       method: "PATCH",
       body: JSON.stringify(change),
     }),
@@ -95,7 +98,7 @@ export async function sendMessage(input: {
   clientMessageId: string;
 }): Promise<ChatTurnAccepted> {
   return chatTurnAcceptedSchema.parse(
-    await request("/api/v1/chat", {
+    await apiRequest("/api/v1/chat", {
       method: "POST",
       body: JSON.stringify({
         message: input.message,

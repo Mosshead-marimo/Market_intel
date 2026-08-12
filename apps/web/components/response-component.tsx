@@ -308,16 +308,13 @@ function LeafComponentView({
         ))}
       </ul>
     );
-  return (
-    <article className="response-card">
-      <StateMessage component={component} />
-      <h3>{component.title ?? "Prediction context"}</h3>
-      <p>
-        {component.direction} · {component.confidence}
-      </p>
-      <small>{component.horizon}</small>
-    </article>
-  );
+  if (component.type === "prediction_card")
+    return (
+      <div className="component-error" role="status">
+        Internal prediction output is not available in user-facing surfaces.
+      </div>
+    );
+  return <div className="component-error">Unsupported response data</div>;
 }
 
 function ValidatedComponentView({

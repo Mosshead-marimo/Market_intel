@@ -4,7 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -73,6 +73,27 @@ class Settings(BaseSettings):
     sentiment_provider_weights: dict[str, float] = Field(default_factory=dict)
     sentiment_source_type_weights: dict[str, float] = Field(default_factory=dict)
     sentiment_trend_stability_threshold: float = Field(default=0.02, ge=0, le=1)
+    object_store_backend: Literal["memory", "filesystem"] = "memory"
+    object_store_root: Path = Path(".artifacts")
+    prediction_admin_token_hash: SecretStr | None = None
+    prediction_admin_rate_limit: int = Field(default=30, ge=1, le=10_000)
+    prediction_confidence_threshold: float = Field(default=0.20, ge=0, le=1)
+    prediction_max_observations_per_batch: int = Field(default=10_000, ge=1, le=100_000)
+    prediction_min_training_samples: int = Field(default=300, ge=30)
+    prediction_min_class_samples: int = Field(default=30, ge=5)
+    prediction_max_ece: float = Field(default=0.15, ge=0, le=1)
+    prediction_range_coverage_min: float = Field(default=0.70, ge=0, le=1)
+    prediction_range_coverage_max: float = Field(default=0.90, ge=0, le=1)
+    prediction_evaluation_poll_seconds: int = Field(default=21_600, ge=60, le=604_800)
+    prediction_evaluation_overdue_poll_seconds: int = Field(default=86_400, ge=300, le=2_592_000)
+    prediction_evaluation_grace_days: int = Field(default=7, ge=1, le=90)
+    market_shift_admin_token_hash: SecretStr | None = None
+    market_shift_admin_rate_limit: int = Field(default=30, ge=1, le=10_000)
+
+    @field_validator("prediction_admin_token_hash", "market_shift_admin_token_hash", mode="before")
+    @classmethod
+    def empty_prediction_admin_hash_is_disabled(cls, value: object) -> object:
+        return None if value == "" else value
 
     @model_validator(mode="after")
     def validate_sentiment_weights(self) -> Settings:
@@ -94,6 +115,24 @@ class Settings(BaseSettings):
                 )
             if "localhost" in self.database_url.get_secret_value():
                 raise ValueError("production database URL must not use localhost")
+        return self
+
+    @model_validator(mode="after")
+    def validate_prediction_settings(self) -> Settings:
+        if self.prediction_range_coverage_min > self.prediction_range_coverage_max:
+            raise ValueError("prediction range coverage bounds are inverted")
+        if self.prediction_admin_token_hash is not None:
+            digest = self.prediction_admin_token_hash.get_secret_value()
+            if len(digest) != 64 or any(c not in "0123456789abcdefABCDEF" for c in digest):
+                raise ValueError("prediction admin token hash must be a SHA-256 hex digest")
+        return self
+
+    @model_validator(mode="after")
+    def validate_market_shift_settings(self) -> Settings:
+        if self.market_shift_admin_token_hash is not None:
+            digest = self.market_shift_admin_token_hash.get_secret_value()
+            if len(digest) != 64 or any(c not in "0123456789abcdefABCDEF" for c in digest):
+                raise ValueError("market-shift admin token hash must be a SHA-256 hex digest")
         return self
 
 

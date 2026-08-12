@@ -24,6 +24,27 @@ describe("ResponseComponentView", () => {
     );
   });
 
+  it("does not expose internal predictions in user-facing renderers", () => {
+    render(
+      <ResponseComponentView
+        value={{
+          id: "internal-prediction",
+          type: "prediction_card",
+          direction: "rise",
+          confidence: 0.9,
+          horizon: "5 sessions",
+          generated_at: "2026-08-12T00:00:00Z",
+          data_cutoff: "2026-08-11T00:00:00Z",
+          model_version: "model-v1",
+        }}
+      />,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Internal prediction output is not available",
+    );
+    expect(screen.queryByText("0.9")).not.toBeInTheDocument();
+  });
+
   it("renders a validated section with metrics and a timeline", () => {
     render(
       <ResponseComponentView

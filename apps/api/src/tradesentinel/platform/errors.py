@@ -205,3 +205,15 @@ class ChatQueueError(DomainError):
             retryable=True,
             status_code=503,
         )
+
+
+class PredictionError(DomainError):
+    def __init__(
+        self,
+        code: str,
+        message: str,
+        *,
+        status_code: int = 422,
+        details: dict[str, Any] | None = None,
+    ) -> None:
+        super().__init__(code, message, details=details, status_code=status_code)

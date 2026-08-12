@@ -5,6 +5,7 @@ import inspect
 from pathlib import Path
 from typing import Any
 
+from tradesentinel.platform.background import BackgroundWorker
 from tradesentinel.platform.capabilities import Capability, RegisteredCapability
 from tradesentinel.platform.contracts import (
     CapabilityDescriptor,
@@ -47,6 +48,7 @@ class ModuleLoader:
         self.resolver = resolver
         self.parser = parser or ManifestParser()
         self.loaded: tuple[ModuleManifest, ...] = ()
+        self.background_workers: tuple[BackgroundWorker, ...] = ()
 
     def discover(self, roots: tuple[Path, ...]) -> tuple[ModuleManifest, ...]:
         paths = sorted(
@@ -68,6 +70,7 @@ class ModuleLoader:
         staged_commands = CommandRegistry()
         staged_intents = IntentRegistry()
         staged_workflows = WorkflowRegistry(staged_capabilities)
+        staged_background_workers: list[BackgroundWorker] = []
 
         for manifest in manifests:
             for capability_declaration in manifest.capabilities:
@@ -89,6 +92,11 @@ class ModuleLoader:
                     )
                 )
         staged_capabilities.validate()
+
+        for manifest in manifests:
+            for declaration in manifest.background_workers:
+                worker_class = self._import_background_worker(declaration.class_path)
+                staged_background_workers.append(self.resolver.resolve(worker_class))
 
         for manifest in manifests:
             for command_declaration in manifest.commands:
@@ -126,6 +134,7 @@ class ModuleLoader:
         self.intents.restore(staged_intents.list())
         self.workflows.restore(staged_workflows.list())
         self.loaded = manifests
+        self.background_workers = tuple(staged_background_workers)
         return manifests
 
     def bind_event_consumers(self, pipeline: Any) -> None:
@@ -166,6 +175,24 @@ class ModuleLoader:
         if inspect.isabstract(candidate):
             raise DiscoveryError(
                 "A declared capability class is abstract.", {"class_path": class_path}
+            )
+        return candidate
+
+    @staticmethod
+    def _import_background_worker(class_path: str) -> type[BackgroundWorker]:
+        module_name, separator, attribute = class_path.partition(":")
+        if not separator:
+            raise DiscoveryError("Background worker class paths must use 'module:Class'.")
+        try:
+            candidate = getattr(importlib.import_module(module_name), attribute)
+        except (ImportError, AttributeError) as exc:
+            raise DiscoveryError(
+                "A background worker class could not be imported.", {"class_path": class_path}
+            ) from exc
+        if not inspect.isclass(candidate) or not issubclass(candidate, BackgroundWorker):
+            raise DiscoveryError(
+                "A declared background worker does not implement BackgroundWorker.",
+                {"class_path": class_path},
             )
         return candidate
 

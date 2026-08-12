@@ -1204,8 +1204,155 @@ export const fundamentalPeerComparisonSchema = z
   })
   .strict();
 
+export const marketShiftCategorySchema = z.enum([
+  "news",
+  "public_sentiment",
+  "technical_trend",
+  "fundamentals",
+  "sector",
+  "macro",
+  "institutional_activity",
+]);
+
+export const marketShiftObservationSchema = z
+  .object({
+    observation_id: z.string().uuid(),
+    idempotency_key: z.string().min(1),
+    category: marketShiftCategorySchema,
+    instrument_id: z.string().uuid().nullable().optional(),
+    scope: z.string().min(1),
+    metric: z.string().min(1),
+    value: decimalSchema,
+    unit: z.string().min(1),
+    observed_at: z.string(),
+    known_at: z.string(),
+    retrieved_at: z.string(),
+    source_id: z.string().min(1),
+    provider: z.string().min(1),
+    source_url: z.string().url().nullable().optional(),
+    source_version: z.string().min(1),
+  })
+  .strict();
+
+const marketShiftEvidenceSchema = z
+  .object({
+    evidence_id: z.string().regex(/^mse_[a-f0-9]{16}$/),
+    category: marketShiftCategorySchema,
+    metric: z.string(),
+    source_id: z.string(),
+    provider: z.string(),
+    timestamp: z.string(),
+    current_value: decimalSchema,
+    previous_value: decimalSchema,
+    normalized_delta: decimalSchema,
+    source_url: z.string().url().nullable().optional(),
+  })
+  .strict();
+
+const marketShiftCategorySignalSchema = z
+  .object({
+    category: marketShiftCategorySchema,
+    score: decimalSchema,
+    weight: decimalSchema,
+    weighted_contribution: decimalSchema,
+    coverage: decimalSchema,
+    freshness: decimalSchema,
+    agreement: decimalSchema,
+    temporal_alignment: decimalSchema,
+    confidence: decimalSchema,
+    evidence_ids: z.array(z.string()).min(1),
+  })
+  .strict();
+
+const marketShiftDriverSchema = z
+  .object({
+    label: z.string(),
+    category: marketShiftCategorySchema,
+    contribution: decimalSchema,
+    confidence: decimalSchema,
+    observed_at: z.string(),
+    evidence_ids: z.array(z.string()).min(1),
+  })
+  .strict();
+
+const marketShiftNarrativeSchema = z
+  .object({
+    narrative_id: z.string().regex(/^msn_[a-f0-9]{16}$/),
+    label: z.string(),
+    direction: z.enum([
+      "emerging",
+      "strengthening",
+      "stable",
+      "weakening",
+      "retired",
+    ]),
+    current_prevalence: decimalSchema,
+    previous_prevalence: decimalSchema,
+    change: decimalSchema,
+    evidence_ids: z.array(z.string()).min(1),
+  })
+  .strict();
+
+export const marketShiftSnapshotSchema = z
+  .object({
+    calculation_id: z.string().uuid(),
+    status: z.literal("completed"),
+    instrument: instrumentRefSchema,
+    generated_at: z.string(),
+    data_cutoff: z.string(),
+    window: z.object({
+      previous_start: z.string(),
+      current_start: z.string(),
+      end: z.string(),
+    }),
+    score: decimalSchema,
+    direction: z.enum(["improving", "stable", "deteriorating", "uncertain"]),
+    confidence: decimalSchema,
+    category_signals: z.array(marketShiftCategorySignalSchema).length(7),
+    catalysts: z.array(marketShiftDriverSchema),
+    risks: z.array(marketShiftDriverSchema),
+    narratives: z.array(marketShiftNarrativeSchema),
+    evidence: z.array(marketShiftEvidenceSchema).min(7),
+    calculation_version: z.literal("market-shift-v1"),
+    evidence_schema_version: z.literal("market-shift-evidence-v1"),
+    scoring_rule_version: z.string(),
+    configuration_fingerprint: z.string().regex(/^[0-9a-f]{64}$/),
+    input_fingerprint: z.string().regex(/^[0-9a-f]{64}$/),
+  })
+  .strict();
+
+export const marketShiftHistoryPageSchema = z.object({
+  items: z.array(
+    z.object({
+      snapshot: marketShiftSnapshotSchema,
+      score_change: decimalSchema.nullable().optional(),
+      confidence_change: decimalSchema.nullable().optional(),
+      direction_changed: z.boolean(),
+      new_narratives: z.array(z.string()),
+      retired_narratives: z.array(z.string()),
+    }),
+  ),
+  next_cursor: z.string().nullable().optional(),
+});
+
+export const marketShiftWatchlistSchema = z.object({
+  items: z.array(
+    z.object({
+      watchlist_id: z.string().uuid(),
+      instrument: instrumentRefSchema,
+      enabled: z.boolean(),
+      timezone: z.string(),
+      run_time: z.string(),
+      window_days: z.number().int(),
+      next_run_at: z.string().nullable().optional(),
+      last_run_at: z.string().nullable().optional(),
+    }),
+  ),
+});
+
 export type ResponseComponent = z.infer<typeof responseComponentSchema>;
 export type EvidenceRecord = z.infer<typeof evidenceRecordSchema>;
+export type RenderedResponse = z.infer<typeof renderedResponseSchema>;
 export type CapabilityDescriptor = z.infer<typeof capabilityDescriptorSchema>;
 export type CommandDescriptor = z.infer<typeof commandDescriptorSchema>;
 export type Health = z.infer<typeof healthSchema>;
@@ -1285,4 +1432,182 @@ export type FundamentalValuation = z.infer<typeof fundamentalValuationSchema>;
 export type FundamentalSnapshot = z.infer<typeof fundamentalSnapshotSchema>;
 export type FundamentalPeerComparison = z.infer<
   typeof fundamentalPeerComparisonSchema
+>;
+export type MarketShiftObservation = z.infer<
+  typeof marketShiftObservationSchema
+>;
+export type MarketShiftSnapshot = z.infer<typeof marketShiftSnapshotSchema>;
+export type MarketShiftHistoryPage = z.infer<
+  typeof marketShiftHistoryPageSchema
+>;
+export type MarketShiftWatchlist = z.infer<typeof marketShiftWatchlistSchema>;
+
+export const predictionProbabilitySetSchema = z
+  .object({
+    rise: decimalSchema,
+    sideways: decimalSchema,
+    decline: decimalSchema,
+  })
+  .strict();
+
+export const predictionNumericRangeSchema = z
+  .object({ low: decimalSchema, high: decimalSchema })
+  .strict();
+
+export const predictionScenarioSchema = z
+  .object({
+    name: z.enum(["bear", "base", "bull"]),
+    probability: decimalSchema,
+    return_range: predictionNumericRangeSchema,
+    price_range: predictionNumericRangeSchema,
+    representative_return: decimalSchema,
+    label: z.string(),
+  })
+  .strict();
+
+export const internalPredictionResultSchema = z
+  .object({
+    contract_version: z.string(),
+    prediction_id: z.string().uuid(),
+    instrument: instrumentRefSchema,
+    generated_at: z.string(),
+    data_cutoff: z.string(),
+    horizon_sessions: z.union([z.literal(5), z.literal(20)]),
+    label_threshold: decimalSchema,
+    direction: z.enum(["rise", "sideways", "decline", "uncertain"]),
+    probabilities: predictionProbabilitySetSchema,
+    confidence: decimalSchema,
+    confidence_version: z.string(),
+    cutoff_adjusted_close: decimalSchema,
+    currency: z.string(),
+    modeled_return_range: predictionNumericRangeSchema,
+    modeled_price_range: predictionNumericRangeSchema,
+    scenarios: z.tuple([
+      predictionScenarioSchema,
+      predictionScenarioSchema,
+      predictionScenarioSchema,
+    ]),
+    model_version: z.string(),
+    dataset_version: z.string(),
+    feature_schema_version: z.string(),
+    feature_profile: z.array(
+      z.enum(["market", "technical", "sentiment", "research", "fundamentals"]),
+    ),
+    feature_fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
+    label_version: z.string(),
+    preprocessing_version: z.string(),
+    calibration_version: z.string(),
+    scenario_version: z.string(),
+    training_code_version: z.string(),
+    artifact_version: z.string(),
+    market_key: z.string(),
+    sector: z.string().nullable().optional(),
+    sector_known_at: z.string().nullable().optional(),
+    sector_source: z.string().nullable().optional(),
+    warnings: z.array(z.string()),
+    limitations: z.array(z.string()),
+  })
+  .strict();
+
+export const predictionJobSchema = z
+  .object({
+    job_id: z.string().uuid(),
+    kind: z.enum(["dataset", "training", "evaluation"]),
+    status: z.enum(["queued", "running", "completed", "failed", "dead_letter"]),
+    idempotency_key: z.string(),
+    payload: z.record(z.unknown()),
+    attempts: z.number().int().nonnegative(),
+    created_at: z.string(),
+    updated_at: z.string(),
+    error_code: z.string().nullable().optional(),
+  })
+  .strict();
+
+export type InternalPredictionResult = z.infer<
+  typeof internalPredictionResultSchema
+>;
+export type PredictionJob = z.infer<typeof predictionJobSchema>;
+
+export const modelPerformanceMetricsSchema = z
+  .object({
+    sample_count: z.number().int().nonnegative(),
+    directional_calls: z.number().int().nonnegative(),
+    directional_coverage: decimalSchema.nullable(),
+    directional_accuracy: decimalSchema.nullable(),
+    multiclass_brier: decimalSchema.nullable(),
+    log_loss: decimalSchema.nullable(),
+    expected_calibration_error: decimalSchema.nullable(),
+    return_range_accuracy: decimalSchema.nullable(),
+    price_range_accuracy: decimalSchema.nullable(),
+    normalized_interval_width: decimalSchema.nullable(),
+  })
+  .strict();
+
+export const confusionMatrixSchema = z
+  .object({
+    predicted_labels: z.array(z.string()).length(4),
+    actual_labels: z.array(z.string()).length(3),
+    counts: z
+      .array(z.array(z.number().int().nonnegative()).length(3))
+      .length(4),
+  })
+  .strict();
+
+export const calibrationBinSchema = z
+  .object({
+    class_name: z.enum(["rise", "sideways", "decline"]),
+    lower_bound: decimalSchema,
+    upper_bound: decimalSchema,
+    samples: z.number().int().nonnegative(),
+    mean_probability: decimalSchema.nullable(),
+    observed_frequency: decimalSchema.nullable(),
+  })
+  .strict();
+
+export const cohortPerformanceSchema = z
+  .object({
+    dimension: z.enum([
+      "overall",
+      "model",
+      "market",
+      "sector",
+      "horizon",
+      "calendar",
+      "count",
+    ]),
+    key: z.string(),
+    metrics: modelPerformanceMetricsSchema,
+  })
+  .strict();
+
+export const modelPerformanceReportSchema = z
+  .object({
+    generated_at: z.string(),
+    data_cutoff: z.string().nullable(),
+    metrics_version: z.string(),
+    filters: z.object({
+      model_version: z.string().nullable().optional(),
+      horizon_sessions: z
+        .union([z.literal(5), z.literal(20)])
+        .nullable()
+        .optional(),
+      asset_type: z.string().nullable().optional(),
+      exchange: z.string().nullable().optional(),
+      sector: z.string().nullable().optional(),
+      start: z.string().nullable().optional(),
+      end: z.string().nullable().optional(),
+    }),
+    overall: modelPerformanceMetricsSchema,
+    confusion_matrix: confusionMatrixSchema,
+    calibration: z.array(calibrationBinSchema),
+    cohorts: z.array(cohortPerformanceSchema),
+    scheduled: z.number().int().nonnegative(),
+    waiting: z.number().int().nonnegative(),
+    retrying: z.number().int().nonnegative(),
+    overdue: z.number().int().nonnegative(),
+  })
+  .strict();
+
+export type ModelPerformanceReport = z.infer<
+  typeof modelPerformanceReportSchema
 >;

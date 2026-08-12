@@ -6,6 +6,10 @@ import {
   fundamentalSectionSchema,
   instrumentResolveOutputSchema,
   instrumentSearchOutputSchema,
+  internalPredictionResultSchema,
+  marketShiftSnapshotSchema,
+  modelPerformanceReportSchema,
+  predictionJobSchema,
   researchClaimSchema,
   researchReportOutputSchema,
   responseComponentSchema,
@@ -85,6 +89,193 @@ describe("response component contract", () => {
         ],
       }).type,
     ).toBe("cited_narrative");
+  });
+});
+
+describe("model performance contract", () => {
+  it("validates protected aggregate metrics without prediction payloads", () => {
+    const report = modelPerformanceReportSchema.parse({
+      generated_at: "2026-08-12T00:00:00Z",
+      data_cutoff: null,
+      metrics_version: "prediction-performance-v1",
+      filters: {},
+      overall: {
+        sample_count: 0,
+        directional_calls: 0,
+        directional_coverage: null,
+        directional_accuracy: null,
+        multiclass_brier: null,
+        log_loss: null,
+        expected_calibration_error: null,
+        return_range_accuracy: null,
+        price_range_accuracy: null,
+        normalized_interval_width: null,
+      },
+      confusion_matrix: {
+        predicted_labels: ["rise", "sideways", "decline", "uncertain"],
+        actual_labels: ["rise", "sideways", "decline"],
+        counts: [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0],
+        ],
+      },
+      calibration: [],
+      cohorts: [],
+      scheduled: 0,
+      waiting: 0,
+      retrying: 0,
+      overdue: 0,
+    });
+    expect(report.overall.sample_count).toBe(0);
+  });
+});
+
+describe("market shift contracts", () => {
+  it("requires all seven evidence-backed category signals", () => {
+    const instrument = {
+      instrument_id: "00000000-0000-4000-8000-000000000001",
+      symbol: "TEST",
+      name: "Test Corp",
+      exchange: "NSE",
+      asset_type: "equity",
+      currency: "INR",
+      aliases: [],
+    };
+    const categories = [
+      "news",
+      "public_sentiment",
+      "technical_trend",
+      "fundamentals",
+      "sector",
+      "macro",
+      "institutional_activity",
+    ] as const;
+    const evidence = categories.map((category, index) => ({
+      evidence_id: `mse_${index.toString(16).padStart(16, "0")}`,
+      category,
+      metric: `${category}_metric`,
+      source_id: `source-${index}`,
+      provider: "test",
+      timestamp: "2026-08-12T00:00:00Z",
+      current_value: "0.4",
+      previous_value: "0.2",
+      normalized_delta: "0.2",
+    }));
+    const result = marketShiftSnapshotSchema.parse({
+      calculation_id: "00000000-0000-4000-8000-000000000020",
+      status: "completed",
+      instrument,
+      generated_at: "2026-08-12T00:00:00Z",
+      data_cutoff: "2026-08-12T00:00:00Z",
+      window: {
+        previous_start: "2026-02-13T00:00:00Z",
+        current_start: "2026-05-14T00:00:00Z",
+        end: "2026-08-12T00:00:00Z",
+      },
+      score: "20",
+      direction: "improving",
+      confidence: "0.8",
+      category_signals: categories.map((category, index) => ({
+        category,
+        score: "0.2",
+        weight: index < 2 ? "0.2" : index < 4 ? "0.15" : "0.1",
+        weighted_contribution: "0.02",
+        coverage: "1",
+        freshness: "1",
+        agreement: "1",
+        temporal_alignment: "1",
+        confidence: "1",
+        evidence_ids: [evidence[index]!.evidence_id],
+      })),
+      catalysts: [],
+      risks: [],
+      narratives: [],
+      evidence,
+      calculation_version: "market-shift-v1",
+      evidence_schema_version: "market-shift-evidence-v1",
+      scoring_rule_version: "market-shift-rules-v1",
+      configuration_fingerprint: "a".repeat(64),
+      input_fingerprint: "b".repeat(64),
+    });
+    expect(result.direction).toBe("improving");
+    expect(() =>
+      marketShiftSnapshotSchema.parse({
+        ...result,
+        category_signals: result.category_signals.slice(1),
+      }),
+    ).toThrow();
+  });
+});
+
+describe("internal prediction contracts", () => {
+  it("validates jobs and rejects unknown fields", () => {
+    const job = {
+      job_id: "00000000-0000-4000-8000-000000000010",
+      kind: "training",
+      status: "queued",
+      idempotency_key: "training-0001",
+      payload: { dataset_version: "dataset-v1" },
+      attempts: 0,
+      created_at: "2026-01-01T00:00:00Z",
+      updated_at: "2026-01-01T00:00:00Z",
+    };
+    expect(predictionJobSchema.parse(job).status).toBe("queued");
+    expect(() => predictionJobSchema.parse({ ...job, public: true })).toThrow();
+  });
+
+  it("requires complete version lineage on internal predictions", () => {
+    const instrument = {
+      instrument_id: "00000000-0000-4000-8000-000000000001",
+      symbol: "TEST",
+      name: "Test Corp",
+      exchange: "NSE",
+      asset_type: "equity",
+      currency: "INR",
+      aliases: [],
+    };
+    const scenario = (name: "bear" | "base" | "bull") => ({
+      name,
+      probability: name === "base" ? "0.4" : "0.3",
+      return_range: { low: "-0.1", high: "0.1" },
+      price_range: { low: "90", high: "110" },
+      representative_return: "0",
+      label: "Model-implied scenario; not a price target",
+    });
+    const result = internalPredictionResultSchema.parse({
+      contract_version: "prediction-result-v1",
+      prediction_id: "00000000-0000-4000-8000-000000000020",
+      instrument,
+      generated_at: "2026-01-01T00:00:00Z",
+      data_cutoff: "2025-12-31T00:00:00Z",
+      horizon_sessions: 5,
+      label_threshold: "0.01",
+      direction: "uncertain",
+      probabilities: { rise: "0.3", sideways: "0.4", decline: "0.3" },
+      confidence: "0.01",
+      confidence_version: "entropy-v1",
+      cutoff_adjusted_close: "100",
+      currency: "INR",
+      modeled_return_range: { low: "-0.1", high: "0.1" },
+      modeled_price_range: { low: "90", high: "110" },
+      scenarios: [scenario("bear"), scenario("base"), scenario("bull")],
+      model_version: "model-v1",
+      dataset_version: "dataset-v1",
+      feature_schema_version: "prediction-features-v1",
+      feature_profile: ["market", "technical"],
+      feature_fingerprint: "a".repeat(64),
+      label_version: "direction-volatility-v1",
+      preprocessing_version: "median-indicator-v1",
+      calibration_version: "sigmoid-v1",
+      scenario_version: "quantile-scenarios-v1",
+      training_code_version: "prediction-training-v1",
+      artifact_version: "skops-bundle-v1",
+      market_key: "equity:NSE",
+      warnings: [],
+      limitations: [],
+    });
+    expect(result.direction).toBe("uncertain");
   });
 });
 

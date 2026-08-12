@@ -28,6 +28,7 @@ from tradesentinel.platform.execution import CapabilityExecutor
 from tradesentinel.platform.gateway import ExecutionGateway
 from tradesentinel.platform.intents import ExactExampleIntentResolver
 from tradesentinel.platform.modules import ModuleLoader
+from tradesentinel.platform.object_store import FileObjectStore, InMemoryObjectStore, ObjectStore
 from tradesentinel.platform.persistence import (
     InMemoryRunRepository,
     PersistenceResources,
@@ -59,6 +60,7 @@ class Container:
     engine: AsyncEngine
     redis: Redis
     cache: CacheStore
+    object_store: ObjectStore
     events: EventBus
     runs: RunRepository
     rate_limiter: RateLimiter
@@ -101,6 +103,11 @@ def build_container(settings: Settings) -> Container:
     cache: CacheStore = (
         RedisCacheStore(redis) if settings.cache_backend == "redis" else InMemoryCacheStore()
     )
+    object_store: ObjectStore = (
+        FileObjectStore(settings.object_store_root)
+        if settings.object_store_backend == "filesystem"
+        else InMemoryObjectStore()
+    )
     capabilities = CapabilityRegistry()
     commands = CommandRegistry()
     intents = IntentRegistry()
@@ -111,6 +118,7 @@ def build_container(settings: Settings) -> Container:
     dependency_resolver.register_instance(EventBus, events)
     dependency_resolver.register_instance(RateLimiter, rate_limiter)
     dependency_resolver.register_instance(CacheStore, cache)
+    dependency_resolver.register_instance(ObjectStore, object_store)
     dependency_resolver.register_instance(ExecutionGateway, gateway)
     dependency_resolver.register_instance(
         PersistenceResources,
@@ -171,6 +179,7 @@ def build_container(settings: Settings) -> Container:
         engine=engine,
         redis=redis,
         cache=cache,
+        object_store=object_store,
         events=events,
         runs=runs,
         rate_limiter=rate_limiter,
